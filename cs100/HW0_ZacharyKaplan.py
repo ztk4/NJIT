@@ -41,13 +41,13 @@ def ex13():
 	printLi(s1 + s2 + s1);
 	printLi(s2 + s1*2);
 	printLi( (s2 + s1*2)*2 );
-	printLi( (s2 + s1*2)*10 + s2);
-	printLi( (s2 + s1 + s2*3 + s1*2)*5);
+	printLi( (s2 + s1*2)*10 + s2 );
+	printLi( (s2 + s1 + s2*3 + s1*2)*5 );
 	
 def ex14():
 	s = ''.join([chr(c) for c in range(ord('a'), ord('z')+1)]); #alphabet
-	print(*map(repr, 
-			[s[0], s[2], s[25], s[24], s[16]]
+	print(*map(repr, #print all characters with quotes
+			[s[0], s[2], s[25], s[24], s[16]] #characters to print
 	));
 
 def ex15():
