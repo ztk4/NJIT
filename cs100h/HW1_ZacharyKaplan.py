@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/python3
 
 ##Zachary Kaplan
 ##CS 100 2015F Section H03
