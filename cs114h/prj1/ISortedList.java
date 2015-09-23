@@ -1,4 +1,5 @@
 import java.util.Iterator;
+import java.lang.IllegalStateException;
 import java.lang.IndexOutOfBoundsException;
 
 /**
@@ -50,23 +51,33 @@ public class ISortedList<E extends Comparable<? super E>> extends List<E> {
 	 */
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
+			private Node<E> bk2 = new Node<>(null);//bs node 'two back' from head
 			
+			{	//intance initializer
+				bk2.next = new Node<>(null);
+				bk2.next.next = head;
+			}
+
 			public boolean hasNext() {
-				return curr == null;
+				return bk2.next.next == null;
 			}
 
 			public E next() {
-				E data = curr.data;
-				curr = curr.next;
-				return data;
+				bk2 = bk2.next;
+				return bk2.next.data;
 			}
 
-			private Node<E> curr = head;
+			public void remove() {
+				if(bk2.next.next == head || !hasNext())
+					throw new IllegalStateException();
+				bk2.next = bk2.next.next;	
+			}
+
 		};
 	}
 
 	/**
-	 * Removes element <code>data</code> from this list, maintaining ascenging sorted order.
+	 * Removes element <code>data</code> from this list, maintaining ascending sorted order.
 	 *
 	 * @param data	the element to remove from this list
 	 */
