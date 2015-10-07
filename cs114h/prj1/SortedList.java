@@ -124,18 +124,4 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	}
 
 	//protected Node<E> head inherited from List
-	
-	public static void main(String[] args) {
-		List<Integer> l = new SortedList<>();
-
-		for(int i = 0; i < 10; ++i)
-			l.insert(i);
-
-		for(int i = -5; i < 15; ++i)
-			System.out.println(i + ": " + l.search(i));
-
-		for(int i = 0; i < 10; ++i)
-			System.out.println(i + ": " + l.retrieve(i));
-	}
-
 }
