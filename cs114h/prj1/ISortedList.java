@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.lang.IllegalStateException;
 import java.lang.IndexOutOfBoundsException;
+import java.lang.UnsupportedOperationException;
 
 /**
  * Allows insertion and deletion of elements while maintaining ascending 
@@ -51,28 +52,22 @@ public class ISortedList<E extends Comparable<? super E>> extends List<E> {
 	 */
 	public Iterator<E> iterator() {
 		return new Iterator<E>() {
-			private Node<E> bk2 = new Node<>(null);//bs node 'two back' from head
 			
-			{	//intance initializer
-				bk2.next = new Node<>(null);
-				bk2.next.next = head;
-			}
-
 			public boolean hasNext() {
-				return bk2.next.next == null;
+				return curr != null;
 			}
 
 			public E next() {
-				bk2 = bk2.next;
-				return bk2.next.data;
+				E data = curr.data;
+				curr = curr.next;
+				return data;
 			}
-
+			
 			public void remove() {
-				if(bk2.next.next == head || !hasNext())
-					throw new IllegalStateException();
-				bk2.next = bk2.next.next;	
+				throw new UnsupportedOperationException();
 			}
 
+			private Node<E> curr = head;
 		};
 	}
 

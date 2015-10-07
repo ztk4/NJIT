@@ -1,5 +1,8 @@
 import java.util.Iterator;
 import java.lang.IndexOutOfBoundsException;
+import java.lang.UnsupportedOperationException;
+
+import java.util.Random; //purely for testing
 
 /**
  * Allows insertion and deletion of elements while maintaining ascending 
@@ -20,26 +23,17 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	 * @param data	 the element to insert into this list
 	 */
 	public void insert(E data) {
-		if(head == null) {				//empty list
-			head = new Node<E>(data);
-		} else if(head.data.compareTo(data) >= 0) {	//insert before head
-			Node<E> tmp = head.next;
-			head = new Node<E>(data);
-			head.next = tmp;
-		} else {						//general case
-			insert(data, head);
-		}
+		head = insert(head, data);
 	}
 
-	private void insert(E data, Node<E> n) {
-		if(n.next == null) {				//insert at end
-			n.next = new Node<E>(data);
-		} else if(n.next.data.compareTo(data) >= 0) {	//insert after n
-			Node<E> tmp = n.next;
-			n.next = new Node<E>(data);
-			n.next.next = tmp;
-		} else {							//move on
-			insert(data, n.next);
+	private Node<E> insert(Node<E> n, E data) {
+		if(n == null || data.compareTo(n.data) <= 0) {
+			Node<E> tmp = new Node<>(data);
+			tmp.next = n;
+			return tmp;
+		} else {
+			n.next = insert(n.next, data);
+			return n;
 		}
 	}
 	
@@ -52,13 +46,17 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 		return new Iterator<E>() {
 			
 			public boolean hasNext() {
-				return curr == null;
+				return curr != null;
 			}
 
 			public E next() {
 				E data = curr.data;
 				curr = curr.next;
 				return data;
+			}
+			
+			public void remove() {
+				throw new UnsupportedOperationException();
 			}
 
 			private Node<E> curr = head;
@@ -80,7 +78,7 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	}
 
 	private void remove(E data, Node<E> n) {
-		if(n.next != null) { 			//if null, went through whole list
+		if(n.next != null) { 			//if null, (null -> went through whole list)
 			if(n.next.data.compareTo(data) == 0)		//remove next node
 				n.next = n.next.next;
 			else						//move on
@@ -135,7 +133,33 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	 * @param args	a <code>String[]</code> of the args passed to this program from the CLI
 	 */
 	public static void main(String[] args) {
-		
+		Random rand = new Random(1);
+        SortedList<Integer> list = new SortedList<Integer>();
+        int m = args.length == 1 ? Integer.parseInt(args[0]) : 10;
+
+        System.out.println("insert");
+        for (int i = 0; i < m; ++i) {
+            int n = rand.nextInt(m);
+            list.insert(n);
+            System.out.print(n + ": ");
+            for (Integer j : list) {
+                System.out.print(j + " ");
+            }
+            System.out.println();
+        }
+
+        rand = new Random(1);
+
+        System.out.println("remove");
+        for (int i = 0; i < m; ++i) {
+            int n = rand.nextInt(m);
+            list.remove(n);
+            System.out.print(n + ": ");
+            for (Integer j : list) {
+                System.out.print(j + " ");
+            }
+            System.out.println();
+        }
 	}
 
 }
