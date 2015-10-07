@@ -2,8 +2,6 @@ import java.util.Iterator;
 import java.lang.IndexOutOfBoundsException;
 import java.lang.UnsupportedOperationException;
 
-import java.util.Random; //purely for testing
-
 /**
  * Allows insertion and deletion of elements while maintaining ascending 
  * sorted order. Also allows for the retrieval of elements by index, and 
@@ -94,7 +92,7 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	 * @throws IndexOutOfBoundsException	if <code>index</code> is less than 0, or 
 	 * 										greater than or equal to the number of elements	
 	 */
-	public E retrieve(int index) throws IndexOutOfBoundsException {
+	public E retrieve(int index) {
 		if(index < 0)
 			throw new IndexOutOfBoundsException("Index '" + index + "' is less than 0");
 		
@@ -126,4 +124,18 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	}
 
 	//protected Node<E> head inherited from List
+	
+	public static void main(String[] args) {
+		List<Integer> l = new SortedList<>();
+
+		for(int i = 0; i < 10; ++i)
+			l.insert(i);
+
+		for(int i = -5; i < 15; ++i)
+			System.out.println(i + ": " + l.search(i));
+
+		for(int i = 0; i < 10; ++i)
+			System.out.println(i + ": " + l.retrieve(i));
+	}
+
 }
