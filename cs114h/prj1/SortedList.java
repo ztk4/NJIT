@@ -62,7 +62,7 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	}
 
 	/**
-	 * Removes element <code>data</code> from this list, maintaining ascenging sorted order.
+	 * Removes element <code>data</code> from this list, maintaining ascending sorted order.
 	 *
 	 * @param data	the element to remove from this list
 	 */
