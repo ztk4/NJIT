@@ -69,7 +69,8 @@ def lastfirst(names):
     return list(map(list, zip(*names)))                 #transposes list to be of form [[first, first, ...], [last, last, ...]] (maintains relative order)
     #NOTE: The above transposition works by passing the elements of names to zip as arguments, therefore: zip([first, last], [first, last], ...)
     #These lists are then zipped together by index, and so all first names are together, and all last names are together. zip(...) maintains relative order
-    #The call to map simply calls list on each tuple within the tuple returned from zip, and the outer cast to list converts the generator returned from map to a list (in order to match specified return types)
+    #The call to map simply calls list on each tuple within the iterable zip object (essentially a generator) returned from zip,
+    #And the outer cast to list converts the iterable map object returned from map (essentially a generator)to a list (in order to match specified return types)
 
 #test code
 def prob3():
