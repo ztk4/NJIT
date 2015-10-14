@@ -9,6 +9,9 @@
 import java.util.Iterator;
 import java.lang.IndexOutOfBoundsException;
 import java.lang.UnsupportedOperationException;
+import java.lang.StringBuilder;
+
+import java.util.Random; //testing only
 
 /**
  * Allows insertion and deletion of elements while maintaining ascending 
@@ -132,4 +135,67 @@ public class SortedList<E extends Comparable<? super E>> extends List<E> {
 	}
 
 	//protected Node<E> head inherited from List
+	
+	/**
+	 * Method that allows a SortedList to be converted to a String.
+	 * This is useful for printing the list
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder("[ ");
+		for(E e : this) {
+			sb.append(e);
+			sb.append(' ');
+		}
+		sb.append(']');
+		return sb.toString();
+	}
+
+	/**
+	 * Main routine for testing Sorted List.
+	 * Packs in n random numbers, does some sorting and retreiving, and then unpacks the numbers
+	 *
+	 * @param args	String[] that holds the argument list from the CLI
+	 */
+	public static void main(String[] args) {
+		int n = args.length == 0 ? 10 : Integer.parseInt(args[0]);
+		Random r = new Random(1);
+		List<Integer> l = new SortedList<>();
+
+		System.out.println("\nInserting:\n");
+
+		for(int i = 0; i < n; ++i) {
+			int tmp = r.nextInt(n);
+			l.insert(tmp);
+			System.out.print(tmp + ": ");
+			System.out.println(l);
+		}
+		
+		System.out.println();
+		System.out.println("\nSearching:\n");
+
+		for(int i = 0; i < n; ++i) {
+			int tmp = r.nextInt(n);
+			System.out.println(tmp + ": " + l.search(tmp));
+		}
+
+		System.out.println();
+		System.out.println("\nRetrieving:\n");
+		
+		for(int i = 0; i < n; ++i)
+			System.out.println(i + ": " + l.retrieve(i));
+		
+		System.out.println();
+		System.out.println("\nRemoving:\n");
+
+		r = new Random(1);
+
+		for(int i = 0; i < n; ++i) {
+			int tmp = r.nextInt(n);
+			l.remove(tmp);
+			System.out.print(tmp + ": ");
+			System.out.println(l);
+		}
+
+		System.out.println();
+	}
 }
