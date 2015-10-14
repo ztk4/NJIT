@@ -36,7 +36,7 @@ def twoWords(length, firstLetter):
             break;
     while True:
         word2 = input("A word beginning with %s please " %  firstLetter)
-        if len(word2) and word2[0].lower() == firstLetter.lower():
+        if word2 and word2[0].lower() == firstLetter.lower():
             break
 
     return word1, word2
@@ -53,8 +53,8 @@ def twoWordsV2(length, firstLetter):
         word1 = input("A %d-letter word please " % length)
 
     word2 = ''
-    while not len(word2) and word2[0].lower() == firstLetter.lower():
-        word2 = input("A word beginning with %s please ", firstLetter)
+    while not word2 or word2[0].lower() != firstLetter.lower():
+        word2 = input("A word beginning with %s please " % firstLetter)
 
     return word1, word2
 
@@ -62,27 +62,50 @@ def twoWordsV2(length, firstLetter):
 def prob2():
     print(twoWordsV2(4, 'B'))
 
-def prob3():
-    pass
+#Exercise 3, 5.29 in book
+#method lastfirst
+def lastfirst(names):
+    names = [name.split(', ')[::-1] for name in names]  #changes names to form [[first, last], [first, last], ...]; [::-1] is needed to make it [first, last] as opposed to [last, first]
+    return list(map(list, zip(*names)))                 #transposes list to be of form [[first, first, ...], [last, last, ...]] (maintains relative order)
+    #NOTE: The above transposition works by passing the elements of names to zip as arguments, therefore: zip([first, last], [first, last], ...)
+    #These lists are then zipped together by index, and so all first names are together, and all last names are together. zip(...) maintains relative order
+    #The call to map simply calls list on each tuple within the tuple returned from zip, and the outer cast to list converts the generator returned from map to a list (in order to match specified return types)
 
+#test code
+def prob3():
+    print(lastfirst(['Gerber, Len', 'Fox, Kate', 'Dunn, Bob']))
+
+#Exercise 4, 5.33
+#method mystery
+def mystery(n):
+    count = 0
+    while n > 1:
+        n //= 2
+        count += 1
+    return count
+
+#test code
 def prob4():
-    pass
+    print(mystery(4))
+    print(mystery(11))
+    print(mystery(25))
 
 #Exercise 5
 #method enterNewPassword
 def enterNewPassword():
-    def checklen(passwd):
-        return 8 <= len(passwd) <= 15
-    def checknum(passwd):
-        return re.match(r'.*\d.*', passwd) != None #matches to any number of characters (including 0) followed by at least on digit and any number of characters
-
+    done = False
     passwd = ''
-    while not checklen(passwd) or not checknum(passwd):
+
+    while not done:
         passwd = input("Enter a password: ")
-        if not checklen(passwd):
+        done = True
+
+        if not (8 <= len(passwd) <= 15):
             print("Password must be no less than 8 characters and no more than 15 characters")
-        if not checknum(passwd):
+            done = False
+        if re.match(r'.*\d.*', passwd) == None: #matches to any number of characters (including 0) followed by at least on digit and any number of characters
             print("Password must contain at least one digit")
+            done = False
 
 #test code
 def prob5():
