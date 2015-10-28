@@ -104,24 +104,27 @@ public class Knight {
 	 * Given the initial conditions, attempts to find a single tour using brute-force.
 	 * 
 	 * @param n		Move number (starts as 1)
-	 * @param t		Tile object representing position of Knight
+	 * @param r		Row number
+	 * @param c		Column Number
 	 * @return 		true if a tour was found,
 	 * 				false if no path was found
 	 */
-	private static boolean bruteForce(int n, Tile t) {
-		t.setNum(n); //mark tile as visited
+	private static boolean bruteForce(int n, int r, int c) {
+		board[r][c] = n; //mark tile as visited
 
 		if(n == max) //done, found a tour
 			return true;
 		//System.out.println(n);	
-		for(Tile next : t) {
-			if(next.getNum() == 0) { //if not visited
-				if(bruteForce(n + 1, next)) //tour found later after this move
+		for(int i = 0; i < roffs.length; ++i) {
+			int rp = r + roffs[i], cp = c + coffs[i];
+
+			if(rp >= 0 && cp >= 0 && rp < size && cp < size && board[rp][cp] == 0) { //if not visited
+				if(bruteForce(n + 1, rp, cp)) //tour found later after this move
 					return true;
 			}
 		}
 
-		t.setNum(0); //can't move to any tiles, so undo this move
+		board[r][c] = 0; //can't move to any tiles, so undo this move
 		return false;
 	}
 	
@@ -169,7 +172,7 @@ public class Knight {
 		board = new int[size][size];
 
 		if(b) 
-			bruteForce(1, new Tile(irow, icol));
+			bruteForce(1, irow, icol);
 		else
 			;//TODO: Warnsdorf
 
@@ -184,9 +187,8 @@ public class Knight {
 	
 	private static boolean b = true;	//if true, then brute force, else Warnsdorf
 
-	//only used by iterator class, however static members cannot be inside of static inner classes
 	private static final int[]	roffs = {2, 2, 1, 1, -1, -1, -2, -2},	//row offsets
 								coffs = {1, -1, 2, -2, 2, -2, 1, -1};	//column offsets
 
-	private static String help = "Usage: java Knight [board_size [starting_row starting_column]]";
+	private static String help = "Usage: java Knight [board_size [starting_row starting_column [brute_force]]";
 }
