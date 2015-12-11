@@ -116,7 +116,7 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
                 return end >= 0;    
             }
 
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked") //stops warning for unchecked class cast
             public E next() {
                 if(leftDone < end) {
                     while( ((Node<E>) stack[end]).left != null) {
@@ -161,13 +161,13 @@ public class BinarySearchTree<E extends Comparable<? super E>> extends BinaryTre
         Arrays.sort(arr);
         Iterator<Integer> it = bst.iterator();
 
-        System.out.println(Arrays.toString(arr));
+        //System.out.println(Arrays.toString(arr));
 
-        System.out.print('[');
-        for(int i : bst) {
-            System.out.print(i + ", ");
-        }
-        System.out.println("\b\b]");
+        //System.out.print('[');
+        //for(int i : bst) {
+        //    System.out.print(i + ", ");
+        //}
+        //System.out.println("\b\b]");
 
         for(int i : arr) {
             if(!it.hasNext()) {

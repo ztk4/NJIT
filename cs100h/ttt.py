@@ -134,6 +134,7 @@ def playgame():
     resize()
     s.onscreenclick(clicked)
     s._root.bind("<Configure>", lambda *args: resize(), True)
+    #s._root.resizable(0,0)
 
     tr.mainloop()
 
