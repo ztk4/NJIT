@@ -1,0 +1,9 @@
+Stream Errors:
+    
+    stream.good()   -> true if NO errors
+    stream.eof()    -> true if EOF has been recieved
+    stream.fail()   -> true if logical error or read/write error on system
+    stream.bad()    -> true if read/write error on system
+
+    Note: if(stream) -> if(!stream.fail())
+    Because stream.operator bool() { return !stream.fail(); }
