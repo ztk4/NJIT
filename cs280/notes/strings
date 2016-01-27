@@ -1,0 +1,31 @@
+ASCII - American Standard Code for Information Interchange
+
+Java char -> 16-bit unicode character (not 8-bit ASCII)
+
+Character Representations:
+
+ 'a'        - literal
+ '\141'     - octal literal
+ '\x61'     - hex literal
+ 
+Special Escape Characters
+
+ '\n' - newline
+ '\t' - tab
+ '\'' - single quote
+ '\\' - backslash
+ '\0' - null terminating character (all 0's)
+
+"Compilation"
+
+                                                                    Other Object Files ----v
+    |SOURCE FILE| -> Preprocessor -> Compiler -> Assembly -> Assembler -> Object File -> Linker -> |Executable|
+    |HEADER FILES| -------^                                               Libraries -------^
+
+Compilation
+
+    |SOURCE FILE| -> Lexical Analyzer -> Syntax Analyzer -> Semantic Analyzer -> Optimizer (optional) -> Code Generator -> |OUTPUT FILE|
+                            |                   |                   ^                     ^                    ^
+                            |                   |------------> Symbol Table <-------------|                    | 
+                            |--------------------------------------^   |---------------------------------------|                                                
+ 

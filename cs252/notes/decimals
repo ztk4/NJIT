@@ -1,0 +1,70 @@
+Binary Rep of Fractions
+
+    Exact representation doesn't always work for numbers like 10^-1
+
+BCD
+    
+    Every digit in a decimal number is represented by 4 bits.
+    Drawback - 8 + 3 = 11 encodes to 1000 + 0011 = 1011, which is still 4 bits but greater than a single decimal digit
+
+Signed Integers
+    
+    1's compliment
+        -127 < 0 < 127 (two zero's, positive and negative)
+
+    2's compliment
+        -128 < 0 < 127
+
+Complements
+
+    Radix
+        N_r = r^n - N
+
+    Diminished Radix
+        N_r = (r^n - 1) - N
+
+    base 10: 10's and 9's
+    base 2: 2's and 1's
+
+Converting to Compliment
+
+    1's compliment
+        change all 1's to 0's and all 0's to 1's to negate a number
+
+    2's compliment
+        add one to the one's compliment representation of the number (IF NEGATIVE - if positive, all representations are the same)
+
+Example:
+    +10: 00001010
+    -10: 11110101 - 1's
+    -10: 11110110 - 2's
+
+
+Addition Examples:
+
+    Positives:
+        00110001
+      + 00100101
+      = 01010110
+
+    Positive + Negative, s.t. |+| > |-|:
+
+        00110001
+      + 11011011
+      =100001100
+       ^
+       carry out of 1 (doesn't matter, basically "overflow" but intended)
+
+    Negatives
+
+        11001111
+      + 00100101
+      = 11110100
+
+Overflow:
+
+    Overflow has happened if XOR of carry in and carry out of the MSB is true.
+    (This is how overflow is flagged)
+
+Homework:
+    Chapter 1: 1.7 & 1.8

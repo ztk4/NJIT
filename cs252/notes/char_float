@@ -1,0 +1,56 @@
+Character Codes
+    
+    ASCII*
+    EBCDIC - IBM still uses this (z/OS)
+    Baudot - Extinct (has shift modifiers bc it is 4-bit)
+    CDC 6-bit - Extinct (used in a super-computer with 60-bit words)
+    UNICODE*
+
+Original ASCII (7-bit)
+
+    control characters      0x00 ...
+    white space             0x20 ...
+    '0' -                   0x30 ...
+    'A' -                   0x41 ...
+    'a' -                   0x61 ...
+    punctuation
+
+Parity ASCII (8-bit)
+
+    Add MSD with a pattern
+    - Even Parity, MSD is 1 iff odd  number of 1's in 7-bits
+    - Odd Parity, MSD is 1 iff even number of 1's in 7-bits
+    - Mark, MSD is always 1
+    - Space, MSD is always 0
+
+UNICODE
+
+    FFFE - not a character code, implies flipped bytes (little endian and big endian issue)
+    FEFF - Byte Order Mark (the way it should be)
+
+Floating Point
+    
+    32-bit signed float:
+        - Integers with radix fixed after LSD can be up to 10^10 in magnitude
+        - Decimals with radix fixed after before MSD can be as small as 10^-10 in magnitude
+
+    Range is achieved by allowing the radix to float left and right
+        - Stores "significant" part of the value
+
+
+    ANSI/IEEE Std. 745-1985
+        Sign s, MSD
+        Biased Exponent e = E+bias, 8 bits
+        Fraction f = 1.b[1]b[2]b[3]..b[p-1], 24 bits
+         1       8                    24
+        ---------------------------------------------
+        |s|      e      |             f             |
+        ---------------------------------------------
+
+        0 < e < 255 & f != 0 => v = (-1)^s * 2^(e-127) * (1.f)
+            e = 255 & f  = 0 => v = +/- inf
+            e = 255 & f != 0 => NaN
+            e = 0   & f  = 0 => v = +/- 0
+            e = 0   & f != 0 => de-normal (no leading '1')
+
+

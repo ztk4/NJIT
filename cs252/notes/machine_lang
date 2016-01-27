@@ -1,0 +1,18 @@
+Memory Accessibility
+    
+    Bytes and Words are Addressable
+    Words may be aligned
+    Common Sizes:
+        - 2^10 bytes = Kilobyte (Kibi-byte)
+        - 2^20 bytes = Megabyte (Mebi-byte)
+        - 2^30 bytes = Gigabyte (Gibi-byte)
+        *Parentheticals are disambiguations
+
+Little Endian vs. Big Endian
+
+                Big Endian                          Little Endian
+                    Byte Address                        Byte Address
+    Word Address    -----------------   Word Address    -----------------
+               0    | 0 | 1 | 2 | 3 |              0    | 3 | 2 | 1 | 0 |
+               4    | 4 | 5 | 6 | 7 |              4    | 7 | 6 | 5 | 4 |
+               etc.
