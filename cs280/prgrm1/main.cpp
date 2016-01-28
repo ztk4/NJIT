@@ -89,58 +89,72 @@ bool fill_card(const char *str, card &out) {
  *  -4 - Duplicate Card
  */
 int proc_hand(istream &in) {
-    string hand;
+    string line;
     card c;
-    int count = 0,
+    int err, score, count = 0,
         suit_count[4] = {0},    //{0} -> 0 initialized
         face_count[4] = {0};    //{0} -> 0 initialized; FACES -> {0: JACK, 1: QUEEN, 2: KING, 3: ACE }
     bitset<52> card_count;      //52 false values, one for keeping track of each card
-
-    //read in cards
-    do {
-        getline(in, hand, '.'); //gets characters until '.' is reached
-
-        if(in.eof())
-            return -1; //EOF
-    } while(!in); //same as while(in.fail())
-
     
-    char *tok, tokens[hand.size() + 1];
-    hand.copy(tokens, hand.size()); //copy hand c++ string to tokens
-    tok = strtok(tokens, ", \n");
+    while(true) { //loop for reading in cards
 
-    while(tok) {
-        if(++count == 14) //increment but also check for done
-            break;
+        //read in cards
+        do {
+            getline(in, line); //gets 1 line of input
 
-        //validity checks
-        if(!fill_card(tok, c)) 
-            return -2; //formatting error with card
+            if(in.eof())
+                return -1; //EOF (end program)
+        } while(!in); //same as while(in.fail()); makes sure at least one line is read
 
-        int cnum = (c.val + c.s * 13) - 1; //subtraction makes it 0-indexed
-        if(card_count[cnum])
-            return -4; //duplicate cards
-        card_count[cnum] = true; //mark card
+        if(line.size() == 1 && line[0] == '.')
+            break; //done fetching cards
+
+        char *tok, tokens[line.size() + 1];
+        line.copy(tokens, line.size()); //copy line c++ string to tokens
+        tokens[line.size()] = '\0'; //terminate the c string
+        tok = strtok(tokens, ", ");
+
+        while(tok) {
+            //check for done
+            if(++count == 14) {
+                err = -3; //wrong num, but needs cleaning
+                goto clean;
+            }
+
+            //validity checks
+            if(!fill_card(tok, c)) { //puts card into c
+                err = -2; //formatting error with card
+                goto clean;
+            }
+
+            int cnum = (c.val + c.s * 13) - 1; //subtraction makes it 0-indexed
+            if(card_count[cnum]) {
+                err = -4; //duplicate cards
+                goto clean;
+            }
+            card_count[cnum] = true; //mark card
         
-        //other increments
-        ++suit_count[c.s];
-        if(c.val == 1) {
-            ++face_count[3];
-        } else {
-            int tmp = c.val - 11; //0 if jack, 1 if queen, 2 if king, < 0 if anything else
-            if(tmp >= 0)
-                ++face_count[tmp];
+            //increments
+            ++suit_count[c.s];
+            if(c.val == 1) {
+                ++face_count[3];
+            } else {
+                int tmp = c.val - 11; //0 if jack, 1 if queen, 2 if king, < 0 if anything else
+                if(tmp >= 0)
+                    ++face_count[tmp];
+            }
+            
+            tok = strtok(NULL, ", ");
         }
-        
-        tok = strtok(NULL, ", \n");
-    };
+
+    }
 
     if(count != 13)
-        return -3; //wrong number of cards
+        return -3; //wrong number of cards (no cleanup needed)
 
     //score hand
     
-    int score = 0;
+    score = 0;
 
     for(int i = 0; i < 4; ++i) {
         score += face_count[i] * (i + 1); //1 pt for jack, 2 pts for queen, etc.
@@ -161,6 +175,17 @@ int proc_hand(istream &in) {
         score += 1;
 
     return score;
+
+clean: //cleans out input until '.' is found
+   
+    do {
+        getline(in, line);
+
+        if(in.eof())
+            return -1; //EOF while trying to finish hand
+    } while(line.size() != 1 || line[0] != '.');
+
+    return err;
 }
 
 /*
