@@ -1,5 +1,5 @@
 CC			= g++
-CXXFLAGS	= -std=c++11 -O3
+CXXFLAGS	= -std=c++0x -O3
 
 all: main
 
