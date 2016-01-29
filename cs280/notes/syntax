@@ -1,0 +1,36 @@
+Syntax Analysis
+
+    Low-Level part called a lexical analyzer
+        a finite automaton based on a regular grammar
+
+    High-Level part called a syntax analyzer
+        a push-down automaton based on context-free grammar (represented in BNF)
+
+Using BNF
+
+    Provides clear and concise syntax description
+    Parser can be built directly on BNF
+    Parses based on BNF are easy to maintain
+
+Reasons to break analysis into two parts
+
+    Simplicity - less complex to do this in two parts
+    Efficiency - separation allows optimization of the lexical analyzer
+    Portability - lexical analyzer is not always portable, but parser is
+
+Lexical Analyzer
+
+    Pattern matcher for character strings
+    "Front-End" for the parser
+    Identifies substrings that belong together (tokens) - lexemes
+
+    Usually a function that recognizes tokens
+        Called by the parser when a token is needed
+
+    Three apporaches to building a lexical analyzer:
+
+        1. Write a formal description of the tokens and use a software tool that constructs a table-driven lexical analyzer
+        2. Design a state diagram that describes the tokens and writes a program the implements the state diagram
+        3. Design a state diagram that describes the tokens and contruct a table-driven implementation of the state diagram
+
+

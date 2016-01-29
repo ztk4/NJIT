@@ -1,0 +1,140 @@
+Instruction
+    ------------------------
+    | op code |   address  |
+    ------------------------
+
+    # of operations = 2^(# of op-bits)
+
+RISC - Reduced Instruction Set Computers
+    one-word instructions and require operands to be in registers
+
+CISC - Complex Instruction Set Computers
+    multi-word instructions and allow operands directly from memory
+
+RISC
+    
+    Instructions/data stored in memory
+    Processor register contents are initially (on start) invalid
+    RISC requires reigster operands, so data transfer from memory is NECESSARY
+        Therefore, there is a load instruction:
+            load    reg_lbl, mem_addr
+    Addressing mode specifies memory location (more discussed later)
+
+RTN (Register Transfer Notation)
+
+    Set of registers and functions
+    Operations performed with info in registers
+    Sequence control of operations
+
+    (aka RTL [Register Transfer Language])
+
+Register: set of F/F (Flip Flop) end to end
+Operation: in parallel on bit string(s) [Yes, really parallel!!!]
+    Add: two operands
+    Shift: one register
+
+Symbols - Language for describing computer on paper
+
+    letter and numbers - Register name or variable name (identifier)
+    <- (left arrow) - store info from right hand to left hand
+    [] - contents of symbol inside square brackets (or subset dereferencing - a[1-3])
+
+Number of Operations for Operation
+    
+    3 operands: ADD R1, R2, R3 (ARM) [DST, SRC1, SRC2]
+    2 operands: ADD R1, R2 (INTEL) [DST & SRC1, SRC2]
+    1 operands: ADD R1 [DST & SRC1, rest from memory]
+    0 operands: ADD [Takes top 2 elts from stack, push result to stack, no registers]
+
+Operation types
+
+    Transfer: no change (on value, just copy)
+    Arithmetic: +, -, *, / (% can be taken from / sometimes)
+    Logic: AND, OR, NOT, ....
+    Shift: rotate, shift
+    Flow Control: branches - both conditional and unconditional
+
+RISC: C = A + B
+
+    load    R2, A
+    load    R3, B
+    add     R4, R2, R3
+    store   R4, C
+
+Notation Examples:
+           __
+    R2 <- [R2] (store logical compliment of R2 into R2)
+    R1 <- [R1] + 1 (increment R1)
+    R1 <- [R2] + [R3] (store sum of contents R2 and R3 into R1)
+
+Logical Operations:
+          _
+    R <- [R]                logical complement  (inverters)
+    R <- [R1] AND [R2]      AND                 (masking)
+    R <- [R1] OR  [R2]      OR                  (set bits)
+    R <- [R1] XOR [R2]      XOR (+ in O)        (complement bits)
+    
+Shift Operations:
+
+    R <- lsl[R]     Logical Shift Left      [lsl(1010) = 0100]
+    R <- lsr[R]     Logical Shift Right     [lsr(1010) = 0101]
+    R <- asl[R]     Arithmetic Shift Left   [shift, but maintain sign]
+    R <- asr[R]     Arithmetic Shift Right  [shift, but maintain sign]
+    R <- rol[R]     Rotate Left             [rol(1010) = 0101]
+    R <- ror[R]     Rotate Right            [ror(1010) = 0101]
+    R <- rrx[R]     Rotate Extended         [rox(1010) = rox((carry << 5) + 1010)]
+
+Condition Codes:
+
+    Negative: 1 if result of operation of is negative
+    Zero: 1 if result of operation is equal to 0
+    oVerflow: 1 if result of arithmetic operation is too big
+    Carry: 1 if result of operation sets carry bit
+
+    Each status is one bit in 'program status word'
+    NOTE:   in INTEL these bits are set if the bit flags for doing so are set (to diable, bit flags must be changed)
+            in ARM, there are two different instructions for all operations, one which sets status bits, and one which doesn't
+
+Branch Instructions:
+
+    Unconditional branch: change program counter to argument
+        (ARM b for branch, INTEL j for jump)
+    Conditional branch: change program counter when condition is true, otherwise increment like normal
+        (ARM bne for branch not equal, INTEL jne for jump not equal)
+    Does not save calling state (no returning back after jump)
+
+Branch to Subroutine
+    
+    Branching that saves call state (can return to calling location after subroutine ends)
+        (ARM bl for branch and link, INTEL call)
+
+Adressing Modes
+
+    Presumedly, programs use data structures to organize info
+        Order dependent blocks of memory that act as a unit
+    Addresssing modes provide different ways to sepcify operand location
+        Allows access of memory from various methods of storing info
+
+Implied Mode
+    
+    Op-Code implies location of operand
+        PUSH    register    (assumes theres a stack pointer, register must have value to put on stack)
+        POP     register    (assumes theres a stack pointer, register must recieve top of stack)
+        CMA                 (assumes theres a stack pointer or accumulator, compliment that value and save back)
+
+Immediate Mode
+
+    Operand is part of instruction
+        EA = IR[x:y]
+    OR
+    PC points to operand in memory
+        EA = PC
+
+Examples:
+
+    INTEL:
+        MOV EAX, 511    ; puts val 511 in register EAX
+
+    ARM
+        MOV R2, #35     ; puts the value 35 into register R2
+

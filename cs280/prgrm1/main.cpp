@@ -159,9 +159,9 @@ int proc_hand(istream &in) {
     for(int i = 0; i < 4; ++i) {
         score += face_count[i] * (i + 1); //1 pt for jack, 2 pts for queen, etc.
         if(suit_count[i] < 3)
-            score += 3 - i;
+            score += 3 - suit_count[i];
         else if(suit_count[i] > 4)
-            score += i - 4;
+            score += suit_count[i] - 4;
     }
 
     for(int i = 0; i < 3; ++i) {
@@ -197,13 +197,13 @@ int main(int argc, char **argv) {
     while( (ret = proc_hand(cin)) != -1) { //while EOF not reached
         switch(ret) {
             case -2:
-                cerr << "BAD FORMAT";
+                cout << "BAD FORMAT";
                 break;
             case -3:
-                cerr << "WRONG NUMBER OF CARDS";
+                cout << "WRONG NUMBER OF CARDS";
                 break;
             case -4:
-                cerr << "DUPLICATE CARDS";
+                cout << "DUPLICATE CARDS";
                 break;
 
             default:
