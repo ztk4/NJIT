@@ -1,0 +1,89 @@
+The ARM Instrction Set
+    (Advanced RISC Machines)
+
+Main Features
+
+    All instructions are 32 bits
+    Most instructions execute in a single cycle
+    Every instruction an be conditionally executed
+    Load/Store Architecture
+        Data proc only done on registers
+            Combined ALU and shifter for high speed bit manipulation
+        Powerful auto-index addr mode
+            32 bit and 8 bit data types
+                and also 16 bit types on ARM arch v4
+            Flexible multiple register load and store instructions
+
+    Instruction set extension via co-proc (like adding floating points)
+
+Modes
+    The ARM has 6 operating Modes
+        User - Unprivelaged (only one avail to us)
+        FIQ - fast interrupt
+        IRQ - Slow interrupt
+        Supervisor - su
+        Abort - handles mem access violations
+        Undef - handles undefined instructions
+    
+Registers
+    ARM has 37 registers, all 32-bits long
+        1 dedicated PC
+        1 dedicated Program status
+        5 dedicated saved program status
+        30 general purpose
+
+    However, they are in banks reserved for certain modes
+        r0-r12 registers
+        r13 (SP) and r14 (LR)
+        r15 (PC)
+
+Accessing Registers using ARM Instructions
+
+    No breakdown of currently accessibly registers
+        All instructions can access r0-r14 directly
+        Most instructions also allow use of r15
+    Some instrctions allow use of CPSR (Current Program status) and SPSR (Saved Program Status)
+
+CSPRs and SPSRs
+    31 28       8   4   0  
+    [NZCV.......IFT MODE]
+
+    N - Negative ALU flag
+    Z - 0 ALU flag
+    C - Carry ALU flag
+    V - oVerflow ALU flag
+
+    I - 1, disables IRQ
+    F - 1, diables FIQ
+    T - 1, thumb proc
+
+Condition Flags
+
+    Flags       Logical                     Arithmetic
+    N           No meaning                  Negative Result
+    Z           Result is 0                 Result is 0
+    C           After Shift, carry is 1     Carry bit
+    V           No meaning                  Operation oVerflowed
+
+Program Counter (R15)
+
+    PC value is bits [31:2], whereas [1:0] are always 0's (must be word aligned, 4-byte word)
+    R14 is the dedicated LR, used during bl
+
+Exception Handling and the Vector Table
+
+    On interrupt
+        Save CPSR into SPSR_<mode>
+        Set appropriate CPSR bits
+        Maps in appropriate banked registers
+        Stores the "return addr" in LR_<mode>
+        Sets the PC to vector addr
+
+    To Return
+        Restore CPSR from SPSR_<mode>
+        Restores PC from LR_<mode>
+
+    Stack
+        Reset
+        Undefined Instructions
+        Software Interrupt

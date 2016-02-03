@@ -1,0 +1,147 @@
+Indirection and Pointers
+
+    Register, absolute, and immediate modes provide the operand or address
+    Ohter modes provide information about the memory address that can be derrived
+    Ex: For a program that adds numbers in a list use a register to store a pointer to the next number
+    
+Register Indirect Mode
+
+    Register contains the address of operand in memory (pointer)
+
+    EA = [R]
+    (Get address from R)
+
+Examples:
+    INTEL:
+        MOV EAX [ECX] (copy of mem locations)
+
+    ARM:
+        LDR R2, [R3]  (copy of mem locations)
+
+Indirect Addresssing Mode
+
+    Address field is address of address
+    EA = [[addr of field instruction]]
+
+    Neither processor can do this (INTEL and ARM)
+
+Indexed Addressing Mode
+
+    Consider index mode in: LOAD R2, X(R5)
+    Effective address is given by [R5] + X (X is index or offset)
+    Ex: assume operand addr is 1020, 4th word (20 bytes) from the start of array 1000
+    Can put start sddr in R5, and use X = 20 (offset 20)
+    Alternatively put offset in R5 and use X = (1000) - similar to C++ saying that arr[i] and i[arr] are the same => *(arr + i) == *(i + arr)
+
+Examples:
+    INTEL:
+        MOV EAX, [ESI + 8]
+
+    ARM:
+        LDR R2, [R3, #8]
+
+Relative Addressing Mode
+
+    Address of operand in memory is PC (Program Counter or instruction pointer) +/- displacement (8 bits or more)
+        All addresses are relative to the program counter
+        Branch and position independent
+
+Examples:
+    INTEL:
+        LOOP BEGIN  ; jump  
+            (jump conditional to label BEGIN based on value ECX(holds # of iterations left)
+
+    ARM:
+        B PLACE
+            Branch to label PLACE, offset from PC
+
+Base with Index Addressing Mode
+
+    Base register added to index register to form address
+    EA = [Ri] + [Rj]
+        both registers can be changed during execution
+
+Examples:
+    INTEL:
+        MOV EAX, [EBP + ESI]
+
+    ARM:
+        MOV R2, [R3, R4]
+
+Base (Ri) with Index (Rj) and Offset (X) Addressing Mode
+
+    Contents of base register and index register added to offset (addres field instruction)
+    EA = [Ri] + [Rj] + X
+        both registers can be changed, but X(hard coded constant) cannot
+
+Examples:
+    INTEL:
+        MOV EAX, [EBP + ESI + X]
+
+    ARM:
+        N/A
+
+Auto Incrememnt/Decrement Addressing Mode
+
+    Content of indirect addressing register is automaticall changed
+    Pre/Post usage of register
+    EA = use [Ri], increment Ri (Ri) + icnrement Rj
+
+Examples:
+    INTEL:
+        N/A (no compound instruction)
+
+    ARM:
+        LDR R4, [R5, #12]!  ; pre-indexed (the bang makes it do this instead of normal behavior)
+            copy mem loc pointed to by R5 + 12 into R4, copy R5 + 12 into R5
+
+        LDR R4, [R5], #12   ; post-indexed
+            copy mem loc pointed to by R5 into R4, R5 contains R5 + 12
+
+Stack Organizations
+
+    PUSH:
+        SP <- SP - 1
+        M[SP] <- SRC
+
+    POP:
+        DST <- M[SP]
+        SP <- SP + 1
+
+Examples:
+    INTEL:
+        PUSH EAX
+        POP EAX
+
+    ARM:
+        STMFD SP!, {V1-V6, LR}  ; put registers V1-V6 and LR on stack, R13 is stack pointer (STORE MULTIPLE) - Bang meand modify stack pointer, R14 is Link Register (LR)
+        LDMFD SP!, {V1-V6, PC}  ; copy stack contents to registers V1-V6 and PC from stack, R13 is SP
+
+Subroutine instructions:
+    ARM:
+        bl (branch and link)
+    INTEL:
+        calls
+
+    - subroutine will return to instruction after call/bl instruction
+
+Subroutine Linkage
+
+    Need to remember where to return to
+        Ret addr is stored in a Link Register, LR (ARM)
+            No Depth/Recursion because LR would get overwritten (Must be managed by programmer)
+        Ret addr is stored on stack (INTEL)
+            Processor stack struction (allows recursion)
+
+Parameter Passing Location 
+(input and output)
+
+    Variables/results in reigisters in register set (ARM)
+    Variables/results n stack in stack frame        (INTEL)
+
+Parameter Passing Methods
+
+    Value - put values to be operated on as arguments
+    Reference - put pointers to values as arguments
+
+
