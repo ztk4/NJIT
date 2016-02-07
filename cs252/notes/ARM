@@ -87,3 +87,132 @@ Exception Handling and the Vector Table
         Reset
         Undefined Instructions
         Software Interrupt
+
+The Instruction Pipeline
+
+    ARM
+
+    PC          FETCH
+    PC - 4      DECODE
+    PC - 8      ENCODE
+
+Conditional Execution
+
+    First four bits of instruction encode condition
+    Pneumonics prepended to instruction tells assembler how to fill first 4 bits
+    Lookup ARM condition table for details
+    ADD is assumed to be ADDAL, whereas ADDEQ is needed to specify EQ and ADDS is needed to specify to set bits
+    S is appended after the 2 character condition sequence (requests bits be modified)
+
+Arithmetic Operations:
+
+    ADD     op1 + op2
+    ADC     op1 + op2 + carry
+    SUB     op1 - op2
+    SBC     op1 - op2 + (carry - 1)
+    RSB     op2 - op1;  REVERSE SUB
+    RSC     op2 - op1 + (carry - 1); REVERSE SBC
+
+    Syntax:
+
+        <Operation>{<cond<>}{S} Rd, Rn, Operand2
+
+    Examples:
+
+        ADD     r0, r1, r2
+        SUBGT   r3, r3, #1
+        RSBLES  r4, r5, #5
+
+Comparative Operations:
+
+    NO NEED TO SET S in opcode because conditionals' only purpose is to set flags
+        ALL COMPARATIVE OPS SET FLAGS
+
+    CMP     op1 - op2; result not written
+    CMN     op1 + op2; result not written (CMP negative)
+    TST     op1 & op2; result not written
+    TEQ     op1 ^ op2; result not written
+
+    Syntax:
+        <Operation>{<cond>} Rn, Operand2
+
+    Examples:
+        CMP     r0, r1
+        TSTEQ   r0, r1
+
+Logical Operations:
+
+    AND     op1 & op2;
+    EOR     op1 ^ op2;
+    ORR     op1 | op2;
+    BIC     op1 &~op2; bit clear - takes op1 and the compliment of op2 (mask of everything not set in op2)
+
+    Syntax:
+        <Operation>{<cond>}{S} Rd, Rn, Operand2
+
+    Examples:
+        AND     r0, r1, r2;
+        BICEQ   r2, r3, #7
+        EORS    r1, r3, r0;
+
+Data Movement Operations:
+
+    MOV     op2;
+    MVN     ~op2;
+    ; THESE MAKE NO USE OF CONTENTS OF OP1
+
+    Syntax:
+        <Operation>{<cond>}{S} Rd, Operand2
+
+    Examples:
+        MOV     r0, r1
+        MOVS    r2, #10
+        MVNEQ   r1, #0
+
+Barrel Shifter
+
+    ARM doesn't have an instruction for shift
+    Instead it has a barrel shifter which provides a mechanism to carry out shifts as part of other instructions
+
+    LSL op; shifts 0's in LSD and last digit out MSD stays in carry
+    LSR op; shifts 0's in MSD and last digit out LSD stays in carry
+    ASR op; shifts 0's in MSD (beings leftmost bit after sign bit) and last digit out LSD stays in carry
+
+    ROR op; shifts all bits right, and LSD into MSD. Last digit moved from LSD to MSD is left in carry
+    RRX op; shifts all bits right, and LSD into carry and carry into MSD (RRX ONLY SHIFTS 1 BIT)
+    
+Using the Barrel Shifter
+
+    Op1     Op2
+     |       |
+     |    Shifter
+     |       |
+     ---------
+     |  ALU  |
+     ---------
+         |
+         v
+       Result
+
+    If Op2 is a register, then shift value can be immediate 5-bit value (no overhead), or the lower half of a register (slower bc third register access - takes one extra clock cycle)
+        The latter is the same as machines with separate shift operators
+    If Op2 is a immediate value, then ...
+
+    If no shift is applied, LSL #0 is encoded
+
+    Syntax:
+        ADD r0, r1, r2, LSL #2; shifts r2's value by 2 before adding to r1 and storing in r0
+
+    r0  = r1 * 5
+        = r1 + r1 * 4
+        = r1 + (r1 << 2)
+        
+        ADD r0, r1, r1, LSL #2;
+
+    r2  = r3 * 105
+        = r3 * 15 * 7
+        = r3 * (16 - 1) * (8 - 1)
+    r2  = (r3 << 4) - r3; r2 = (r2 << 3) - r2
+
+        RSB r2, r3, r3, LSL #4
+        RSB r2, r2, r2, LSL #3

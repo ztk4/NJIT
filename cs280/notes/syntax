@@ -33,4 +33,40 @@ Lexical Analyzer
         2. Design a state diagram that describes the tokens and writes a program the implements the state diagram
         3. Design a state diagram that describes the tokens and contruct a table-driven implementation of the state diagram
 
+    Sometimes valid tokens can also be reserved keywords, and so an identifier could seem valid but actually be a keyword
+        Use table to keep track of keywords
 
+    Example:                             Letter/Digit (addChar; getChar)
+                                              v--|
+        Start -> Letter (addChar; getChar) -> id --> return lookup (lexeme)
+           |---> Digit (addChar; getChar) -> int -->  return Int_Lit
+                                              ^--|
+                                              Digit (addChar; getChar)
+
+Regular Grammars
+
+    Simple set of rules about what a valid string is in a language
+    Regular Grammars are the simplest and least powerful grammars
+    Useful in expressing and recognizing tokens
+
+Notation of Regular Grammars
+
+    Set of:
+        Productions: P
+        Terminal Symbols: T
+        Nonterminal Symbols: N
+    A production has the form:
+        A -> (omega) B
+        A -> (omega)
+        (omega) (element of) T*
+        B (element of) N 
+    Where A, B (element of N), (omega) (element of) T
+
+    Regular Grammars have one nonterminal sumbol on the left, and at most one on the right, which must be either the first or last characters
+
+Problems we might get
+    
+    Given a regular expression, does a string match it? (take a look at regex crossword)
+    Write a regular expression given requirements
+    Look at regex as state machine, and analyze it
+    Look at regex as string, draw state machine
