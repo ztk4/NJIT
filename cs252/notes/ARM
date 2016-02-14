@@ -255,7 +255,7 @@ Pseudo-Instructions
     
     ADR -> load addr into a register
         ADR R0, BUFFER
-        ADR R0, =BUFFER
+        LDR R0, =BUFFER
     
     .align 2 -> asjust location counter to word boundary
         usually done after storage directive
@@ -282,6 +282,30 @@ Pseudo-Instructions
 
 Register Name Mapping
 
-Numbers: 0-15
-Alias 1: r0-r15
-Alias 2: a1-a4, v1-v5, v6/sb, v7/sl, fp, ip, sp, lr, pc
+    Numbers: 0-15
+    Alias 1: r0-r15
+    Alias 2: a1-a4, v1-v5, v6/sb, v7/sl, fp, ip, sp, lr, pc
+        a's are args
+        v's are values
+
+Assembly Language Line Format
+
+    <label>:\s+<instruction>\s+@ comment
+        All fields are OPTIONAL
+        Instruction must NOT start in column 1
+        Lables MUST start in column 1
+
+    int i;      => i .fill 1, 4
+    int i = 42; => i .int 42
+
+    for (i = 0; i < max; i++) {
+        arr[i];
+    }
+
+Assembly Method
+    
+    methodname:     stmdf sp!, {v1-v6, lr} @standard
+                    stmts
+                    result => a1
+                    ldmfd sp!, {v1-v6, pc} @standard
+
