@@ -1,0 +1,8 @@
+Exception
+    
+    Errors: eg divide by 0
+    Debugging - 'special' instr executed
+    Privelage Exception: Not being in proper mode
+    Illegal mem access (usually in context of os)
+
+
