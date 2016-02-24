@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum suit { CLUBS, DIAMONDS, HEARTS, SPADES };
+enum suit { CLUBS, DIAMONDS, HEARTS, SPADES }; //these will be assigned 0-3 consecutively
 
 struct card {
     int val;
@@ -127,7 +127,7 @@ int proc_hand(istream &in) {
                 goto clean;
             }
 
-            int cnum = (c.val + c.s * 13) - 1; //subtraction makes it 0-indexed
+            int cnum = (c.val + c.s * 13) - 1; //subtraction makes it 0-indexed, c.s will be a value from 0-3
             if(card_count[cnum]) {
                 err = -4; //duplicate cards
                 goto clean;
