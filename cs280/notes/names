@@ -64,7 +64,7 @@ Example:
         SomeClass x;
         SomeClass *p;
 
-        //the memory reutnred by new is on the heap
+        //the memory returned by new is on the heap
         p = new SomeClass();
 
     }
@@ -91,4 +91,61 @@ The Scope in which a variable is defined/declared is called its Defining Scope
 
 A reference to a name is nonlocal if it occurs in a nested scope of the defining scope, otherwise it is local
 
+Controlling The Scope
 
+    Some languages support access modifiers that can further restrict access to variables that are still in scope.
+    Some languages support scope resolution to do away with ambiguity between names in nested scopes that appear in parent scopes
+
+Symbol Table
+
+    Structure kept by translator that allows it to keep track of declared names and their binding
+    Only needed for compile time (for compiled languages) but is often included in executable anyhow
+
+Process
+
+    1. Each time a scope is entered, push a new dictionary (symbol table) onto the stack
+    2. Each time a scipe is exited, pop a dictionary off the top of the stack
+    3. For each name declared, generate and appropriate binding and enter the name-binding pair into the dictionary on the top of the stack
+    4. Given a name reference, search the dictionary on top of the stack:
+        a) If found, return binding
+        b) Otherwise, repeat the process of the next dictionary down in the stack
+        c) If the name is not found in any dictionary, report an error
+
+Dynamic Scoping
+
+    In dynamic scoping, a name is bound to its most recent declaration based on the program's call history
+    Used in early LISP, APL, Snobol, Perl
+    Symbol table for each scope is built at compile time, but managed at run time
+
+Visibility
+    
+    Inner declarations can hide outer declarations
+    this and scope resolution operators can help absolve this issue
+
+Scope Resolution Operator
+
+    Scope::variable
+    NOTE:
+        ::variable references global scope to find variable
+
+nm executable       -> shows symbol table for executable
+nm exec | c++filt   -> filters the mangled names and unmangles them
+
+Lifetime
+
+    Early languages used static allocation, one copy that lasts forever
+    Later languages used dynamically allocated memory based on scope entry/exit
+
+Static Variables
+
+    C:
+        Global compilation scope: variables exist forever
+        Explicitly declaring a variable static
+            exist forever
+            visibility is changed - only visible when in its scope (not globally)
+        Static functions:
+            onyl visible in the file they're defined in
+
+    C++:
+        static classes, class members, and methods
+    Java also
