@@ -1,0 +1,43 @@
+Program-Controlled I/O
+
+    Read characters, store in memory, display on screen
+    Implement this task with a porgram that performs all of the relevant functions
+    How can we ensure correct timing of actions and synchronized transfers between devices
+        IE keyboard sets flag to let program know when a new character has been recieved
+
+    In this design, processor does nothing except polling
+    Also, speed mismatch between processor and device (and user)
+    All data passes through BPU
+
+Interrupt Driver I/O
+
+    Device alerts processor when ready
+    Processor working on other computations
+    Processor switches to ISR (Interrupt Service Routine) via hardware "subroutine" call
+    ISR written by programmer
+
+    THEREFORE hardware swtich triggers event (processor not busy checking)
+        But result of event is not hardcoded, and is instead software
+
+Interrupt Request (INTR) Response
+    
+    Save state of processor (min of PC)
+    Acknowledge Interrupt Request (INTA) (Hardware action)
+    Execute Interrupt Service Rouutine aka handler
+    Restore state from before interrupt hardware and software
+
+Interrupt Enable/Disable
+
+    Privelaged Instructions (all)
+    Bit in control register of deivce
+    Execute first instruction of ASR
+    Processor automoatically disables (hardware)
+    Edge Triggered (hardware)
+
+Multiple Devices
+    
+    Each has its own priority, solves conflicts
+        Low priority ISRs can be interrupted by higher priorities
+            (Nested Interrupts)
+
+

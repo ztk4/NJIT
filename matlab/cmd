@@ -1,0 +1,1 @@
+matlab -nojvm -r 'func(); exit;' > func.out

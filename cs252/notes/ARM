@@ -216,3 +216,96 @@ Using the Barrel Shifter
 
         RSB r2, r3, r3, LSL #4
         RSB r2, r2, r2, LSL #3
+
+Multiplication:
+
+    MUL Rd, Rm, Rs;             Rd = Rm * Rs
+    MLA Rd, Rm, Rs, Ra;         Rd = (Rm* Rs) + Ra
+
+    MULL RdLo, RdHi, Rm, Rs;    MUL but 64-bits
+    MLAL RdLo, RdHi, Rm, Rs;    MLA but 64-bits
+
+Load/Store Instrcutions
+
+    LDR and STR for words
+    LDRB and STRB for bytes
+
+    LDM and STM for loading and storing multiple
+
+    SWP - single data swap
+
+    <LDR/STR>{<condition>}{<size>} Rn, <address>
+
+Store Options:
+
+    STR r0, [r1]                ; puts r0 into addr stored in r1
+    STR r0, [r1, #12]           ; puts r0 into addr stored in r1 + 12
+    STR r0, [r1, r2]            ; puts r0 into addr stored in r1 + val stored in r2
+    STR r0, [r1, r2, LSL #3]    ; puts r0 into addr stored in r1 + (val stored in r2 shifted left 3 times)
+    STR r0, [r1, r2]!           ; puts r0 into addr stored in r1 + val stored in r2, r1 += r2
+    STR r0, [r1], r2            ; r1 += r2, puts r0 into addr now stored in r1
+
+Swap Instruction
+    
+    SWP{{<cond>}{B} Rd, Rm, [Rn]
+
+Pseudo-Instructions
+
+    .section -> chunks of .data or .text
+    
+    ADR -> load addr into a register
+        ADR R0, BUFFER
+        LDR R0, =BUFFER
+    
+    .align 2 -> asjust location counter to word boundary
+        usually done after storage directive
+    
+    .end -> no more to assemble
+
+    .int -> defined word (4 bytes) value storage area
+        BOW: .int 1024, 2055, 9051;     treat all after .int as ints
+
+    .byte -> defined byte (1 byte) value storage area
+        BOB: .byte 10, 12, 15
+
+    .fill -> zeroed out byte storage area
+        BLBBYTE: .fill 30, 1, 0 @ amount, size value
+
+    .global -> name of routine to export for use in other routines
+        .global add2 @ add2 routine
+
+        NECESARY FOR LINKER TO LINK OBJECT FILES
+
+    .equ -> symbol for replacement (macro basically)
+        loopcnt .equ 5
+
+
+Register Name Mapping
+
+    Numbers: 0-15
+    Alias 1: r0-r15
+    Alias 2: a1-a4, v1-v5, v6/sb, v7/sl, fp, ip, sp, lr, pc
+        a's are args
+        v's are values
+
+Assembly Language Line Format
+
+    <label>:\s+<instruction>\s+@ comment
+        All fields are OPTIONAL
+        Instruction must NOT start in column 1
+        Lables MUST start in column 1
+
+    int i;      => i .fill 1, 4
+    int i = 42; => i .int 42
+
+    for (i = 0; i < max; i++) {
+        arr[i];
+    }
+
+Assembly Method
+    
+    methodname:     stmdf sp!, {v1-v6, lr} @standard
+                    stmts
+                    result => a1
+                    ldmfd sp!, {v1-v6, pc} @standard
+

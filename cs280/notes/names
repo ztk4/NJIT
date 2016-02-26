@@ -1,0 +1,94 @@
+Names
+
+    What do they look like in a language?
+    What do they mean?
+
+    Important Terms:
+        Binding - what's associated to a name
+        Scope - visibility of a name
+        Lifetime - how long does the name last, when does it start
+
+Bindings
+
+    - An association between an entity and a property (name and a value)
+    Static - static binding is a binding that occurs before runtime
+    Dynamic - dynamic binding is a binding that occurs at runtime
+
+Syntactic Issues
+
+    What are the lexical rules?
+    Is there a collection of reservered words or keywords
+    Are names case sensitive?
+        C-like:             yes
+        Early Languages:    no
+        SQL:                no (except somtimes also)
+        PHP:                sometimes..lol
+
+Reserved Words
+
+    Cannot be used as identifiers
+    Usually identify major constructs {if while switch...}
+    
+    Predefined Identifiers
+        In some languages, library routines might be reserverd for example
+        In other languages, library routines are just names, but after importing they are now taken
+
+Variables
+
+    Basic Bindings
+        Name        - Follows lexical rules
+        Address     - where in mem
+        Type        - _more on this later_
+        Value       - what is stored in mem that is bound by name
+        Lifetime    - Creation/Deletion
+
+Addresses
+
+    Generally, when a program is run, memory is divided into segments
+        OS often controls permissions in these segments
+        Runtime is responsible for managing memory
+
+    Possible Regions
+        Code
+        Data
+        Heap
+        Stack
+
+Example:
+
+    int outside; //external, goes into data segment
+
+    //code for function goes into code segment
+    void myFunc() {
+        //These two vars are put on stack (when function is called)
+        SomeClass x;
+        SomeClass *p;
+
+        //the memory reutnred by new is on the heap
+        p = new SomeClass();
+
+    }
+
+Scope
+
+    The scope of a name is the collection of stmts which can access the name binding
+    In static scoping, this is done relative to source code surrounding name
+    Usually, this is doen statically (or lexical)
+
+Scopes
+    
+    Either Disjoint or Nested
+
+    Possible Scopes:
+        Java Packages
+        C++ Namespaces
+        Classes
+        Functions
+        Blocks
+        For Loops
+
+The Scope in which a variable is defined/declared is called its Defining Scope
+
+A reference to a name is nonlocal if it occurs in a nested scope of the defining scope, otherwise it is local
+
+
