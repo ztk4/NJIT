@@ -123,3 +123,13 @@ Array Types
     
     An array is a homogeneous aggregate of data elements in which an individual element is 
     identified by its position in the aggregate, relative to the first element
+
+    Design Issues:
+        What types are legal for subscripts?
+        Should range checking be done?
+        When are subscript ranges bound?
+        When and Where does allocation take place?
+        Are ragged or rectangular multidimensional arrays allowed, or both?
+        What is the maximum number of subscripts?
+        Can array objects be initialized?
+        Are any kind of slices supported?
