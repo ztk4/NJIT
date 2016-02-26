@@ -1,0 +1,8 @@
+Token counts:
+var:10
+sconst:1
+plusop:2
+minusop:1
+eqop:1
+Lexemes that appear more than once:
+world (4 times)

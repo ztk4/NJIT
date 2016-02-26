@@ -16,7 +16,7 @@ end
 
 end
 
-function y = eulerODE( t0, tf, h, y0, yp )
+function y = eulerODE(t0, tf, h, y0, yp)
 %eulerODE Evaluates an euler approx of an ODE
 %   t0 - time initial (inclusive)
 %   tf - time final (inclusive)

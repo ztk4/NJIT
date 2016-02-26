@@ -1,0 +1,89 @@
+#!/bin/ksh
+
+### CS280 Spring 2016
+### Programming Assignment 2
+### shell script for testing 
+
+### Prof Ryan
+
+usage() {
+	echo $*
+	echo "Usage:"
+	echo "./test-program2 {c++ source files}"
+	echo "./test-program2 -showtests prints out the tests"
+	echo "./test-program2 -cleanup deletes files created by the testing"
+	exit
+}
+
+runtests() {
+	live=1
+	if [[ "$1" = "-show" ]] ; then
+		set echo YOURPROGRAM
+		live=0
+	else
+		set eval $*
+	fi
+	echo "Arg check test: These cases should generate an error message and stop"
+	[[ $live = 1 ]] && set -x
+	$* p2-test1.in args provided
+	$* nosuchfile
+	$* -v nosuchfile
+	[[ $live = 1 ]] && set +x
+
+	echo 1:
+	echo "Standard input test"
+	$* "< p2-test1.in > p2-test1.stdin.out 2>&1"
+	$* "p2-test1.in > p2-test1.out 2>&1"
+	echo "These files should be identical, there should be no output"
+	[[ $live = 1 ]] && diff p2-test1.stdin.out p2-test1.out
+	echo "Standard input test done"
+
+	echo "Test cases: if your output does not match, the diff difference between yours and correct output are printed"
+	[[ $live = 1 ]] && diff p2-test1.out p2-test1.correct
+
+	for i in 2 3 4 5 6;
+	do
+		echo $i:
+		v=
+		[[ $i -lt 4 ]] && v="-v"
+		$* "$v p2-test${i}.in > p2-test${i}.out 2>&1"
+		[[ $live = 1 ]] && diff p2-test${i}.out p2-test${i}.correct
+	done
+	[[ $live = 1 ]] && echo "test done"
+}
+
+
+cfiles=
+
+if [[ $# -eq 1 && "$1" = "-cleanup" ]] ; then
+	rm -f *.out
+	exit 0
+fi
+
+if [[ $# -eq 1 && "$1" = "-showtests" ]] ; then
+	runtests -show
+	exit 0
+fi
+
+while [[ $# -gt 0 ]]
+do
+	val=$1
+	shift
+
+	cfiles="$cfiles $val"
+done
+
+if [[ "$cfiles" = "" ]] ; then
+	usage "no c++ files"
+fi
+
+echo "Compiling these c++ files: " $cfiles
+g++ -g --std=c++0x $cfiles
+if [[ $? -ne 0 ]] ; then
+	echo "c++ compile failed"
+	exit
+fi
+
+echo "********** Testing program 1 **********"
+runtests ./a.out
+
