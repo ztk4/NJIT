@@ -1,0 +1,16 @@
+Token counts:
+var:14
+plusop:5
+minusop:1
+eqop:2
+printkw:2
+lparen:3
+rparen:6
+sc:6
+Lexemes that appear more than once:
+boy (2 times)
+does (2 times)
+every (2 times)
+fine (2 times)
+good (2 times)
+me (3 times)

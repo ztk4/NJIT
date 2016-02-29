@@ -1,0 +1,14 @@
+printkw
+var(x)
+sc
+printkw
+var(y)
+sc
+printkw
+iconst(3)
+sc
+Token counts:
+var:2
+iconst:1
+printkw:3
+sc:3
