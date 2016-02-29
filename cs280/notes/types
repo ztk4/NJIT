@@ -1,0 +1,135 @@
+Intro
+    A DATA TYPE defines a collection of data objsects and a set of predefined operations on those object
+        a DESCRIPTOR is the collection of the attributes of a variable => int x; //int is the descriptor
+        an OBJECT represents an instance of a user-defined (abstract data) type
+
+Primitive Data Types
+
+    ALMOST all programming languages provide a set of primitive data types
+        A type note defined in terms of any other data type
+    Often primitive reflect the hardware (word size)
+    Others only require a little non-hardware support for their implementation (Java's uniformly sized integers)
+
+Primitive Integers
+
+    Almost always and exact reflection of the hardware so the mapping is trivial
+    There may be as many as eight different integer types
+    Java: byte, short, int, long
+    C & C++: short, int, long, long long => both signed and unsigned
+
+Primitive Floating Points
+
+    Model Real numbers, but only as approximations
+    Lanuages for scientific use support at least two floating point types (float & double, somtimes more)
+    Usually exactly like the hardware, but not always
+    IEEE Floating-Point, std 754
+
+Primitive Complex
+    
+    Some languages support a complex type
+        C99, Fortran, Python
+    Each value consists of two floats, the real part and the imaginary part
+    Literal form (in Python): (7 + 3j)
+
+Primtive Decimal
+
+    For business applications (money)
+        - Essential to COBOL
+        - C# offers a decimal type
+    Store a fixed number of decimal digits in BCD form
+    Advantage: accuracy
+    Disadvantage: limited range, memory waste
+
+Primitive Boolean
+    
+    Simplest of all
+    Range of values: two elts (true, false)
+    Could be implemented as bits, but often as bytes
+    Advantage: readability
+
+Primitive Character
+
+    Stored as numeric encoding
+    Most commonly used encoding: ASCII
+    An alternative, 16-bit encoding: Unicode (UCS-2)
+        Includes characters from most natural languages
+        Originally used in Java
+        C# and js also support Unicode (and Python)
+    32-bit Unicode
+        Supported by Fortran since 2003
+
+Character String Types
+
+    Values are sequences of characters
+    Design Issue:
+        Primitive?
+        Should length of String be static or dynamic?
+
+    Operations:
+        Assignment and copying
+        Comparisons
+        Concatenation
+        Substring reference
+        Pattern matching
+
+    C & C++
+        Not primitive
+        Uses char arrays with '\0' at end with library support
+        C++ has string class
+    SNOBOL4 (a string manip language)
+        Primitive
+        Many operations, including elaborate pattern matching
+    Fortran & Python
+        Primitive types with several operations and assignments
+    Java
+        Primitive via the String class, support concatentation by '+' operator
+    Perl, js, Ruby, AWK, PHP
+        Provide built-int pattern matching, using regular expr
+
+User-Defined Ordinal Types
+    
+    An ordinal type is one in which the range of possible values can be easily associated with the set of positive integers
+    Some are primitive (int, char, etc.)
+
+Enumeration Types
+
+    All possible values, which are named constants, are provided in the definition
+        enum days { mon, tue, wed, thu, fir, sat, sun};
+    Design issues:
+        Is an enum a scope, can multiple enum constants with the same name be defined
+        Are they tied to integers
+
+Evaluation of Enum Types
+    
+    Aid to readability
+    Aid to reliability
+        - restricts operations, can't add two enums
+        - restricts range to possible values
+        - switch statements make sure you check for all values
+    In Java, Ada, and C# (and C++ if you want)
+        Enums do not have to by tied to integers
+
+Subrange Type
+
+    12..18 is a subrange of integer type
+    Ada's design
+        type Days is (mon, tue, wed, thu, fri, sat, sun);
+        subtype Weekdays is Days range mon..fri;
+        subtype Index is integer range 1..100;
+
+    Readable and Reliable
+
+Array Types
+    
+    An array is a homogeneous aggregate of data elements in which an individual element is 
+    identified by its position in the aggregate, relative to the first element
+
+    Design Issues:
+        What types are legal for subscripts?
+        Should range checking be done?
+        When are subscript ranges bound?
+        When and Where does allocation take place?
+        Are ragged or rectangular multidimensional arrays allowed, or both?
+        What is the maximum number of subscripts?
+        Can array objects be initialized?
+        Are any kind of slices supported?
