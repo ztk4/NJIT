@@ -1,0 +1,16 @@
+Arithmetic Expressions
+
+    Operator Precedence
+        Precedence of adjacent operators
+
+    Operator Associativity
+        Either left to right or right to left
+
+    Conditional Expressions
+        average = (count == 0) ? 0 : sum / count;
+
+    Comma Expressions
+        average = a+b,b //evaluates as a+b; average = b
+        IN GENERAL: (expr1, expr2, expr3, ..., exprn) preforms exprs in order 1..n and evaulates to exprn
+
+    

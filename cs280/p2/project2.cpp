@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <utility>
 #include <string>
 #include <map>
 #include <cstring>
@@ -11,6 +10,7 @@
 using namespace std;
 
 //Token::TokenType print as integers in this file unless I specify that this method is defined elsewhere
+//can't add this to p2lex.h and a new header file just for this line is overkill
 ostream &operator<<(ostream &os, Token::TokenType tt);
 
 map<Token::TokenType, int> tok_count;
@@ -50,7 +50,7 @@ int main(int argc, char **argv) {
         break;
 
     default:
-        cerr << "Only two arguments may be supplied" << endl;
+        cerr << "No more than two arguments may be supplied" << endl;
         fprintf(stderr, usage, *argv);
         return 3;
     }
@@ -72,7 +72,7 @@ int main(int argc, char **argv) {
     }
 
     printed = false;
-    for(pair<Token::TokenType, int> tcount : tok_count) {
+    for(auto tcount : tok_count) {
         if(!printed) {
             cout << "Token counts:" << endl;
             printed = true;
@@ -81,7 +81,7 @@ int main(int argc, char **argv) {
     }
 
     printed = false;
-    for(pair<string, int> lcount : lex_count) {
+    for(auto lcount : lex_count) {
         if(lcount.second > 1) { 
             if(!printed) {
                 cout << "Lexemes that appear more than once:" << endl;
