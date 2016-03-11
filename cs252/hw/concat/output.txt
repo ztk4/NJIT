@@ -1,0 +1,61 @@
+Zachary Kaplan
+CS252 TR 1:00 - 2:30
+HW concat
+3/7/16
+::::::::::::::
+driver.c
+::::::::::::::
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+extern char *jstring(char *buf1, char *buf2);
+
+int main(int argc, char **argv) {
+    char buffer1[] = "First part of string",
+         buffer2[] = " join this to buffer1\n";
+    char *result;
+
+    result = jstring(buffer1, buffer2);
+    printf("Concatenated strings: %s\n", result);
+    free(result);
+    
+    exit(0);
+}
+::::::::::::::
+concat.s
+::::::::::::::
+            .global     jstring
+
+@ Routine to concatenate to strings, and return a pointer to the result
+jstring:    STMFD       sp!, {v1-v6, lr}        @ char *jstring(char *buf1, char *buf2);
+            MOV         v1, a1
+            MOV         v2, a2
+            
+            BL          strlen
+            MOV         v3, a1                  @ Length of buf1
+
+            MOV         a1, a2
+            BL          strlen
+            MOV         v4, a1                  @ Length of buf2
+
+            ADD         a1, v3, v4              @ Sum of Lengths
+            BL          malloc
+            MOV         v3, a1                  @ Ptr to Result (only edit copy in v3)
+
+jloop1:     LDRB        v4, [v1], #1
+            CMP         v4, #0
+            STRNE       v4, [v3], #1
+            BNE         jloop1
+
+jloop2:     LDRB        v4, [v2], #1
+            CMP         v4, #0
+            STRNE       v4, [v3], #1
+            BNE         jloop2
+
+            LDMFD       sp!, {v1-v6, pc}
+            .end
+
+Execution Output:
+Concatenated strings: First part of string join this to buffer1
+

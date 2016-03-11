@@ -27,7 +27,7 @@ output: output.txt
 output.txt: $(NAME)
 	echo "Zachary Kaplan" > $@
 	echo "CS252 TR 1:00 - 2:30" >> $@
-	echo "HW 3 - $(NAME)" >> $@
+	echo "HW $(NAME)" >> $@
 	date "+%-m/%-d/%-y" >> $@
 	more driver.c $(NAME).s >> $@
 	echo "Execution Output:" >> $@
