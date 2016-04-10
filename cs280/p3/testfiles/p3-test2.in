@@ -1,0 +1,10 @@
+// expression stuff
+
+string x;
+x = "fridge" + " " + "donuts";
+
+print x * 2 * 2 + "beer";
+
+print x;
+
+print xxx;

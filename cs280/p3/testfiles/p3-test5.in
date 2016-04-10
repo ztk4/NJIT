@@ -1,0 +1,9 @@
+// a comment for you
+
+print "and" * 7;
+print "and" + 5;
+print "and" - 101;
+// this ought to generate a semantic error
+print "";
+
+

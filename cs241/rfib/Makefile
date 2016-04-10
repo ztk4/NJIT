@@ -1,6 +1,6 @@
 NAME		= rfib
 
-CC			= g++
+CC		= g++
 CXXFLAGS	= -std=c++11
 
 .PHONY: all debug clean output
@@ -14,17 +14,13 @@ debug: $(NAME)
 $(NAME): $(NAME).cpp
 	$(CC) $(CXXFLAGS) -o $@ $+
 
-output: output.txt
-
-output.txt: $(NAME).out
-	echo "Zachary Kaplan" > $@
-	echo "CS241 T 6-9 PM" >> $@
-	echo "HW $(NAME)" >> $@
-	date "+%-m/%-d/%-y" >> $@
-	more $(NAME).cpp $(NAME).out >> $@
+output: $(NAME).out
 
 $(NAME).out: $(NAME)
-	./$(NAME) >> $@
+	@echo "Generating values up to fib(50) (ie before compute time excedes 2 minutes)"
+	@echo "Writing output to file and stdin..."
+	./$(NAME) 50 | tee $@
+	@echo "Done"
 
 clean:
-	rm -rf $(NAME) output.txt $(NAME).out
+	rm -rf $(NAME)

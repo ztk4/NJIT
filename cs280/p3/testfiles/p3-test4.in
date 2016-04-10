@@ -1,0 +1,16 @@
+int x; int y; int zzz;
+
+x = 10;
+y = 100;
+z = 1000;
+
+int m;
+
+m = ( x + ( y ) ) * z - z * 2;
+
+x = y = z = m;
+
+print x;
+print y;
+print z;
+print m;

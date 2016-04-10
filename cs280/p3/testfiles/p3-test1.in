@@ -1,0 +1,6 @@
+// test case 1 has no errors
+
+print "hello";
+print "all of you"
+;
+print "mets fans";

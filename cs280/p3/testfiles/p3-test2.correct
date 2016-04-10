@@ -1,0 +1,6 @@
+2 ICONST, 4 SCONST, 4 VARIABLES
+Number of add operators: 3
+Number of subtract operators: 0
+Number of multiply operators: 2
+Number of assignment operators: 1
+Variable xxx used but not defined at line 10

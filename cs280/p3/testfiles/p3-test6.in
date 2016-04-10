@@ -1,0 +1,5 @@
+// parse error
+int x; int z;
+
+z = x = 7;
+x = 3+3 = z;
