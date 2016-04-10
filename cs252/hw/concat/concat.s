@@ -1,6 +1,6 @@
             .global     jstring
 
-@ Routine to concatenate to strings, and return a pointer to the result
+@ Routine to concatenate two strings, and return a pointer to the result
 jstring:    STMFD       sp!, {v1-v6, lr}        @ char *jstring(char *buf1, char *buf2);
             MOV         v1, a1
             MOV         v2, a2
@@ -18,12 +18,12 @@ jstring:    STMFD       sp!, {v1-v6, lr}        @ char *jstring(char *buf1, char
 
 jloop1:     LDRB        v4, [v1], #1
             CMP         v4, #0
-            STRNE       v4, [v3], #1
+            STRNEB      v4, [v3], #1
             BNE         jloop1
 
 jloop2:     LDRB        v4, [v2], #1
             CMP         v4, #0
-            STRNE       v4, [v3], #1
+            STRB        v4, [v3], #1            @ Stores Terminating Null Byte as Well
             BNE         jloop2
 
             LDMFD       sp!, {v1-v6, pc}

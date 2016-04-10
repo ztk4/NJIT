@@ -1,4 +1,4 @@
-NAME		= add2
+NAME		= hex
 
 CC			= arm-none-linux-gnueabi-gcc
 EXEC		= arm-none-linux-gnueabi-qemu
