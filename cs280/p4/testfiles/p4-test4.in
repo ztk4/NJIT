@@ -1,0 +1,16 @@
+// try math
+
+string skip;
+skip = "---";
+
+int x;
+x = 5;
+print x;
+print skip;
+
+print x + 5;
+print skip;
+print 5 * 5;
+print skip;
+print x - x;
+

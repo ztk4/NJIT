@@ -1,0 +1,22 @@
+// precedence, with errors
+
+string sep;
+sep = "-  -  -  -  -  -  -  -  -  -";
+
+print "help" * 3 + 2;
+print 2 * "help" + 3;
+print sep + sep;
+
+print "Coffee";
+print sep;
+
+print 2 * 3 + 5;
+
+print 2 - 2 * 5;
+
+print 42 * 17 -1000;
+
+
+print "done"
+
+;

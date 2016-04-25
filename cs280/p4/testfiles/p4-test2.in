@@ -1,0 +1,25 @@
+// tests operator mismatch errors
+
+print 2 + 2;
+print "str" + "str";
+print 2 + "this";
+print "this" + 1000;
+
+print 3 - 5;
+print "str" - "str";
+print 2 - "this";
+print "this" - 17;
+
+print 3 * 5;
+print "str" * "str";
+print 2 * "this";
+print "this" * 17;
+
+int x;
+string y;
+
+x = 3;
+x = "error!";
+y = 9;
+y = "ok";
+

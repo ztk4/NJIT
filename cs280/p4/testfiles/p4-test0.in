@@ -1,0 +1,4 @@
+// this should fail with variable used without definition
+
+x = "hello";
+

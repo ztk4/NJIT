@@ -1,0 +1,12 @@
+int x;
+
+string s;
+
+x = 3 + 3;
+s = "three " + "plus " + "three";
+
+string t; t = "three ";
+
+print x;
+print s;
+print t + "and " + t;

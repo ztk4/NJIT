@@ -1,0 +1,72 @@
+#!/bin/ksh
+
+### CS280 Spring 2016
+### Programming Assignment 4
+### shell script for testing 
+
+### Prof Ryan
+
+usage() {
+	echo $*
+	echo "Usage:"
+	echo "./test-program4 {c++ source files}"
+	echo "./test-program4 -showtests prints out the tests"
+	echo "./test-program4 -cleanup deletes files created by the testing"
+	exit
+}
+
+runtests() {
+	live=1
+	if [[ "$1" = "-show" ]] ; then
+		set echo YOURPROGRAM
+		live=0
+	else
+		set eval $*
+	fi
+
+	echo "Test cases: if your output does not match, the diff difference between yours and correct output are printed"
+
+	for i in 0 1 2 3 4 5 6;
+	do
+		echo $i:
+		$* "p4-test${i}.in > p4-test${i}.out 2>&1"
+		[[ $live = 1 ]] && diff --text p4-test${i}.out p4-test${i}.correct
+	done
+	[[ $live = 1 ]] && echo "test done"
+}
+
+
+cfiles=
+
+if [[ $# -eq 1 && "$1" = "-cleanup" ]] ; then
+	rm -f *.out
+	exit 0
+fi
+
+if [[ $# -eq 1 && "$1" = "-showtests" ]] ; then
+	runtests -show
+	exit 0
+fi
+
+while [[ $# -gt 0 ]]
+do
+	val=$1
+	shift
+
+	cfiles="$cfiles $val"
+done
+
+if [[ "$cfiles" = "" ]] ; then
+	usage "no c++ files"
+fi
+
+echo "Compiling these c++ files: " $cfiles
+g++ -g --std=c++0x $cfiles
+if [[ $? -ne 0 ]] ; then
+	echo "c++ compile failed"
+	exit
+fi
+
+echo "********** Testing program 1 **********"
+runtests ./a.out
+

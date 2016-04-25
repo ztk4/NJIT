@@ -1,0 +1,48 @@
+// no errors here
+
+string sep;
+sep = "-  -  -  -  -  -  -  -  -  -";
+
+print "help" * (3 + 2);
+print 2 * "help" + " me rhonda!";
+print sep + sep;
+
+print "Coffee";
+print sep;
+
+print 2 * 3 + 5;
+print 2 * (3 + 5);
+print sep;
+
+print (2 - 2) * 5;
+
+print 42 * (17 -1000);
+
+print ("this ought to work");
+
+int i;
+int j;
+int k;
+int first;
+
+first = 5;
+print first;
+i = j = k = first = 10;
+print i;
+print j;
+print k;
+print first;
+print sep;
+
+j = 3;
+print i;
+print j;
+print k;
+print first;
+print sep;
+
+print i = j = 10;
+print i;
+
+print "really done";
+
