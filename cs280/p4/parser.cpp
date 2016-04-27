@@ -59,12 +59,13 @@ ParseTree *Stmt(istream *isp) {
         }
 
     } else if (t == Token::INTKW || t == Token::STRKW) {
-        
+        Type dtype = (t == Token::INTKW ? INTEGER : STRING);
+
         t = getToken(isp);
         if(     check(t == Token::VAR, "expected variable name in variable declaration") &&
                 check(getToken(isp) == Token::SC, "Expecting a semicolon to end statement")) {
             
-            return new DeclStatement(t.getLexeme(), t == Token::INTKW ? INTEGER : STRING);
+            return new DeclStatement(t.getLexeme(), dtype);
         }
 
     } else {

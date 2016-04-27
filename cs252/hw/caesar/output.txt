@@ -1,3 +1,36 @@
+Zachary Kaplan
+CS252 TR 1:00 - 2:30
+HW caesar
+4/26/16
+::::::::::::::
+driver.c
+::::::::::::::
+/* decrypt the string encrypted via Caesar shift */
+#include <stdio.h>
+#include <ctype.h> /*isalpha for determining when to shift*/
+#include <stdlib.h> /*free & malloc for pointers*/
+
+extern void init(char *encrypt);
+extern char *decrypt(char *encrypt, int shift);
+
+int main(int argc, char *argv[]) {
+    char *result;          /* pointer to decrypted string */
+    char encrypt[] = "GSRKVEXYPEXMSRW CSY LEZI JSYRH XLI WLMJX ZEPYI" ;
+    int i;
+
+    init(encrypt);
+    for(i = 1; i < 5; i++) {     /* loop to try various shifts */
+        result = decrypt(encrypt, i);
+        printf("Possible decrypt with shift %d: %s\n", i, result);
+    }
+    free(result); /*free the pointer allocated in init (retured to result each time in loop)*/
+
+    return 0;
+}
+
+::::::::::::::
+caesar.s
+::::::::::::::
             .global     init
             .global     decrypt
 
@@ -48,3 +81,9 @@ nonalpha:   STRB        v4, [v3], #1        @str char
             
             .end
 
+================================================================================
+Execution Output:
+Possible decrypt with shift 1: HTSLWFYZQFYNTSX DTZ MFAJ KTZSI YMJ XMNKY AFQZJ
+Possible decrypt with shift 2: IUTMXGZARGZOUTY EUA NGBK LUATJ ZNK YNOLZ BGRAK
+Possible decrypt with shift 3: JVUNYHABSHAPVUZ FVB OHCL MVBUK AOL ZOPMA CHSBL
+Possible decrypt with shift 4: KWVOZIBCTIBQWVA GWC PIDM NWCVL BPM APQNB DITCM

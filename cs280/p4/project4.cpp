@@ -1,3 +1,5 @@
+#define NDEBUG
+
 #include <functional>
 #include <iostream>
 #include <fstream>
@@ -19,8 +21,8 @@ T post(ParseTree *pt, function<T(ParseTree *, T &, T &)> func) {
     if(pt) {
         T l = post(pt->l(), func);
         T r = post(pt->r(), func);
-
-        func(pt, l, r);
+        
+        return func(pt, l, r);
     }
 
     return T();
@@ -72,11 +74,29 @@ int main(int argc, char **argv) {
                 break;
             
             case ParseTree::ADDOP:
+                if(!valid) {
+                    cerr << "Type mismatch on operands for addition at line " << pt->getLine() << endl;
+                    err = true;
+                }
+                break;
+
             case ParseTree::SUBOP:
+                if(!valid) {
+                    cerr << "Type mismatch on operands for subtraction at line " << pt->getLine() << endl;
+                    err = true;
+                }
+                break;
+
             case ParseTree::MULOP:
+                if(!valid) {
+                    cerr << "Type mismatch on operands for multiplication at line " << pt->getLine() << endl;
+                    err = true;
+                }
+                break;
+
             case ParseTree::AOP:
                 if(!valid) {
-                    cerr << "Type mismatch at line " << pt->getLine() << endl;
+                    cerr << "Type mismatch on operands for assignment at line " << pt->getLine() << endl;
                     err = true;
                 }
                 break;
@@ -93,7 +113,7 @@ int main(int argc, char **argv) {
         });
 
         if(!err) {
-            post<Value>(prgm, [](ParseTree *pt, const Value &l, const Value &r) -> const Value { return pt->eval(l, r); });
+            post<const Value>(prgm, [](ParseTree *pt, const Value &l, const Value &r) -> const Value { return pt->eval(l, r); });
         }
     }
 

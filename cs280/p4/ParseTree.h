@@ -9,6 +9,7 @@
 
 #include <string>
 #include <map>
+#include <cassert>
 
 #include "Value.h"
 #include "p2lex.h"
@@ -131,7 +132,9 @@ public:
         return val;
     }
     const Value eval(const Value &l = Value(), const Value &r = Value()) {
-        return getVal();
+        const Value &v = getVal();
+        assert(("Constants are never NONE", v));
+        return v;
     }
 };
 
@@ -173,7 +176,9 @@ public:
     }
 
     Type evalType(Type l = NONE, Type r = NONE) {
-        return types[varName];
+        Type t = types[varName];
+        assert(("Variable type is never NONE", t != NONE));
+        return t;
     }
     const Value eval(const Value &l = Value(), const Value &r = Value()) {
         return values[varName];
@@ -186,12 +191,12 @@ public:
 		this->ptt = MULOP;
 	}
     bool isValid(Type l, Type r) {
-        return l == INTEGER && (r == STRING || r == INTEGER);
+        return l == INTEGER && r != NONE || r == INTEGER && l != NONE;
     }
 
     //Assumes valid types
     Type evalType(Type l, Type r) {
-        return r;
+        return (l == STRING || r == STRING) ? STRING : INTEGER;
     }
     const Value eval(const Value &l, const Value &r) {
         return l * r;
@@ -212,6 +217,7 @@ public:
         return l;
     }
     const Value eval(const Value &l, const Value &r) {
+        assert(("Values must not be none in an operator", l && r));
         return l + r;
     }
 };
@@ -249,6 +255,7 @@ public:
     }
     const Value eval(const Value &l, const Value &r) {
         values[dynamic_cast<Variable *>(this->l())->getName()] = r; //get name from left child
+        assert(("Assignment should not be NONE", r));
         return r;
     }
 };
@@ -264,6 +271,9 @@ public:
 
     //Assumes valid types
     Type evalType(Type l, Type r = NONE) {
+        return l;
+    }
+    const Value eval(const Value &l, const Value &r = Value()) {
         return l;
     }
 };
