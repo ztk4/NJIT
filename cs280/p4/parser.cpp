@@ -101,42 +101,53 @@ ParseTree *Aop(istream *isp) {
     return expr;
 }
 
-ParseTree * Expr(istream *isp) {
-    ParseTree *term = Term(isp);
-    
-    Token t = getToken(isp);
-    if(term && (t == Token::PLUSOP || t == Token::MINUSOP) ) {
-        ParseTree *expr = Expr(isp);
-        if(check(expr, "expected expression after operator")) {
-            if(t == Token::PLUSOP) {
-                return new AddOp(term, expr);
+ParseTree *Expr(istream *isp) {
+    ParseTree *left = Term(isp);
+    if(!left)
+        return left;
+
+    for(;;) {
+        Token t = getToken(isp);
+        if(t == Token::PLUSOP || t == Token::MINUSOP) {
+            ParseTree *right = Term(isp);
+            if(check(right, "expected term after operator")) {
+                if(t == Token::PLUSOP) {
+                    left = new AddOp(left, right);
+                } else {
+                    left = new SubtractOp(left, right);
+                }
             } else {
-                return new SubtractOp(term, expr);
+                return right; //error
             }
+        } else {
+            pushbackToken(t);
+            return left;
         }
-    } else {
-        pushbackToken(t);
     }
 
-    return term;
 }
 
 ParseTree *Term(istream *isp) {
-    ParseTree *primary = Primary(isp);
+    ParseTree *left = Primary(isp);
+    if(!left)
+        return left;
 
-    Token t = getToken(isp);
-    if(primary && t == Token::STAROP) {
-        ParseTree *term = Term(isp);
-        if(check(term, "expected expression after operator")) {
-            return new MultiplyOp(primary, term);
+    for(;;) {
+        Token t = getToken(isp);
+        if(t == Token::STAROP) {
+            ParseTree *right = Primary(isp);
+            if(check(right, "expected primary after operator")) {
+                left = new MultiplyOp(left, right);
+            } else {
+                return right; //error
+            }
+        } else {
+            pushbackToken(t);
+            return left;
         }
-    } else {
-        pushbackToken(t);
     }
 
-    return primary;
 }
-
 ParseTree *Primary(istream *isp) {
     Token t = getToken(isp);
 
