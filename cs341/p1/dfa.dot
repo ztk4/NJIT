@@ -1,0 +1,60 @@
+digraph g {
+  rankdir=LR; /*Horizontal*/
+
+  S -> q1;
+  q1 -> q2 [label="w"];
+  q2 -> q3 [label="w"];
+  q3 -> q4 [label="w"];
+  q1 -> q5 [label=<Γ<sub>-w</sub>>];
+  q5 -> q5 [label="Γ"];
+  {q2, q3} -> q5 [label=<Γ<sub>-w</sub>>];
+  q4 -> q5 [label="Γ"];
+  q4 -> q6 [label="."];
+  q6 -> q5 [label=<Γ<sub>-c</sub>>];
+  {q2, q3, q5} -> q7 [label="."];
+  q7 -> q8 [label="c"];
+  q8 -> q9 [label="o"];
+  q9 -> q10 [label="m"];
+  q9 -> q11 [label="."];
+  q11 -> q12 [label="c"];
+  q12 -> q10 [label="a"];
+  q8 -> q10 [label="a"];
+
+  q6 -> q14 [label="c"];
+  q14 -> q15 [label="o"];
+  q15 -> q16 [label="m"];
+  q15 -> q7 [label="."];
+  q14 -> q16 [label="a"];
+
+  q14 -> q5 [label=<Γ<sub>-a,o</sub>>];
+  q14 -> q7 [label="."];
+  q15 -> q5 [label=<Γ<sub>-m</sub>>];
+  q16 -> q5 [label="Γ"];
+  q16 -> q7 [label="."];
+
+  q10 -> q13 [label="Σ"];
+  {q1, q6} -> q13 [label="."];
+  {q7, q11} -> q13 [label=<Σ<sub>-c</sub>>];
+  q8 -> q13 [label=<Σ<sub>-a,o</sub>>];
+  q9 -> q13 [label=<Γ<sub>-m</sub>>];
+  q12 -> q13 [label=<Σ<sub>-a</sub>>];
+  q13 -> q13 [label="Σ"];
+
+  q1 [label=<<i>q<sub>1</sub></i>>];
+  q2 [label=<<i>q<sub>2</sub></i>>];
+  q3 [label=<<i>q<sub>3</sub></i>>];
+  q4 [label=<<i>q<sub>4</sub></i>>];
+  q5 [label=<<i>q<sub>5</sub></i>>];
+  q6 [label=<<i>q<sub>6</sub></i>>];
+  q7 [label=<<i>q<sub>7</sub></i>>];
+  q8 [label=<<i>q<sub>8</sub></i>>];
+  q9 [label=<<i>q<sub>9</sub></i>>];
+  q10 [peripheries=2, label=<<i>q<sub>10</sub></i>>]; /*Accepted State*/
+  q11 [label=<<i>q<sub>11</sub></i>>];
+  q12 [label=<<i>q<sub>12</sub></i>>];
+  q13 [label=<<i>q<sub>13</sub></i><br />Trap State>];
+  q14 [label=<<i>q<sub>14</sub></i>>];
+  q15 [label=<<i>q<sub>15</sub></i>>];
+  q16 [peripheries=2, label=<<i>q<sub>16</sub></i>>]; /*Accepted State*/
+  S [color=none, label=""]; /*Hide start label, looks like just an entry arrow*/
+} 

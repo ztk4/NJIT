@@ -1,0 +1,257 @@
+Would you like to enter a string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+m q16
+m q5
+e q5
+r q5
+c q5
+i q5
+a q5
+l q5
+. q7
+c q8
+o q9
+m q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+. q7
+c q8
+o q9
+m q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+x q5
+. q7
+c q8
+o q9
+m q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+n q5
+j q5
+i q5
+t q5
+. q7
+c q8
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+w q5
+. q7
+s q13
+t q13
+a q13
+n q13
+f q13
+o q13
+r q13
+d q13
+. q13
+c q13
+o q13
+m q13
+Denied
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+m q16
+. q7
+c q8
+o q9
+m q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+. q7
+c q8
+o q9
+m q10
+. q13
+c q13
+o q13
+m q13
+Denied
+Would you like to enter another string? Enter your string: q1
+c q5
+o q5
+. q7
+c q8
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+a q16
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+m q16
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+a q16
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+a q16
+t q5
+. q7
+c q8
+o q9
+m q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+b q5
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+. q13
+c q13
+o q13
+m q13
+Denied
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+a q5
+b q5
+c q5
+d q5
+. q7
+c q8
+o q9
+Denied
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+m q16
+p q5
+a q5
+n q5
+y q5
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+c q5
+o q5
+m q5
+p q5
+a q5
+n q5
+y q5
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+m q16
+. q7
+c q8
+o q9
+. q11
+c q12
+a q10
+Accepted
+Would you like to enter another string? Enter your string: q1
+w q2
+w q3
+w q4
+. q6
+c q14
+o q15
+. q7
+c q8
+a q10
+Accepted
+Would you like to enter another string? 
