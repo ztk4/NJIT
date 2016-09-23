@@ -1,13 +1,22 @@
 #!/bin/bash
 
-arr=($@)
+function main {
+  local arr=($@)
 
-for i in ${!arr[@]}; do
-  swp=${arr[$i]}
-  for (( j = $i; j > 0; --j )); do
-    (( arr[j] < arr[j-1] )) && (( arr[j] = arr[j-1] )) || break
+  for i in ${!arr[@]}; do
+    local swp="${arr[$i]}"
+    for (( j = $i; j > 0; --j )); do
+      # if swp val is less than val at j-1, shift back
+     if (( swp < arr[j-1] )); then
+       (( arr[j] = arr[j-1] ))
+     else
+       break
+     fi
+    done
+    arr[$j]="$swp" #swp over last shifted value
   done
-  arr[$j]="$swp"
-done
 
-echo ${arr[@]}
+  echo ${arr[@]}
+}
+
+main $@

@@ -73,7 +73,7 @@ ostream &operator<<(ostream &o, const State &state) {
 int main(int argc, char **argv) {
   // State Declarations
   vector<State> q(1);  // Not using the first position to simplify numbering.
-  q.reserve(14);
+  q.reserve(17);
   
   // Emplace new State with number == index in q
   // Printing is to cout

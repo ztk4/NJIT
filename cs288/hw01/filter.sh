@@ -2,15 +2,26 @@
 
 # average dir
 function average {
-  local dir_size=($(du -cb "$1"/* | tail -n1)) # du -cb dir/* gets apparent disk usage for all files in dir, with summary as last line
-  echo "$dir_size / $(ls -1U "$1" | wc -l)" |bc 
+  local dir_size=0
+  local dir_len=0
+  
+  IFS=$'\n' ls_arr=($(ls -l "$1"))
+  for (( i=1; i < "${#ls_arr[@]}"; ++i )); do
+    IFS=' ' file_arr=(${ls_arr[$i]})
+    (( dir_size += file_arr[4] ))  #4th elt is size in bytes
+    (( ++dir_len ))
+  done
+
+  (( avg = dir_size / dir_len ))
+  echo $avg
 }
 
 # filter dir avg
 function filter {
-  for file in $(ls "$1"); do
-    local size=($(du -b "$1/$file")) # Onlt need first "word" of result, so save as array so that dereference prints first elt by default
-    [ $size -gt "$2" ] && echo -n "$file "
+  IFS=$'\n' ls_arr=($(ls -l "$1"))
+  for (( i=1; i < "${#ls_arr[@]}"; ++i )); do
+    IFS=' ' file_arr=(${ls_arr[$i]})
+    [ ${file_arr[4]} -gt "$2" ] && echo -n "${file_arr[-1]} "
   done
 
   echo
