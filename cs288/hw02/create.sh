@@ -40,7 +40,6 @@ function breadth {
 
 # main depth breadth dir {depth|breadth}
 function main {
-  echo > output.txt
   local dir="$3-$4"
 
   case "$4" in
