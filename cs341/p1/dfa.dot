@@ -33,11 +33,11 @@ digraph g {
   q16 -> q7 [label="."];
 
   q10 -> q13 [label="Σ"];
-  {q1, q6} -> q13 [label="."];
-  {q7, q11} -> q13 [label=<Σ<sub>-c</sub>>];
-  q8 -> q13 [label=<Σ<sub>-a,o</sub>>];
-  q9 -> q13 [label=<Γ<sub>-m</sub>>];
-  q12 -> q13 [label=<Σ<sub>-a</sub>>];
+  //{q1, q6} -> q13 [label="."];
+  //{q7, q11} -> q13 [label=<Σ<sub>-c</sub>>];
+  //q8 -> q13 [label=<Σ<sub>-a,o</sub>>];
+  //q9 -> q13 [label=<Γ<sub>-m</sub>>];
+  //q12 -> q13 [label=<Σ<sub>-a</sub>>];
   q13 -> q13 [label="Σ"];
 
   q1 [label=<<i>q<sub>1</sub></i>>];
@@ -57,4 +57,6 @@ digraph g {
   q15 [label=<<i>q<sub>15</sub></i>>];
   q16 [peripheries=2, label=<<i>q<sub>16</sub></i>>]; /*Accepted State*/
   S [color=none, label=""]; /*Hide start label, looks like just an entry arrow*/
+
+  graph [label=<*Any edges missing from any node go to State&nbsp;&nbsp;<i>q<sub>13</sub></i>&nbsp;(the Trap State)>];
 } 
