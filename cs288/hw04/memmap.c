@@ -10,7 +10,7 @@
 #define LABEL_WIDTH 8
 #define LINE_WIDTH (LABEL_WIDTH + CELL_WIDTH * NUM_CELLS + NUM_CELLS + 1)
 
-// Mask "Functions"
+// Mask "Function" Macros
 #define MASK_ALL 0xFF
 #define MASK_LEFTMOST(n) ((char) (0xFF << (8 - (n))))
 #define MASK_RIGHTMOST(n) (0xFF >> (8 - (n)))
