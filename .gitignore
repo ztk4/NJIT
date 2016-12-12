@@ -2,3 +2,5 @@
 *.pyc
 *.gch
 *.o
+*.img
+*.zip
