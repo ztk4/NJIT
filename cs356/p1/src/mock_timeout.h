@@ -11,7 +11,7 @@ class MockTimeout : public Timeout {
  public:
   MOCK_METHOD1(Start, bool(const std::function<void(void)> &callback));
   MOCK_METHOD0(Cancel, bool());
-  MOCK_CONST_METHOD(IsActive, bool());
+  MOCK_CONST_METHOD0(IsActive, bool());
 };
 }  // namespace util
 
