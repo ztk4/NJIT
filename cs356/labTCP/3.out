@@ -1,0 +1,26 @@
+No.     Time           Source                Destination           Protocol Length Info
+    198 0.192656836    10.200.205.168        128.119.245.12        HTTP     318    POST /wireshark-labs/lab3-1-reply.htm HTTP/1.1  (text/plain)
+
+Frame 198: 318 bytes on wire (2544 bits), 318 bytes captured (2544 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.205.168, Dst: 128.119.245.12
+Transmission Control Protocol, Src Port: 50578, Dst Port: 80, Seq: 152664, Ack: 1, Len: 252
+[114 Reassembled TCP Segments (152915 bytes): #10(1351), #11(1351), #12(1351), #13(1351), #14(1351), #15(1351), #16(1351), #17(1351), #18(1351), #19(1351), #21(1351), #22(1351), #23(1351), #28(1351), #29(1351), #31(1351), #32(1351), #33(135]
+Hypertext Transfer Protocol
+    POST /wireshark-labs/lab3-1-reply.htm HTTP/1.1\r\n
+    Host: gaia.cs.umass.edu\r\n
+    User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0\r\n
+    Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n
+    Accept-Language: en-US,en;q=0.5\r\n
+    Accept-Encoding: gzip, deflate\r\n
+    Referer: http://gaia.cs.umass.edu/wireshark-labs/TCP-wireshark-file1.html\r\n
+    Connection: keep-alive\r\n
+    Upgrade-Insecure-Requests: 1\r\n
+    Content-Type: multipart/form-data; boundary=---------------------------36603617812068325111652089258\r\n
+    Content-Length: 152357\r\n
+    \r\n
+    [Full request URI: http://gaia.cs.umass.edu/wireshark-labs/lab3-1-reply.htm]
+    [HTTP request 1/1]
+    [Response in frame: 204]
+    File Data: 152357 bytes
+MIME Multipart Media Encapsulation, Type: multipart/form-data, Boundary: "---------------------------36603617812068325111652089258"

@@ -1,24 +1,24 @@
 CC		= g++
 CXXFLAGS	= -std=c++11 -Wall -Wpedantic
 
-.PHONY: all debug clean dfa
+.PHONY: all debug clean pda
 
 all: CXXFLAGS += -O3 -DNDEBUG
-all: project1 dfa
+all: project2 pda
 
 debug: CXXFLAGS += -g
-debug: project1
+debug: project2
 
-project1: p1_17s_ztk4.cpp
+project2: p2_17s_ztk4.cpp
 	$(CC) $(CXXFLAGS) -o $@ $+
 
-dfa: dfa.pdf
+pda: pda.pdf
 
-dfa.pdf: dfa.svg
+pda.pdf: pda.svg
 	rsvg-convert -f pdf -o $@ $+
 
-dfa.svg: dfa.dot
+pda.svg: pda.dot
 	dot -Tsvg -o $@ $+
 
 clean:
-	rm -rf project1 *.o dfa.svg dfa.pdf
+	rm -rf project2 *.o pda.svg pda.pdf

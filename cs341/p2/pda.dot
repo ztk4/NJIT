@@ -1,0 +1,36 @@
+digraph g {
+  rankdir=LR; //Horizontal
+
+  S -> q1;
+  // Starting $ sign
+  q1 -> q2 [label=<$, &epsilon; &rarr; $>];
+
+  // Opening Parens
+  q2 -> q2 [label=<(, &epsilon; &rarr; (>];
+
+  // Numeric Constant State
+  {q2, q3} -> q3 [label=<{0, 1, 2, &hellip;, 9}, &epsilon; &rarr; &epsilon;>];
+  
+  // Variable Name State
+  q2 -> q4 [label=<{a, b, c, &hellip;, z, A, B, C, &hellip;, Z, _}, &epsilon; &rarr; &epsilon;>];
+  q4 -> q4 [label=<{a, b, c, &hellip;, z, A, B, C, &hellip;, Z, _, 0, 1, 2, &hellip;, 9}, &epsilon; &rarr; &epsilon;>];
+
+  // Closing Parens (At end of terms)
+  {q3, q4, q5} -> q5 [label=<), ( &rarr; &epsilon;>];
+
+  // Operator Transitions (After a term)
+  {q3, q4, q5} -> q2 [label=<{+, -, *, /}, &epsilon; &rarr; &epsilon;>];
+
+  // Terminal Transitions
+  {q3, q4, q5} -> q6 [label=<$, $ &rarr; &epsilon;>]
+
+  q1 [label=<<i>q<sub>1</sub></i>>];
+  q2 [label=<<i>q<sub>2</sub></i>>];
+  q3 [label=<<i>q<sub>3</sub></i>>];
+  q4 [label=<<i>q<sub>4</sub></i>>];
+  q5 [label=<<i>q<sub>5</sub></i>>];
+  q6 [peripheries=2, label=<<i>q<sub>6</sub></i>>];  // Accepting State
+  S [color=none, label=""]; //Hide start label, looks like just an entry arrow
+
+  graph [label=<All missing edges are intended to &quot;crash&quot; the machine. A crash indicates that the input string was rejected.>];
+} 

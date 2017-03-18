@@ -1,0 +1,68 @@
+No.     Time           Source                Destination           Protocol Length Info
+      1 0.000000000    10.200.206.78         128.235.251.109       DNS      71     Standard query 0x0a90 A www.mit.edu
+
+Frame 1: 71 bytes on wire (568 bits), 71 bytes captured (568 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.206.78, Dst: 128.235.251.109
+User Datagram Protocol, Src Port: 16620, Dst Port: 53
+Domain Name System (query)
+    [Response In: 2]
+    Transaction ID: 0x0a90
+    Flags: 0x0100 Standard query
+    Questions: 1
+    Answer RRs: 0
+    Authority RRs: 0
+    Additional RRs: 0
+    Queries
+        www.mit.edu: type A, class IN
+            Name: www.mit.edu
+            [Name Length: 11]
+            [Label Count: 3]
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+
+No.     Time           Source                Destination           Protocol Length Info
+      2 0.007878382    128.235.251.109       10.200.206.78         DNS      160    Standard query response 0x0a90 A www.mit.edu CNAME www.mit.edu.edgekey.net CNAME e9566.dscb.akamaiedge.net A 104.91.71.143
+
+Frame 2: 160 bytes on wire (1280 bits), 160 bytes captured (1280 bits) on interface 0
+Ethernet II, Src: Cisco_77:e4:00 (00:25:46:77:e4:00), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+Internet Protocol Version 4, Src: 128.235.251.109, Dst: 10.200.206.78
+User Datagram Protocol, Src Port: 53, Dst Port: 16620
+Domain Name System (response)
+    [Request In: 1]
+    [Time: 0.007878382 seconds]
+    Transaction ID: 0x0a90
+    Flags: 0x8180 Standard query response, No error
+    Questions: 1
+    Answer RRs: 3
+    Authority RRs: 0
+    Additional RRs: 0
+    Queries
+        www.mit.edu: type A, class IN
+            Name: www.mit.edu
+            [Name Length: 11]
+            [Label Count: 3]
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+    Answers
+        www.mit.edu: type CNAME, class IN, cname www.mit.edu.edgekey.net
+            Name: www.mit.edu
+            Type: CNAME (Canonical NAME for an alias) (5)
+            Class: IN (0x0001)
+            Time to live: 1778
+            Data length: 25
+            CNAME: www.mit.edu.edgekey.net
+        www.mit.edu.edgekey.net: type CNAME, class IN, cname e9566.dscb.akamaiedge.net
+            Name: www.mit.edu.edgekey.net
+            Type: CNAME (Canonical NAME for an alias) (5)
+            Class: IN (0x0001)
+            Time to live: 38
+            Data length: 24
+            CNAME: e9566.dscb.akamaiedge.net
+        e9566.dscb.akamaiedge.net: type A, class IN, addr 104.91.71.143
+            Name: e9566.dscb.akamaiedge.net
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+            Time to live: 20
+            Data length: 4
+            Address: 104.91.71.143

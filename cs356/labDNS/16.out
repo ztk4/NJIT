@@ -1,0 +1,48 @@
+No.     Time           Source                Destination           Protocol Length Info
+     17 0.126713594    10.200.206.78         128.235.251.109       DNS      67     Standard query 0xd4fb NS mit.edu
+
+Frame 17: 67 bytes on wire (536 bits), 67 bytes captured (536 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.206.78, Dst: 128.235.251.109
+User Datagram Protocol, Src Port: 24871, Dst Port: 53
+Domain Name System (query)
+    [Response In: 18]
+    Transaction ID: 0xd4fb
+    Flags: 0x0100 Standard query
+    Questions: 1
+    Answer RRs: 0
+    Authority RRs: 0
+    Additional RRs: 0
+    Queries
+        mit.edu: type NS, class IN
+            Name: mit.edu
+            [Name Length: 7]
+            [Label Count: 2]
+            Type: NS (authoritative Name Server) (2)
+            Class: IN (0x0001)
+
+No.     Time           Source                Destination           Protocol Length Info
+     18 0.129533510    128.235.251.109       10.200.206.78         DNS      402    Standard query response 0xd4fb NS mit.edu NS use5.akam.net NS usw2.akam.net NS asia1.akam.net NS asia2.akam.net NS use2.akam.net NS ns1-37.akam.net NS ns1-173.akam.net NS eur5.akam.net A 2.16.40.64 AAAA 2600:1401:1::40 A 184.26.161.64 A 95.100.175.64 A 95.101.36.64 A 96.7.49.64 A 193.108.91.173 AAAA 2600:1401:2::ad A 23.74.25.64
+
+Frame 18: 402 bytes on wire (3216 bits), 402 bytes captured (3216 bits) on interface 0
+Ethernet II, Src: Cisco_77:e4:00 (00:25:46:77:e4:00), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+Internet Protocol Version 4, Src: 128.235.251.109, Dst: 10.200.206.78
+User Datagram Protocol, Src Port: 53, Dst Port: 24871
+Domain Name System (response)
+    [Request In: 17]
+    [Time: 0.002819916 seconds]
+    Transaction ID: 0xd4fb
+    Flags: 0x8180 Standard query response, No error
+    Questions: 1
+    Answer RRs: 8
+    Authority RRs: 0
+    Additional RRs: 9
+    Queries
+        mit.edu: type NS, class IN
+            Name: mit.edu
+            [Name Length: 7]
+            [Label Count: 2]
+            Type: NS (authoritative Name Server) (2)
+            Class: IN (0x0001)
+    Answers
+    Additional records

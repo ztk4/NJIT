@@ -1,0 +1,68 @@
+No.     Time           Source                Destination           Protocol Length Info
+     62 4.720685423    10.200.206.78         128.235.251.109       DNS      72     Standard query 0x0b70 A www.ietf.org
+
+Frame 62: 72 bytes on wire (576 bits), 72 bytes captured (576 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.206.78, Dst: 128.235.251.109
+User Datagram Protocol, Src Port: 9799, Dst Port: 53
+Domain Name System (query)
+    [Response In: 303]
+    Transaction ID: 0x0b70
+    Flags: 0x0100 Standard query
+    Questions: 1
+    Answer RRs: 0
+    Authority RRs: 0
+    Additional RRs: 0
+    Queries
+        www.ietf.org: type A, class IN
+            Name: www.ietf.org
+            [Name Length: 12]
+            [Label Count: 3]
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+
+No.     Time           Source                Destination           Protocol Length Info
+    303 8.524968253    128.235.251.109       10.200.206.78         DNS      156    Standard query response 0x0b70 A www.ietf.org CNAME www.ietf.org.cdn.cloudflare-dnssec.net A 104.20.1.85 A 104.20.0.85
+
+Frame 303: 156 bytes on wire (1248 bits), 156 bytes captured (1248 bits) on interface 0
+Ethernet II, Src: Cisco_77:e4:00 (00:25:46:77:e4:00), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+Internet Protocol Version 4, Src: 128.235.251.109, Dst: 10.200.206.78
+User Datagram Protocol, Src Port: 53, Dst Port: 9799
+Domain Name System (response)
+    [Request In: 62]
+    [Time: 3.804282830 seconds]
+    Transaction ID: 0x0b70
+    Flags: 0x8180 Standard query response, No error
+    Questions: 1
+    Answer RRs: 3
+    Authority RRs: 0
+    Additional RRs: 0
+    Queries
+        www.ietf.org: type A, class IN
+            Name: www.ietf.org
+            [Name Length: 12]
+            [Label Count: 3]
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+    Answers
+        www.ietf.org: type CNAME, class IN, cname www.ietf.org.cdn.cloudflare-dnssec.net
+            Name: www.ietf.org
+            Type: CNAME (Canonical NAME for an alias) (5)
+            Class: IN (0x0001)
+            Time to live: 1796
+            Data length: 40
+            CNAME: www.ietf.org.cdn.cloudflare-dnssec.net
+        www.ietf.org.cdn.cloudflare-dnssec.net: type A, class IN, addr 104.20.1.85
+            Name: www.ietf.org.cdn.cloudflare-dnssec.net
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+            Time to live: 296
+            Data length: 4
+            Address: 104.20.1.85
+        www.ietf.org.cdn.cloudflare-dnssec.net: type A, class IN, addr 104.20.0.85
+            Name: www.ietf.org.cdn.cloudflare-dnssec.net
+            Type: A (Host Address) (1)
+            Class: IN (0x0001)
+            Time to live: 296
+            Data length: 4
+            Address: 104.20.0.85

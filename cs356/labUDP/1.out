@@ -1,0 +1,14 @@
+No.     Time           Source                Destination           Protocol Length Info
+     55 21.389014755   10.200.206.99         128.235.251.109       DNS      75     Standard query 0xa0a9 AAAA docs.google.com
+
+Frame 55: 75 bytes on wire (600 bits), 75 bytes captured (600 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.206.99, Dst: 128.235.251.109
+User Datagram Protocol, Src Port: 20041, Dst Port: 53
+    Source Port: 20041
+    Destination Port: 53
+    Length: 41
+    Checksum: 0x55bf [unverified]
+    [Checksum Status: Unverified]
+    [Stream index: 4]
+Domain Name System (query)

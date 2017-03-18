@@ -1,0 +1,7 @@
+No.     Time           Source                Destination           Protocol Length Info
+    304 8.525628874    10.200.206.78         104.20.1.85           TCP      74     53112 → 80 [SYN] Seq=0 Win=29200 Len=0 MSS=1460 SACK_PERM=1 TSval=4294930777 TSecr=0 WS=128
+
+Frame 304: 74 bytes on wire (592 bits), 74 bytes captured (592 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.206.78, Dst: 104.20.1.85
+Transmission Control Protocol, Src Port: 53112, Dst Port: 80, Seq: 0, Len: 0

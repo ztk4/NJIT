@@ -1,0 +1,546 @@
+Would you like to enter a string? (y/n): Enter your input string: Input String: $_a_3B$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	a, ε → ε
+Resultant State:	q4
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	3, ε → ε
+Resultant State:	q4
+Transition Taken:	B, ε → ε
+Resultant State:	q4
+Transition Taken:	$, $ → ε
+Resultant State:	q6
+The input string was ACCEPTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $_ba76+R*3-fF_45n/812$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	b, ε → ε
+Resultant State:	q4
+Transition Taken:	a, ε → ε
+Resultant State:	q4
+Transition Taken:	7, ε → ε
+Resultant State:	q4
+Transition Taken:	6, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	R, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	3, ε → ε
+Resultant State:	q3
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	f, ε → ε
+Resultant State:	q4
+Transition Taken:	F, ε → ε
+Resultant State:	q4
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	4, ε → ε
+Resultant State:	q4
+Transition Taken:	5, ε → ε
+Resultant State:	q4
+Transition Taken:	n, ε → ε
+Resultant State:	q4
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	8, ε → ε
+Resultant State:	q3
+Transition Taken:	1, ε → ε
+Resultant State:	q3
+Transition Taken:	2, ε → ε
+Resultant State:	q3
+Transition Taken:	$, $ → ε
+Resultant State:	q6
+The input string was ACCEPTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $ba+_c4*7m-f8/h98u$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	b, ε → ε
+Resultant State:	q4
+Transition Taken:	a, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	c, ε → ε
+Resultant State:	q4
+Transition Taken:	4, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	7, ε → ε
+Resultant State:	q3
+Transition Taken:	m, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $y33(x23g)$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	y, ε → ε
+Resultant State:	q4
+Transition Taken:	3, ε → ε
+Resultant State:	q4
+Transition Taken:	3, ε → ε
+Resultant State:	q4
+Transition Taken:	(, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $(((r1+9-fs)*212))*(a2)$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	r, ε → ε
+Resultant State:	q4
+Transition Taken:	1, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	9, ε → ε
+Resultant State:	q3
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	f, ε → ε
+Resultant State:	q4
+Transition Taken:	s, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	2, ε → ε
+Resultant State:	q3
+Transition Taken:	1, ε → ε
+Resultant State:	q3
+Transition Taken:	2, ε → ε
+Resultant State:	q3
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	a, ε → ε
+Resultant State:	q4
+Transition Taken:	2, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	$, $ → ε
+Resultant State:	q6
+The input string was ACCEPTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $(t0+wk)*bn)/c1$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	0, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	w, ε → ε
+Resultant State:	q4
+Transition Taken:	k, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	b, ε → ε
+Resultant State:	q4
+Transition Taken:	n, ε → ε
+Resultant State:	q4
+Transition Taken:	), ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $(((ui+ej*(vk+ci))/pt)$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	u, ε → ε
+Resultant State:	q4
+Transition Taken:	i, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	e, ε → ε
+Resultant State:	q4
+Transition Taken:	j, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	v, ε → ε
+Resultant State:	q4
+Transition Taken:	k, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	c, ε → ε
+Resultant State:	q4
+Transition Taken:	i, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	p, ε → ε
+Resultant State:	q4
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	$, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $+g5$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	+, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $52*(872/(P+kd34E/e3)-FW)+6/(((rw*_y4_b_d-r57ee*t)/y6+ugf))$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	5, ε → ε
+Resultant State:	q3
+Transition Taken:	2, ε → ε
+Resultant State:	q3
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	8, ε → ε
+Resultant State:	q3
+Transition Taken:	7, ε → ε
+Resultant State:	q3
+Transition Taken:	2, ε → ε
+Resultant State:	q3
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	P, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	k, ε → ε
+Resultant State:	q4
+Transition Taken:	d, ε → ε
+Resultant State:	q4
+Transition Taken:	3, ε → ε
+Resultant State:	q4
+Transition Taken:	4, ε → ε
+Resultant State:	q4
+Transition Taken:	E, ε → ε
+Resultant State:	q4
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	e, ε → ε
+Resultant State:	q4
+Transition Taken:	3, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	F, ε → ε
+Resultant State:	q4
+Transition Taken:	W, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	6, ε → ε
+Resultant State:	q3
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	r, ε → ε
+Resultant State:	q4
+Transition Taken:	w, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	y, ε → ε
+Resultant State:	q4
+Transition Taken:	4, ε → ε
+Resultant State:	q4
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	b, ε → ε
+Resultant State:	q4
+Transition Taken:	_, ε → ε
+Resultant State:	q4
+Transition Taken:	d, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	r, ε → ε
+Resultant State:	q4
+Transition Taken:	5, ε → ε
+Resultant State:	q4
+Transition Taken:	7, ε → ε
+Resultant State:	q4
+Transition Taken:	e, ε → ε
+Resultant State:	q4
+Transition Taken:	e, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	y, ε → ε
+Resultant State:	q4
+Transition Taken:	6, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	u, ε → ε
+Resultant State:	q4
+Transition Taken:	g, ε → ε
+Resultant State:	q4
+Transition Taken:	f, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	$, $ → ε
+Resultant State:	q6
+The input string was ACCEPTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $g0*(hs+(df-*ft))$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	g, ε → ε
+Resultant State:	q4
+Transition Taken:	0, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	h, ε → ε
+Resultant State:	q4
+Transition Taken:	s, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	d, ε → ε
+Resultant State:	q4
+Transition Taken:	f, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	*, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $(tg+(hy-j7))/uk)*ri+(eo/wp$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	g, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	h, ε → ε
+Resultant State:	q4
+Transition Taken:	y, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	j, ε → ε
+Resultant State:	q4
+Transition Taken:	7, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	u, ε → ε
+Resultant State:	q4
+Transition Taken:	k, ε → ε
+Resultant State:	q4
+Transition Taken:	), ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $(tg+(hy-j9))/uk)ri$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	g, ε → ε
+Resultant State:	q4
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	h, ε → ε
+Resultant State:	q4
+Transition Taken:	y, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	j, ε → ε
+Resultant State:	q4
+Transition Taken:	9, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	/, ε → ε
+Resultant State:	q2
+Transition Taken:	u, ε → ε
+Resultant State:	q4
+Transition Taken:	k, ε → ε
+Resultant State:	q4
+Transition Taken:	), ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $wm-(tn*bu)+$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	w, ε → ε
+Resultant State:	q4
+Transition Taken:	m, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	(, ε → (
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	n, ε → ε
+Resultant State:	q4
+Transition Taken:	*, ε → ε
+Resultant State:	q2
+Transition Taken:	b, ε → ε
+Resultant State:	q4
+Transition Taken:	u, ε → ε
+Resultant State:	q4
+Transition Taken:	), ( → ε
+Resultant State:	q5
+Transition Taken:	+, ε → ε
+Resultant State:	q2
+Transition Taken:	$, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $wm-tn(*bu)$
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	w, ε → ε
+Resultant State:	q4
+Transition Taken:	m, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	t, ε → ε
+Resultant State:	q4
+Transition Taken:	n, ε → ε
+Resultant State:	q4
+Transition Taken:	(, ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): Enter your input string: Input String: $wm-)tn*bu($
+Start State:		q1
+Transition Taken:	$, ε → $
+Resultant State:	q2
+Transition Taken:	w, ε → ε
+Resultant State:	q4
+Transition Taken:	m, ε → ε
+Resultant State:	q4
+Transition Taken:	-, ε → ε
+Resultant State:	q2
+Transition Taken:	), ε → ε
+Resultant State:	Crash
+The PDA has crashed on the input string.
+The input string was REJECTED.
+
+Would you like to enter a string? (y/n): 

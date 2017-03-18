@@ -1,0 +1,111 @@
+No.     Time           Source                Destination           Protocol Length Info
+     10 0.014287040    10.200.205.168        128.119.245.12        TCP      1417   50578 → 80 [ACK] Seq=1 Ack=1 Win=29312 Len=1351 TSval=2903054 TSecr=1141949977
+
+Frame 10: 1417 bytes on wire (11336 bits), 1417 bytes captured (11336 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.205.168, Dst: 128.119.245.12
+Transmission Control Protocol, Src Port: 50578, Dst Port: 80, Seq: 1, Ack: 1, Len: 1351
+    Source Port: 50578
+    Destination Port: 80
+    [Stream index: 0]
+    [TCP Segment Len: 1351]
+    Sequence number: 1    (relative sequence number)
+    [Next sequence number: 1352    (relative sequence number)]
+    Acknowledgment number: 1    (relative ack number)
+    Header Length: 32 bytes
+    Flags: 0x010 (ACK)
+    Window size value: 229
+    [Calculated window size: 29312]
+    [Window size scaling factor: 128]
+    Checksum: 0x5362 [unverified]
+    [Checksum Status: Unverified]
+    Urgent pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+    [SEQ/ACK analysis]
+Data (1351 bytes)
+
+0000  50 4f 53 54 20 2f 77 69 72 65 73 68 61 72 6b 2d   POST /wireshark-
+0010  6c 61 62 73 2f 6c 61 62 33 2d 31 2d 72 65 70 6c   labs/lab3-1-repl
+0020  79 2e 68 74 6d 20 48 54 54 50 2f 31 2e 31 0d 0a   y.htm HTTP/1.1..
+0030  48 6f 73 74 3a 20 67 61 69 61 2e 63 73 2e 75 6d   Host: gaia.cs.um
+0040  61 73 73 2e 65 64 75 0d 0a 55 73 65 72 2d 41 67   ass.edu..User-Ag
+0050  65 6e 74 3a 20 4d 6f 7a 69 6c 6c 61 2f 35 2e 30   ent: Mozilla/5.0
+0060  20 28 58 31 31 3b 20 55 62 75 6e 74 75 3b 20 4c    (X11; Ubuntu; L
+0070  69 6e 75 78 20 78 38 36 5f 36 34 3b 20 72 76 3a   inux x86_64; rv:
+0080  35 31 2e 30 29 20 47 65 63 6b 6f 2f 32 30 31 30   51.0) Gecko/2010
+0090  30 31 30 31 20 46 69 72 65 66 6f 78 2f 35 31 2e   0101 Firefox/51.
+00a0  30 0d 0a 41 63 63 65 70 74 3a 20 74 65 78 74 2f   0..Accept: text/
+00b0  68 74 6d 6c 2c 61 70 70 6c 69 63 61 74 69 6f 6e   html,application
+00c0  2f 78 68 74 6d 6c 2b 78 6d 6c 2c 61 70 70 6c 69   /xhtml+xml,appli
+00d0  63 61 74 69 6f 6e 2f 78 6d 6c 3b 71 3d 30 2e 39   cation/xml;q=0.9
+00e0  2c 2a 2f 2a 3b 71 3d 30 2e 38 0d 0a 41 63 63 65   ,*/*;q=0.8..Acce
+00f0  70 74 2d 4c 61 6e 67 75 61 67 65 3a 20 65 6e 2d   pt-Language: en-
+0100  55 53 2c 65 6e 3b 71 3d 30 2e 35 0d 0a 41 63 63   US,en;q=0.5..Acc
+0110  65 70 74 2d 45 6e 63 6f 64 69 6e 67 3a 20 67 7a   ept-Encoding: gz
+0120  69 70 2c 20 64 65 66 6c 61 74 65 0d 0a 52 65 66   ip, deflate..Ref
+0130  65 72 65 72 3a 20 68 74 74 70 3a 2f 2f 67 61 69   erer: http://gai
+0140  61 2e 63 73 2e 75 6d 61 73 73 2e 65 64 75 2f 77   a.cs.umass.edu/w
+0150  69 72 65 73 68 61 72 6b 2d 6c 61 62 73 2f 54 43   ireshark-labs/TC
+0160  50 2d 77 69 72 65 73 68 61 72 6b 2d 66 69 6c 65   P-wireshark-file
+0170  31 2e 68 74 6d 6c 0d 0a 43 6f 6e 6e 65 63 74 69   1.html..Connecti
+0180  6f 6e 3a 20 6b 65 65 70 2d 61 6c 69 76 65 0d 0a   on: keep-alive..
+0190  55 70 67 72 61 64 65 2d 49 6e 73 65 63 75 72 65   Upgrade-Insecure
+01a0  2d 52 65 71 75 65 73 74 73 3a 20 31 0d 0a 43 6f   -Requests: 1..Co
+01b0  6e 74 65 6e 74 2d 54 79 70 65 3a 20 6d 75 6c 74   ntent-Type: mult
+01c0  69 70 61 72 74 2f 66 6f 72 6d 2d 64 61 74 61 3b   ipart/form-data;
+01d0  20 62 6f 75 6e 64 61 72 79 3d 2d 2d 2d 2d 2d 2d    boundary=------
+01e0  2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d   ----------------
+01f0  2d 2d 2d 2d 2d 33 36 36 30 33 36 31 37 38 31 32   -----36603617812
+0200  30 36 38 33 32 35 31 31 31 36 35 32 30 38 39 32   0683251116520892
+0210  35 38 0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e 67   58..Content-Leng
+0220  74 68 3a 20 31 35 32 33 35 37 0d 0a 0d 0a 2d 2d   th: 152357....--
+0230  2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d   ----------------
+0240  2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 2d 33 36 36 30 33   -----------36603
+0250  36 31 37 38 31 32 30 36 38 33 32 35 31 31 31 36   6178120683251116
+0260  35 32 30 38 39 32 35 38 0d 0a 43 6f 6e 74 65 6e   52089258..Conten
+0270  74 2d 44 69 73 70 6f 73 69 74 69 6f 6e 3a 20 66   t-Disposition: f
+0280  6f 72 6d 2d 64 61 74 61 3b 20 6e 61 6d 65 3d 22   orm-data; name="
+0290  66 69 6c 65 22 3b 20 66 69 6c 65 6e 61 6d 65 3d   file"; filename=
+02a0  22 61 6c 69 63 65 2e 74 78 74 22 0d 0a 43 6f 6e   "alice.txt"..Con
+02b0  74 65 6e 74 2d 54 79 70 65 3a 20 74 65 78 74 2f   tent-Type: text/
+02c0  70 6c 61 69 6e 0d 0a 0d 0a 20 20 20 20 20 20 20   plain....       
+02d0  20 20 20 20 20 20 20 20 20 41 4c 49 43 45 27 53            ALICE'S
+02e0  20 41 44 56 45 4e 54 55 52 45 53 20 49 4e 20 57    ADVENTURES IN W
+02f0  4f 4e 44 45 52 4c 41 4e 44 0d 0a 0d 0a 20 20 20   ONDERLAND....   
+0300  20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20                   
+0310  20 20 20 20 20 20 20 4c 65 77 69 73 20 43 61 72          Lewis Car
+0320  72 6f 6c 6c 0d 0a 0d 0a 20 20 20 20 20 20 20 20   roll....        
+0330  20 20 20 20 20 20 20 54 48 45 20 4d 49 4c 4c 45          THE MILLE
+0340  4e 4e 49 55 4d 20 46 55 4c 43 52 55 4d 20 45 44   NNIUM FULCRUM ED
+0350  49 54 49 4f 4e 20 33 2e 30 0d 0a 0d 0a 0d 0a 0d   ITION 3.0.......
+0360  0a 0d 0a 20 20 20 20 20 20 20 20 20 20 20 20 20   ...             
+0370  20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 43                  C
+0380  48 41 50 54 45 52 20 49 0d 0a 0d 0a 20 20 20 20   HAPTER I....    
+0390  20 20 20 20 20 20 20 20 20 20 20 20 20 20 20 20                   
+03a0  20 20 44 6f 77 6e 20 74 68 65 20 52 61 62 62 69     Down the Rabbi
+03b0  74 2d 48 6f 6c 65 0d 0a 0d 0a 0d 0a 20 20 41 6c   t-Hole......  Al
+03c0  69 63 65 20 77 61 73 20 62 65 67 69 6e 6e 69 6e   ice was beginnin
+03d0  67 20 74 6f 20 67 65 74 20 76 65 72 79 20 74 69   g to get very ti
+03e0  72 65 64 20 6f 66 20 73 69 74 74 69 6e 67 20 62   red of sitting b
+03f0  79 20 68 65 72 20 73 69 73 74 65 72 0d 0a 6f 6e   y her sister..on
+0400  20 74 68 65 20 62 61 6e 6b 2c 20 61 6e 64 20 6f    the bank, and o
+0410  66 20 68 61 76 69 6e 67 20 6e 6f 74 68 69 6e 67   f having nothing
+0420  20 74 6f 20 64 6f 3a 20 20 6f 6e 63 65 20 6f 72    to do:  once or
+0430  20 74 77 69 63 65 20 73 68 65 20 68 61 64 0d 0a    twice she had..
+0440  70 65 65 70 65 64 20 69 6e 74 6f 20 74 68 65 20   peeped into the 
+0450  62 6f 6f 6b 20 68 65 72 20 73 69 73 74 65 72 20   book her sister 
+0460  77 61 73 20 72 65 61 64 69 6e 67 2c 20 62 75 74   was reading, but
+0470  20 69 74 20 68 61 64 20 6e 6f 0d 0a 70 69 63 74    it had no..pict
+0480  75 72 65 73 20 6f 72 20 63 6f 6e 76 65 72 73 61   ures or conversa
+0490  74 69 6f 6e 73 20 69 6e 20 69 74 2c 20 60 61 6e   tions in it, `an
+04a0  64 20 77 68 61 74 20 69 73 20 74 68 65 20 75 73   d what is the us
+04b0  65 20 6f 66 20 61 20 62 6f 6f 6b 2c 27 0d 0a 74   e of a book,'..t
+04c0  68 6f 75 67 68 74 20 41 6c 69 63 65 20 60 77 69   hought Alice `wi
+04d0  74 68 6f 75 74 20 70 69 63 74 75 72 65 73 20 6f   thout pictures o
+04e0  72 20 63 6f 6e 76 65 72 73 61 74 69 6f 6e 3f 27   r conversation?'
+04f0  0d 0a 0d 0a 20 20 53 6f 20 73 68 65 20 77 61 73   ....  So she was
+0500  20 63 6f 6e 73 69 64 65 72 69 6e 67 20 69 6e 20    considering in 
+0510  68 65 72 20 6f 77 6e 20 6d 69 6e 64 20 28 61 73   her own mind (as
+0520  20 77 65 6c 6c 20 61 73 20 73 68 65 20 63 6f 75    well as she cou
+0530  6c 64 2c 0d 0a 66 6f 72 20 74 68 65 20 68 6f 74   ld,..for the hot
+0540  20 64 61 79 20 6d 61                               day ma

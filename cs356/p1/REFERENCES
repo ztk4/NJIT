@@ -1,0 +1,4 @@
+1. GoogleTest
+    Everything in the gtest/ directory is cloned directly from http://github.com/google/googletest.
+    Additionally, the Makefile in the src/ directory is adapted from https://github.com/google/googletest/blob/master/googletest/make/Makefile.
+

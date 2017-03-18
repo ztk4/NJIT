@@ -1,0 +1,127 @@
+\hypertarget{classPDA}{}\section{P\+DA Class Reference}
+\label{classPDA}\index{P\+DA@{P\+DA}}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structPDA_1_1Transition}{Transition}
+\begin{DoxyCompactList}\small\item\em A single directed transition between two states of the \hyperlink{classPDA}{P\+DA}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef function$<$ \hyperlink{structPDA_1_1Transition}{Transition}(char input, char stk)$>$ \hyperlink{classPDA_a4f001a9e4d59473ff532a7f0bfe726d7}{Transition\+Function}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classPDA_a173e167cfd9ed03e714b076429c170ee}{P\+DA} (const string \&start\+\_\+descriptor, ostream \&out=cout)
+\item 
+{\bfseries P\+DA} (const \hyperlink{classPDA}{P\+DA} \&)=delete\hypertarget{classPDA_a920a380716f99189afbfee960a0bf03b}{}\label{classPDA_a920a380716f99189afbfee960a0bf03b}
+
+\item 
+\hyperlink{classPDA}{P\+DA} \& {\bfseries operator=} (const \hyperlink{classPDA}{P\+DA} \&)=delete\hypertarget{classPDA_a92945cb40d972259c818a675671e80d0}{}\label{classPDA_a92945cb40d972259c818a675671e80d0}
+
+\item 
+bool \hyperlink{classPDA_a43043f07515e3ab3fb13b77bc3076878}{Add\+State} (const string \&descriptor, const \hyperlink{classPDA_a4f001a9e4d59473ff532a7f0bfe726d7}{Transition\+Function} \&delta, bool accepting=false)
+\item 
+bool \hyperlink{classPDA_aa1cc23df562955796911837ad263b08a}{Process} (const string \&input\+\_\+str)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const char \hyperlink{classPDA_a508f4982a6a56f61cab39f4e7a7e0268}{k\+Epsilon} = \textquotesingle{}\textbackslash{}0\textquotesingle{}\hypertarget{classPDA_a508f4982a6a56f61cab39f4e7a7e0268}{}\label{classPDA_a508f4982a6a56f61cab39f4e7a7e0268}
+
+\begin{DoxyCompactList}\small\item\em Character constant to represent epsilon in transitions. \end{DoxyCompactList}\item 
+static const string \hyperlink{classPDA_adbe613972feb034bc00aee9b4eacfaf6}{k\+Crash\+State} = \char`\"{}Crash\char`\"{}\hypertarget{classPDA_adbe613972feb034bc00aee9b4eacfaf6}{}\label{classPDA_adbe613972feb034bc00aee9b4eacfaf6}
+
+\begin{DoxyCompactList}\small\item\em String constant to represent crashes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Deterministic \hyperlink{classPDA}{P\+DA} implementation.
+
+Does not allow for eplsilon transitions on the input string. No restrictions on eplsilon transitions for the stack. 
+
+\subsection{Member Typedef Documentation}
+\index{P\+DA@{P\+DA}!Transition\+Function@{Transition\+Function}}
+\index{Transition\+Function@{Transition\+Function}!P\+DA@{P\+DA}}
+\subsubsection[{\texorpdfstring{Transition\+Function}{TransitionFunction}}]{\setlength{\rightskip}{0pt plus 5cm}typedef function$<${\bf Transition}(char input, char stk)$>$ {\bf P\+D\+A\+::\+Transition\+Function}}\hypertarget{classPDA_a4f001a9e4d59473ff532a7f0bfe726d7}{}\label{classPDA_a4f001a9e4d59473ff532a7f0bfe726d7}
+Typedef that defines a transition function for a single state.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input} & the current character from the input string. \\
+\hline
+{\em stk} & the character at the top of the \hyperlink{classPDA}{P\+DA}\textquotesingle{}s stack.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the resulting transition taken. 
+\end{DoxyReturn}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{P\+DA@{P\+DA}!P\+DA@{P\+DA}}
+\index{P\+DA@{P\+DA}!P\+DA@{P\+DA}}
+\subsubsection[{\texorpdfstring{P\+D\+A(const string \&start\+\_\+descriptor, ostream \&out=cout)}{PDA(const string &start_descriptor, ostream &out=cout)}}]{\setlength{\rightskip}{0pt plus 5cm}P\+D\+A\+::\+P\+DA (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{start\+\_\+descriptor, }
+\item[{ostream \&}]{out = {\ttfamily cout}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [explicit]}}\hypertarget{classPDA_a173e167cfd9ed03e714b076429c170ee}{}\label{classPDA_a173e167cfd9ed03e714b076429c170ee}
+Constructs a \hyperlink{classPDA}{P\+DA} that outputs verbosely to out, and starts in the state with the specified descriptor. To hide verbose output, set the stream reference to a mock stream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em start\+\_\+descriptor} & string descriptor for the start state. \\
+\hline
+{\em out} & reference to the desired output stream. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{P\+DA@{P\+DA}!Add\+State@{Add\+State}}
+\index{Add\+State@{Add\+State}!P\+DA@{P\+DA}}
+\subsubsection[{\texorpdfstring{Add\+State(const string \&descriptor, const Transition\+Function \&delta, bool accepting=false)}{AddState(const string &descriptor, const TransitionFunction &delta, bool accepting=false)}}]{\setlength{\rightskip}{0pt plus 5cm}bool P\+D\+A\+::\+Add\+State (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{descriptor, }
+\item[{const {\bf Transition\+Function} \&}]{delta, }
+\item[{bool}]{accepting = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classPDA_a43043f07515e3ab3fb13b77bc3076878}{}\label{classPDA_a43043f07515e3ab3fb13b77bc3076878}
+Adds a state described uniquely by its descriptor to the \hyperlink{classPDA}{P\+DA}. If the given descriptor is already in use by the \hyperlink{classPDA}{P\+DA}, the addition will fail.
+
+
+\begin{DoxyParams}{Parameters}
+{\em descriptor} & a unique string descriptor for this state. \\
+\hline
+{\em delta} & the transition function that describes all transitions out of this state. \\
+\hline
+{\em accepting} & whether or not this state is an accepting state.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the addition was successful, false otherwise. 
+\end{DoxyReturn}
+\index{P\+DA@{P\+DA}!Process@{Process}}
+\index{Process@{Process}!P\+DA@{P\+DA}}
+\subsubsection[{\texorpdfstring{Process(const string \&input\+\_\+str)}{Process(const string &input_str)}}]{\setlength{\rightskip}{0pt plus 5cm}bool P\+D\+A\+::\+Process (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{input\+\_\+str}
+\end{DoxyParamCaption}
+)}\hypertarget{classPDA_aa1cc23df562955796911837ad263b08a}{}\label{classPDA_aa1cc23df562955796911837ad263b08a}
+Processes an input string and either accepts or rejects it. Resets the machine to the initial state before starting.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\+\_\+str} & the input string to process.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the string was accepted, false otherwise. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+p2\+\_\+17s\+\_\+ztk4.\+cpp\end{DoxyCompactItemize}
