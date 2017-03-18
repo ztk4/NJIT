@@ -40,7 +40,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = timeout_test
+TESTS = timeout_test message_test
 
 # All targets required for an operational build
 TARGETS = 
@@ -66,7 +66,7 @@ all : $(TARGETS)
 test : $(TESTS)
 
 check : $(TESTS)
-	for test in *_test; do ./$${test}; done
+	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
 
 clean :
 	rm -f $(TESTS) $(TARGETS) gmock.a gmock_main.a gtest.a gtest_main.a *.o
@@ -120,9 +120,15 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 # GTEST TESTS
 
 timeout_test.o : timeout_test.cpp $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c timeout_test.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 timeout_test : timeout_test.o timeout.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+message_test.o : message_test.cpp $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+message_test : message_test.o message.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # REGULAR TARGETS
