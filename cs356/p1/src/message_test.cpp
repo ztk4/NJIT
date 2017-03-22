@@ -21,6 +21,7 @@ TEST(MessageTest, ConstructorInitializesAllFields) {
   EXPECT_EQ(m.SourceId(), kSourceId);
   EXPECT_EQ(m.Table(), kTable);
   EXPECT_TRUE(m.IsValid());
+  EXPECT_EQ(m.SerializedLength(), 24);
 }
 
 TEST(MessageTest, ConstructorDefaultInitializesTable) {
@@ -31,6 +32,7 @@ TEST(MessageTest, ConstructorDefaultInitializesTable) {
   EXPECT_EQ(m.SourceId(), kSourceId);
   EXPECT_TRUE(m.Table().empty());
   EXPECT_TRUE(m.IsValid());
+  EXPECT_EQ(m.SerializedLength(), 8);
 }
 
 TEST(MessageTest, MessageWithUnknownTypeIsInvalid) {

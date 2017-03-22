@@ -46,6 +46,9 @@ class Message {
   /// @returns a const reference to the table from the body of this message.
   const std::map<uint16_t, int16_t> &Table() const { return table_; }
 
+  /// @returns the serialized size of the message in bytes.
+  size_t SerializedLength() const { return 8 + 4 * table_.size(); }
+
   /// Serializes the message object into a message that can be sent over UDP.
   ///
   /// @param buf the output buffer.
