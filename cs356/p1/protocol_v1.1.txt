@@ -46,6 +46,7 @@ I. Message Format
       5. Number of Message Rows
           This is the number of 32-bit table rows that follow this header in the
           message body. This number must be 0 for messages without a body.
+          Stored as an unsigned 16-bit integer.
 
   b) Message Body (Optional):
 

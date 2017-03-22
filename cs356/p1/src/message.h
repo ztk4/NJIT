@@ -20,23 +20,29 @@ class Message {
   /// Creates a Message object from a unique identifier, a type/opcode, and a
   /// routing table mapping a 16-bit router identifier to distances.
   ///
-  /// @param id 16-bit identifier for this message.
+  /// @param dest_id destination unsigned 16-bit identifier for this message.
   /// @param type the type of this message, based off of section II. in the
   ///        router protocol.
-  /// @param table a routers current table, mapping 16-bit router
+  /// @param src_id source unsigned 16-bit identifier for this message.
+  /// @param table a routers current table, mapping unsigned 16-bit router
   ///        identifiers to signed 16-bit distances. A -1 means an unknown
   ///        distance.
-  Message(int16_t id, Type type,
-      const std::map<int16_t, int16_t> &table = std::map<int16_t, int16_t>());
+  Message(uint16_t dest_id, Type type, uint16_t src_id,
+      const std::map<uint16_t, int16_t> &table = std::map<uint16_t, int16_t>());
 
-  /// @returns the Id of this message.
-  int16_t Id() const { return id_; }
+  /// @returns true if this message is valid.
+  bool IsValid() const { return type_ != UNKNOWN; }
+
+  /// @returns the Destination Id of this message.
+  uint16_t DestinationId() const { return dest_id_; }
+  /// @returns the Source Id of this message.
+  uint16_t SourceId() const { return src_id_; }
 
   /// @returns the type of this message.
   Type GetType() const { return type_; }
 
   /// @returns a const reference to the table from the body of this message.
-  const std::map<int16_t, int16_t> &Table() const { return table_; }
+  const std::map<uint16_t, int16_t> &Table() const { return table_; }
 
   /// Serializes the message object into a message that can be sent over UDP.
   ///
@@ -56,9 +62,10 @@ class Message {
   static Message Deserialize(void *buf, size_t len);
 
  private:
-  int16_t id_;
+  uint16_t dest_id_;
   Type type_;
-  std::map<int16_t, int16_t> table_;
+  uint16_t src_id_;
+  std::map<uint16_t, int16_t> table_;
 };
 
 #endif  // MESSAGE_H_
