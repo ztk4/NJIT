@@ -1,9 +1,11 @@
-#ifndef MESSAGE_H_
-#define MESSAGE_H_
+#ifndef ROUTER_MESSAGE_H_
+#define ROUTER_MESSAGE_H_
 
 #include <cstdint>
 #include <map>
 
+/// Namespace for all classes directly related to the routing protocol.
+namespace router {
 /// Object representation of any message sent via the routing protocol. Can be
 /// thought of as a de-serialized version of a message.
 class Message {
@@ -67,5 +69,6 @@ class Message {
   uint16_t src_id_;
   std::map<uint16_t, int16_t> table_;
 };
+}  // namespace router
 
-#endif  // MESSAGE_H_
+#endif  // ROUTER_MESSAGE_H_

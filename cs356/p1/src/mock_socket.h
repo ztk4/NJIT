@@ -6,6 +6,7 @@
 #include "gmock/gmock.h"
 
 namespace util {
+/// A Mock implementation of Socket, ONLY FOR TESTING.
 class MockSocket : public Socket {
  public:
   ~MockSocket() override = default;
@@ -16,6 +17,14 @@ class MockSocket : public Socket {
   MOCK_METHOD4(SendTo, ssize_t(const void *message, size_t length, int flags,
         const Address *addr));
   MOCK_CONST_METHOD0(IsOpen, bool());
+};
+
+/// A Mock implementation of SocketFactory, ONLY FOR TESTING.
+class MockSocketFactory : public SocketFactory {
+ public:
+  ~MockSocketFactory() override = default;
+
+  MOCK_METHOD0(MakeSocket, Socket *());
 };
 }  // namespace util
 

@@ -6,6 +6,7 @@
 
 using namespace std;
 
+namespace router {
 namespace {
 const int kDestinationId = 42, kSourceId = 17;
 const map<uint16_t, int16_t> kTable = {
@@ -176,3 +177,4 @@ TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenSourceIdIsZero) {
   EXPECT_FALSE(m.IsValid());
 }
 }  // anonymous namespace
+}  // namespace router

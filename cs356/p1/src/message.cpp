@@ -2,6 +2,7 @@
 
 using namespace std;
 
+namespace router {
 Message::Message(uint16_t dest_id, Type type, uint16_t src_id,
     const map<uint16_t, int16_t> &table)
     : dest_id_(dest_id),
@@ -54,3 +55,4 @@ Message Message::Deserialize(void *buf, size_t len) {
 
   return Message(buf16[0], (Type) tmp_type, buf16[2], table);
 }
+}  // namespace router
