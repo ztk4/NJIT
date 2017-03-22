@@ -58,6 +58,46 @@ TEST_F(InAddressTest, CopyAssignmentWorks) {
   EXPECT_EQ(addr_p->sin_addr.s_addr, kAddress);
 }
 
+TEST_F(InAddressTest, ComparisonsAreCorrectWhenObjectsAreEqual) {
+  const InSocket::InAddress *addr_p =
+    static_cast<const InSocket::InAddress *>(addr_.get());
+  InSocket::InAddress addr(*addr_p);
+
+  EXPECT_TRUE(*addr_p == addr);
+  EXPECT_FALSE(*addr_p != addr);
+}
+
+TEST_F(InAddressTest, ComparisonsAreCorrectWhenObjectsDiffer) {
+  const InSocket::InAddress *addr_p =
+    static_cast<const InSocket::InAddress *>(addr_.get());
+  InSocket::InAddress addr(kAddress + 1, kPort);
+
+  EXPECT_FALSE(*addr_p == addr);
+  EXPECT_TRUE(*addr_p != addr);
+}
+
+TEST_F(InAddressTest, HashesAreTheSameWhenObjectsAreEqual) {
+  const InSocket::InAddress *addr_p =
+    static_cast<const InSocket::InAddress *>(addr_.get());
+  InSocket::InAddress addr(*addr_p);
+
+  EXPECT_EQ(addr_p->Hash(), addr.Hash());
+}
+
+TEST_F(InAddressTest, HashesDifferWhenObjectsDifferSlightly) {
+  const InSocket::InAddress *addr_p =
+    static_cast<const InSocket::InAddress *>(addr_.get());
+  InSocket::InAddress addr(kAddress + 1, kPort);
+
+  EXPECT_NE(addr_p->Hash(), addr.Hash());
+}
+
+TEST(StdHashOfInAddressTest, HashForwardsCorrectly) {
+  InSocket::InAddress addr(0x42424242, 0x4242);
+
+  EXPECT_EQ(addr.Hash(), std::hash<InSocket::InAddress>()(addr));
+}
+
 TEST(InSocketTest, IsOpenAfterConstruction) {
   unique_ptr<Socket> socket(new InSocket(InSocket::UDP));
 

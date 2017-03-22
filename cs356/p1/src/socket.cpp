@@ -32,6 +32,20 @@ socklen_t InSocket::InAddress::Length() const {
   return sizeof(addr_);
 }
 
+bool InSocket::InAddress::operator==(const InSocket::InAddress &addr) const {
+  return addr_.sin_port == addr.addr_.sin_port &&
+    addr_.sin_addr.s_addr == addr.addr_.sin_addr.s_addr;
+}
+
+bool InSocket::InAddress::operator!=(const InSocket::InAddress &addr) const {
+  return !(*this == addr);
+}
+
+size_t InSocket::InAddress::Hash() const {
+  return (static_cast<uint64_t>(addr_.sin_addr.s_addr) << 16) | // 32-bits
+    static_cast<uint64_t>(addr_.sin_port);  // 16-bits
+}
+
 // InSocket Implementation.
 InSocket::InSocket(Type type) {
   // Only implements UDP for now ;)

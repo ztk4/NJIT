@@ -1,6 +1,7 @@
 #ifndef UTIL_SOCKET_H_
 #define UTIL_SOCKET_H_
 
+#include <functional>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -105,6 +106,13 @@ class InSocket : public Socket {
     const struct sockaddr *Value() const override;
     socklen_t Length() const override;
 
+    // Comparison Operators (needed for reverse address lookup).
+    bool operator==(const InAddress &addr) const;
+    bool operator!=(const InAddress &addr) const;
+
+    /// @returns a 48-bit hash of an InAddress (needed for reverse addr lookup).
+    size_t Hash() const;
+
    private:
     struct sockaddr_in addr_;  /// Internet address struct.
   };
@@ -145,5 +153,15 @@ class InSocketFactory : public SocketFactory {
   InSocket::Type type_;
 };
 }  // namespace util
+
+namespace std {
+/// Sepcialization of std::hash to allow hashing of InAddress
+template<>
+struct hash<util::InSocket::InAddress> {
+  size_t operator()(const util::InSocket::InAddress &addr) {
+    return addr.Hash();
+  }
+};
+}  // namespace std
 
 #endif  // UTIL_SOCKET_H_
