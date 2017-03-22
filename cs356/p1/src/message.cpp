@@ -33,13 +33,13 @@ ssize_t Message::Serialize(void *buf, size_t len) const {
   return size;
 }
 
-Message Message::Deserialize(void *buf, size_t len) {
+Message Message::Deserialize(const void *buf, size_t len) {
   // Must have at least 8 bytes for header
   if (len < 8)
     return Message(0, UNKNOWN, 0);
 
   // Segment into unsigned 2-byte words.
-  uint16_t *buf16 = reinterpret_cast<uint16_t *>(buf);
+  const uint16_t *buf16 = reinterpret_cast<const uint16_t *>(buf);
   size_t num_rows = buf16[3];
   uint16_t tmp_type = buf16[1] >> 2;
 
@@ -49,8 +49,10 @@ Message Message::Deserialize(void *buf, size_t len) {
     return Message(0, UNKNOWN, 0);
 
   map<uint16_t, int16_t> table;
-  for (uint16_t *buf16_p = buf16 + 4; buf16_p < buf16 + len/2; buf16_p += 2) {
-    table[*buf16_p] = *reinterpret_cast<int16_t *>(buf16_p + 1);
+  for (const uint16_t *buf16_p = buf16 + 4;
+      buf16_p < buf16 + len/2;
+      buf16_p += 2) {
+    table[*buf16_p] = *reinterpret_cast<const int16_t *>(buf16_p + 1);
   }
 
   return Message(buf16[0], (Type) tmp_type, buf16[2], table);

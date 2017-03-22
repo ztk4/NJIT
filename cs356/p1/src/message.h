@@ -64,7 +64,7 @@ class Message {
   /// @param len the size in bytes of the input buffer.
   ///
   /// @returns a deserialized Message object.
-  static Message Deserialize(void *buf, size_t len);
+  static Message Deserialize(const void *buf, size_t len);
 
  private:
   uint16_t dest_id_;
