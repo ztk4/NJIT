@@ -6,6 +6,7 @@
 #include <functional>
 #include <memory>
 #include <map>
+#include <mutex>
 
 #include "message_io.h"
 #include "timeout.h"
@@ -58,8 +59,10 @@ class Server {
   ///
   /// @param message_io_factory the factory to make message_io objects from.
   /// @param timeout_factory the factory to make timeouts from.
+  /// @param routing_table a reference to this router's table
   Server(MessageIoFactory *message_io_factory,
-      util::TimeoutFactory *timeout_factory);
+      util::TimeoutFactory *timeout_factory,
+	  const std::map<uint16_t, int16_t> &routing_table);
   ~Server();
 
   /// Attaches a callback to the receipt of table event. Attaching a new
@@ -68,13 +71,6 @@ class Server {
   /// @param callback the function that will be called with the received table.
   void OnTableReceipt(
       const std::function<void(const std::map<uint16_t, int16_t> &)> &callback);
-
-  /// Attaches a callback to the request for this routers table. Attaching a
-  /// new callback will overwrite a previously attacked callback.
-  ///
-  /// @param callback the function that will return this router's table.
-  void OnTableRequest(
-      const std::function<const std::map<uint16_t, int16_t> &(void)> &callback);
 
  private:
   // The rest of the flows as described in the protocol.
@@ -85,10 +81,11 @@ class Server {
 
   std::unique_ptr<MessageIoFactory> message_io_factory_;
   std::unique_ptr<util::TimeoutFactory> timeout_factory_;
+  const std::map<uint16_t, int16_t> &routing_table_;
   std::atomic<bool> active_;  // Is server active?
   std::atomic<bool> alive_;   // Is spawned thread alive?
   std::function<void(const std::map<uint16_t, int16_t> &)> table_receipt_;
-  std::function<const std::map<uint16_t, int16_t> &(void)> table_request_;
+  std::mutex table_receipt_mutex_;
 };
 }  // namespace router
 

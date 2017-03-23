@@ -92,9 +92,9 @@ ostream &operator<<(std::ostream &o, const util::InSocket::InAddress &addr) {
   uint16_t port = in_addr.sin_port;
 
   return o <<
-    ((ip >> 24) & 0xFF) << '.' <<
-    ((ip >> 16) & 0xFF) << '.' <<
+    ((ip)       & 0xFF) << '.' <<
     ((ip >> 8)  & 0xFF) << '.' <<
-    ((ip)       & 0xFF) << ':' <<
+    ((ip >> 16) & 0xFF) << '.' <<
+    ((ip >> 24) & 0xFF) << ':' <<
     port;
 }

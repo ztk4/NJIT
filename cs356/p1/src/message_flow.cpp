@@ -95,9 +95,11 @@ void Client::PushTableTo(uint16_t router_id,
 
 // Server Implementation
 Server::Server(MessageIoFactory *message_io_factory,
-    TimeoutFactory *timeout_factory)
+    TimeoutFactory *timeout_factory,
+	const map<uint16_t, int16_t> &routing_table)
     : message_io_factory_(message_io_factory),
       timeout_factory_(timeout_factory),
+	  routing_table_(routing_table),
       active_(true),
       alive_(true) {
   // Claim ownership of a single message_io
@@ -116,6 +118,7 @@ Server::Server(MessageIoFactory *message_io_factory,
         if (status) {
           switch (m.GetType()) {
             case Message::REQUEST_TABLE:
+			  cout << router_id << ' ' << m.GetTypeString() << endl;
               GetRequestReceived(router_id, m);
               break;
             case Message::PUSH_TABLE:
@@ -152,21 +155,13 @@ Server::~Server() {
 
 void Server::OnTableReceipt(
     const function<void(const map<uint16_t, int16_t> &)> &callback) {
+  lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
   table_receipt_ = callback;
 }
 
-void Server::OnTableRequest(
-    const function<const map<uint16_t, int16_t> &(void)> &callback) {
-  table_request_ = callback;
-}
-
 void Server::GetRequestReceived(uint16_t router_id, const Message &m) {
-  map<uint16_t, int16_t> curr_table;
-  if (table_request_)
-    curr_table = table_request_();
-
   Message resp(m.SourceId(), Message::TABLE_RESPONSE, ++last_used_id,
-      curr_table);
+      routing_table_);
 
   InternalSendTo(router_id, resp,
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())),
@@ -179,7 +174,11 @@ void Server::PushTableReceived(uint16_t router_id, const Message &m) {
   InternalSendTo(router_id, resp,
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())));
 
-  table_receipt_(m.Table());
+  {
+    lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
+    if (table_receipt_)
+		table_receipt_(m.Table());
+  }
 }
 
 void Server::TableResponseReceived(uint16_t router_id, const Message &m) {
@@ -196,7 +195,11 @@ void Server::TableResponseReceived(uint16_t router_id, const Message &m) {
   InternalSendTo(router_id, resp,
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())));
 
-  table_receipt_(m.Table());
+  {
+    lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
+    if (table_receipt_)
+		table_receipt_(m.Table());
+  }
 }
 
 void Server::AckReceived(uint16_t, const Message &m) {

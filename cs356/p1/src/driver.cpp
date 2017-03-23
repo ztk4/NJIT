@@ -10,10 +10,10 @@
 #include "message_io.h"
 
 #define IP_ADDR(a, b, c, d) (\
-  ((a & 0xFF) << 24) |\
-  ((b & 0xFF) << 16) |\
-  ((c & 0xFF) << 8)  |\
-  ((d & 0xFF))\
+  ((d & 0xFF) << 24) |\
+  ((c & 0xFF) << 16) |\
+  ((b & 0xFF) << 8)  |\
+  ((a & 0xFF))\
 )
 
 using namespace router;
@@ -33,11 +33,12 @@ map <uint16_t, int16_t> routing_table {
 };
 uint16_t my_id = 1;
 #endif
-// For Request Counting
-atomic<int> receive_count(0), request_count(0);
+// For request tracking
+atomic<int> receive_count(0);
 
 ostream &operator<<(ostream &o, const map<uint16_t, int16_t> &table) {
-  o << "Routing Table (missing entries are unroutable):" << endl;
+  o << "Received Routing Table (missing entries are unroutable):"
+	  << endl;
   for (const auto &entry : table) {
     o << "\tR" << entry.first << ":\t" << entry.second << endl;
   }
@@ -74,16 +75,11 @@ int main(int argc, char **argv) {
   Server *servers[4];;
   for (int i = 0; i < 4; ++i) {
     servers[i] = new Server(new SocketMessageIoFactory(verbose),
-        new SimpleTimeoutFactory);
+        new SimpleTimeoutFactory, routing_table);
     servers[i]->OnTableReceipt(
         [](const map<uint16_t, int16_t> &table) {
           cout << table << endl;
           ++receive_count;
-        });
-    servers[i]->OnTableRequest(
-        []() {
-          ++request_count;
-          return routing_table;
         });
   }
 
@@ -102,7 +98,7 @@ int main(int argc, char **argv) {
   cout << "My initial routing Table:" << endl;
   cout << routing_table << endl;
 
-  while (receive_count < 1 && request_count < 1)
+  while (receive_count < 1)
     this_thread::yield();
 #endif
 

@@ -150,6 +150,7 @@ TEST_F(ClientTest, PushTableToSendsMessageForEachTimeoutCallback) {
     callback();
 }
 
+/* TODO ran out of time :(
 class ServerTest : public ::testing::Test {
  protected:
   static void TearDownTestCase() {
@@ -178,7 +179,6 @@ class ServerTest : public ::testing::Test {
   atomic<bool> wait_;
 };
 
-/* TODO
 TEST_F(ServerTest, ReceiptOfTableRequestResultsInExactlyOneWellFormedMessage) {
   MockMessageIo *mock_io1 = new MockMessageIo, *mock_io2 = new MockMessageIo;
   MockTimeout *timeout = new MockTimeout;
