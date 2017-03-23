@@ -1,0 +1,62 @@
+Zachary Kaplan
+CS356 Project 1
+
+File locations (From Current directory):
+src/ 
+	All Source Code
+	*_test are unit tests and do not affect production
+	mock_* are mock implementations for testing and do not affect production
+	All other source files are used for production
+
+protocol.old
+	All old protocols
+
+protocol_v*.txt
+	Current protocol
+
+gtest
+	THIS IS NOT MY CODE. This is a c++ Unit testing framework.
+
+*.docx
+	The assignment.
+
+REFERENCES
+	Works I referenced when writing this.
+
+COMPILATION INSTRUCTIONS
+
+	0. Must be run from src directory
+		cd src/
+
+	I. Load in a new version of gcc
+		$ module load gcc/6.1.0
+
+	II. (OPTIONAL) Run Unit tests
+		$ make check
+
+	III. Make Client
+		$ make router0
+
+	IV. Make Server
+		$ make router1
+
+EXECUTION INSTRUCTIONS
+
+	0. Should be run from src directory
+		$ cs src/
+
+	I. Run Client in verbose mode. MUST be on afsconnect3.njit.edu
+		$ ./router0 -v
+
+	II. Run Server in verbose mode. MUST be on afsconnect4.njit.edu
+		$ ./router1 -v
+
+	III. They will self terminate, but ^C also works if needed.
+
+CLEANUP INSTRUCTIONS
+
+	0. Must be run from src directory
+		cd src/
+
+	I. Cleanup
+		$ make clean
