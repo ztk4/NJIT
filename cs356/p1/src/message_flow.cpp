@@ -161,8 +161,12 @@ void Server::OnTableRequest(
 }
 
 void Server::GetRequestReceived(uint16_t router_id, const Message &m) {
+  map<uint16_t, int16_t> curr_table;
+  if (table_request_)
+    curr_table = table_request_();
+
   Message resp(m.SourceId(), Message::TABLE_RESPONSE, ++last_used_id,
-      table_request_ ? table_request_() : map<uint16_t, int16_t>());
+      curr_table);
 
   InternalSendTo(router_id, resp,
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())),

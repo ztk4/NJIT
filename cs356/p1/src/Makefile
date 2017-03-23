@@ -42,9 +42,6 @@ LDFLAGS += -lpthread
 # created to the list.
 TESTS = timeout_test message_test socket_test message_io_test message_flow_test
 
-# All targets required for an operational build
-TARGETS = 
-
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
@@ -59,9 +56,15 @@ GMOCK_HEADERS = $(GMOCK_DIR)/include/gmock/*.h \
 
 # House-keeping build targets.
 
-.PHONY: all test check clean
+.PHONY: all test check clean R0 R1
 
-all : $(TARGETS)
+all : R0 R1
+
+R0 : CXXFLAGS += -DR0
+R0 : router0
+
+R1 : CXXFLAGS += -DR1
+R1 : router1
 
 test : $(TESTS)
 
@@ -69,7 +72,7 @@ check : $(TESTS)
 	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
 
 clean :
-	rm -f $(TESTS) $(TARGETS) gmock.a gmock_main.a gtest.a gtest_main.a *.o
+	rm -f $(TESTS) router0 router1 gmock.a gmock_main.a gtest.a gtest_main.a *.o
 
 # Builds gmock.a and gmock_main.a.  These libraries contain both
 # Google Mock and Google Test.  A test should link with either gmock.a
@@ -156,6 +159,15 @@ message_io.o : message_io.cpp message_io.h message.h socket.h
 
 message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+driver.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+router0 : driver.o message_io.o message_flow.o message.o timeout.o socket.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+router1 : driver.o message_io.o message_flow.o message.o timeout.o socket.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Pattern for simple object files depending on a single source file and a single header file
 %.o : %.cpp %.h

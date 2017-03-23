@@ -1,5 +1,7 @@
 #include "socket.h"
 
+#include <sys/time.h>
+
 using namespace std;
 
 namespace util {
@@ -54,6 +56,10 @@ InSocket::InSocket(Type type) {
   switch (type) {
     case UDP:
       socket_ = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+      struct timeval tv;  // Timeout for recvfrom calls
+      tv.tv_sec = 0;
+      tv.tv_usec = 10;
+      setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
       break;
   }
 }
