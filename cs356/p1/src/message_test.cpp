@@ -47,6 +47,22 @@ TEST(MessageTest, MessageWithZeroSourceIdIsInvalid) {
   EXPECT_FALSE(m.IsValid());
 }
 
+TEST(MessageTest, MessagesCompareEqualWhenEqual) {
+  Message m1(kDestinationId, Message::ACK, 0);
+  Message m2(kDestinationId, Message::ACK, 0);
+
+  EXPECT_TRUE(m1 == m2);
+  EXPECT_FALSE(m1 != m2);
+}
+
+TEST(MessageTest, MessagesCompareInequalWhenDiffered) {
+  Message m1(kDestinationId, Message::ACK, 0);
+  Message m2(kDestinationId + 1, Message::ACK, 0);
+
+  EXPECT_FALSE(m1 == m2);
+  EXPECT_TRUE(m1 != m2);
+}
+
 TEST(MessageTest, SerializeProducesExpectedMessageWithoutTable) {
   Message m(kDestinationId, Message::REQUEST_TABLE, kSourceId);
 

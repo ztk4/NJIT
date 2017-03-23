@@ -40,7 +40,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = timeout_test message_test socket_test
+TESTS = timeout_test message_test socket_test message_io_test
 
 # All targets required for an operational build
 TARGETS = 
@@ -117,21 +117,27 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 
 # GMOCK TESTS
 
+message_io_test.o : message_io_test.cpp message_io.h message.h socket.h mock_socket.h $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+message_io_test : message_io_test.o message_io.o message.o socket.o gmock_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 # GTEST TESTS
 
-timeout_test.o : timeout_test.cpp $(GTEST_HEADERS)
+timeout_test.o : timeout_test.cpp timeout.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 timeout_test : timeout_test.o timeout.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-message_test.o : message_test.cpp $(GTEST_HEADERS)
+message_test.o : message_test.cpp message.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 message_test : message_test.o message.o gtest_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-socket_test.o : socket_test.cpp $(GTEST_HEADERS)
+socket_test.o : socket_test.cpp socket.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 socket_test : socket_test.o socket.o gtest_main.a
@@ -139,6 +145,9 @@ socket_test : socket_test.o socket.o gtest_main.a
 
 # REGULAR TARGETS
 
-# Pattern for general object files depending on a single source file and a single header file
+message_io.o : message_io.cpp message_io.h message.h socket.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+# Pattern for simple object files depending on a single source file and a single header file
 %.o : %.cpp %.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<

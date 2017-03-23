@@ -35,6 +35,10 @@ class Message {
   /// @returns true if this message is valid.
   bool IsValid() const { return type_ != UNKNOWN; }
 
+  /// Comparison Operators
+  bool operator==(const Message &m) const;
+  bool operator!=(const Message &m) const;
+
   /// @returns the Destination Id of this message.
   uint16_t DestinationId() const { return dest_id_; }
   /// @returns the Source Id of this message.

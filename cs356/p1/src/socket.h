@@ -95,7 +95,7 @@ class InSocket : public Socket {
     ///
     /// @param addr the IPv4 address.
     /// @param port the port on that address.
-    InAddress(in_addr_t addr, in_port_t port);
+    explicit InAddress(in_addr_t addr = 0, in_port_t port = 0);
     /// Copy Constructor
     InAddress(const InAddress &addr);
     /// Copy Assignment Operator
@@ -158,7 +158,7 @@ namespace std {
 /// Sepcialization of std::hash to allow hashing of InAddress
 template<>
 struct hash<util::InSocket::InAddress> {
-  size_t operator()(const util::InSocket::InAddress &addr) {
+  size_t operator()(const util::InSocket::InAddress &addr) const {
     return addr.Hash();
   }
 };

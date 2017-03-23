@@ -13,6 +13,18 @@ Message::Message(uint16_t dest_id, Type type, uint16_t src_id,
     type_ = UNKNOWN;
 }
 
+bool Message::operator==(const Message &m) const {
+  return (
+      dest_id_ == m.dest_id_ &&
+      type_ == m.type_ &&
+      src_id_ == m.src_id_ &&
+      table_ == m.table_);
+}
+
+bool Message::operator!=(const Message &m) const {
+  return !(*this == m);
+}
+
 ssize_t Message::Serialize(void *buf, size_t len) const {
   size_t size = 8 + 4 * table_.size();
   if (size > len)
