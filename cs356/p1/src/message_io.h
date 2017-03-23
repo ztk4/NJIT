@@ -37,6 +37,18 @@ class MessageIo {
  protected:
   MessageIo() = default;
 };
+/// Interface for creating MessageIo's.
+class MessageIoFactory {
+ public:
+  virtual ~MessageIoFactory() = default;
+
+  /// @returns a pointer to a new MessageIo. The caller takes ownership of the
+  ///          pointer.
+  virtual MessageIo *MakeMessageIo() = 0;
+
+ protected:
+  MessageIoFactory() = default;
+};
 
 /// Implementation of MessageIo using Sockets.
 class SocketMessageIo : public MessageIo {
@@ -74,6 +86,13 @@ class SocketMessageIo : public MessageIo {
   static std::mutex addr_lookup_table_mutex_;   /// GUARDS addr_lookup_table_.
   static std::mutex rev_lookup_table_mutex_;    /// GUARDS rev_lookup_table_.
   static std::unique_ptr<util::Socket> socket_;
+};
+/// Implementation of MessageIoFactory for SocketMessageIo's
+class SocketMessageIoFactory : public MessageIoFactory {
+ public:
+  ~SocketMessageIoFactory() override = default;
+
+  MessageIo *MakeMessageIo() override { return new SocketMessageIo; }
 };
 }  // namespace router
 
