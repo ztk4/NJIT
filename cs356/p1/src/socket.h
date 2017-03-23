@@ -68,18 +68,6 @@ class Socket {
   Socket() = default;
 };
 
-/// An interface for creating sockets.
-class SocketFactory {
- public:
-  virtual ~SocketFactory() = default;
-
-  /// @returns a pointer to a new socket.
-  virtual Socket *MakeSocket() = 0;
-
- protected:
-  SocketFactory() = default;
-};
-
 /// Socket in the Internet Domain using IPv4
 class InSocket : public Socket {
  public:
@@ -136,21 +124,6 @@ class InSocket : public Socket {
 
  private:
   int socket_ = -1;  /// Socket file descriptor.
-};
-
-/// Factory for constructing InSocket's.
-class InSocketFactory : public SocketFactory {
- public:
-  /// Constructs a InSocketFactory for the desired type of InSocket.
-  ///
-  /// @param type the type of InSocket.
-  InSocketFactory(InSocket::Type type) : type_(type) {}
-  ~InSocketFactory() override = default;
-
-  Socket *MakeSocket() override { return new InSocket(type_); }
-
- private:
-  InSocket::Type type_;
 };
 }  // namespace util
 

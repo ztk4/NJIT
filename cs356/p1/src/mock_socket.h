@@ -18,14 +18,6 @@ class MockSocket : public Socket {
         const Address *addr));
   MOCK_CONST_METHOD0(IsOpen, bool());
 };
-
-/// A Mock implementation of SocketFactory, ONLY FOR TESTING.
-class MockSocketFactory : public SocketFactory {
- public:
-  ~MockSocketFactory() override = default;
-
-  MOCK_METHOD0(MakeSocket, Socket *());
-};
 }  // namespace util
 
 #endif  // UTIL_MOCK_SOCKET_H_
