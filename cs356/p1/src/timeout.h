@@ -35,6 +35,17 @@ class Timeout {
  protected:
   Timeout() = default;
 };
+/// Interface for creating Timeouts
+class TimeoutFactory {
+ public:
+  virtual ~TimeoutFactory() = default;
+
+  /// @returns a pointer to a new Timeout. Transfers ownership to caller.
+  virtual Timeout *MakeTimeout();
+
+ protected:
+  TimeoutFactory() = default;
+};
 
 /// Simple thread based implementation of a timeout. Not incredibly precise,
 /// but effective.
@@ -43,7 +54,8 @@ class SimpleTimeout : public Timeout {
   /// Create a timeout with a specified period.
   ///
   /// @param period length of timeout in nanoseconds.
-  SimpleTimeout(std::chrono::nanoseconds period = std::chrono::seconds(1));
+  explicit SimpleTimeout(
+      std::chrono::nanoseconds period = std::chrono::seconds(1));
   // Disallow Copy & Assign
   SimpleTimeout(const SimpleTimeout &) = delete;
   SimpleTimeout &operator=(const SimpleTimeout &) = delete;
@@ -86,6 +98,19 @@ class SimpleTimeout : public Timeout {
   std::chrono::nanoseconds period_;
   InternalTimeout *timeout_;
   std::atomic<bool> exists_;
+};
+/// SimpleTimeout Implementation of TimeoutFactory
+class SimpleTimeoutFactory : public TimeoutFactory {
+ public:
+  explicit SimpleTimeoutFactory(
+      std::chrono::nanoseconds period = std::chrono::seconds(1))
+      : period_(period) {}
+  ~SimpleTimeoutFactory() override = default;
+
+  Timeout *MakeTimeout() override { return new SimpleTimeout(period_); }
+
+ private:
+  std::chrono::nanoseconds period_;
 };
 }  // namespace util
 

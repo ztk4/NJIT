@@ -15,6 +15,13 @@ class MockTimeout : public Timeout {
   MOCK_METHOD0(Cancel, bool());
   MOCK_CONST_METHOD0(IsActive, bool());
 };
+/// Mock Timeout Factory. ONLY FOR TESTING.
+class MockTimeoutFactory : public TimeoutFactory {
+ public:
+  ~MockTimeoutFactory() override = default;
+
+  MOCK_METHOD0(MakeTimeout, Timeout *());
+};
 }  // namespace util
 
 #endif  // UTIL_MOCK_TIMEOUT_H_
