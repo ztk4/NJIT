@@ -10,6 +10,9 @@ namespace router {
 /// thought of as a de-serialized version of a message.
 class Message {
  public:
+  /// This is the version number of the protocol implemented by this class.
+  static const uint8_t kMajorVersion;  // Maximum value of 31
+  static const uint8_t kMinorVersion;  // Maximum value of 15
   /// This enum is equivalent to the Opcode field in the protocol
   enum Type : char {
     ACK,

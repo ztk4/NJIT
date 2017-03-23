@@ -73,7 +73,7 @@ TEST(MessageTest, SerializeProducesExpectedMessageWithoutTable) {
 
   // The expected serialization
   char expected[] = {
-    0x2A, 0x00, 0x04, 0x00,
+    0x2A, 0x00, 0x04, 0x12,
     0x11, 0x00, 0x00, 0x00,
   };
 
@@ -89,7 +89,7 @@ TEST(MessageTest, SerializeProducesExpectedMessageWithTable) {
   EXPECT_EQ(size, 24);  // Should be header plus 4 table rows
 
   char expected_hdr[] = {
-    0x2A, 0x00, 0x08, 0x00,
+    0x2A, 0x00, 0x08, 0x12,
     0x11, 0x00, 0x04, 0x00,
   };
 
@@ -115,7 +115,7 @@ TEST(MessageTest, SerializeReturnsErrorWhenBufferIsNotLargeEnough) {
 
 TEST(MessageTest, DeserializePopulatesMessageCorrectlyWithoutTable) {
   uint8_t serialized[] = {
-    0x2A, 0xFF, 0x00, 0x00,
+    0x2A, 0xFF, 0x00, 0x12,
     0x11, 0xFF, 0x00, 0x00,
   };
 
@@ -130,7 +130,7 @@ TEST(MessageTest, DeserializePopulatesMessageCorrectlyWithoutTable) {
 
 TEST(MessageTest, DeserializePopulatesMessageCorrectlyWithTable) {
   uint8_t serialized[] = {
-    0x2A, 0xFF, 0x08, 0x00,
+    0x2A, 0xFF, 0x08, 0x12,
     0x11, 0xFF, 0x03, 0x00,
     0xAD, 0xDE, 0xEF, 0xBE,
     0xFF, 0x00, 0x00, 0xFF,
@@ -156,7 +156,7 @@ TEST(MessageTest, DeserializePopulatesMessageCorrectlyWithTable) {
 
 TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenOpcodeIsUnknown) {
   uint8_t serialized[] = {
-    0x2A, 0x0F, 0xFF, 0x2A,
+    0x2A, 0x0F, 0xFC, 0x12,
     0x11, 0x0A, 0x00, 0x00,
   };
 
@@ -174,7 +174,7 @@ TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenLengthIsTooSmall) {
 
 TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenLengthDoesNotMatch) {
   uint8_t serialized[] = {
-    0x2A, 0x0F, 0x00, 0x00,
+    0x2A, 0x0F, 0x00, 0x12,
     0x11, 0xAA, 0x07, 0x00,
     0xDE, 0xAD, 0xBE, 0xEF,
   };
@@ -186,7 +186,29 @@ TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenLengthDoesNotMatch) {
 
 TEST(MessageTest, DeserializePopulatesMessageWithErrorWhenSourceIdIsZero) {
   uint8_t serialized[] = {
-    0x2A, 0x0F, 0x00, 0x00,
+    0x2A, 0x0F, 0x00, 0x12,
+    0x00, 0x00, 0x00, 0x00,
+  };
+
+  Message m = Message::Deserialize(serialized, 8);
+
+  EXPECT_FALSE(m.IsValid());
+}
+
+TEST(MessageTest, DeserializePopulatesMessageWithErrIfMajorVersionMismatches) {
+  uint8_t serialized[] = {
+    0x2A, 0x0F, 0x00, 0x22,
+    0x00, 0x00, 0x00, 0x00,
+  };
+
+  Message m = Message::Deserialize(serialized, 8);
+
+  EXPECT_FALSE(m.IsValid());
+}
+
+TEST(MessageTest, DeserializePopulatesMessageWithErrIfMinorVersionMismatches) {
+  uint8_t serialized[] = {
+    0x2A, 0x0F, 0x00, 0x13,
     0x00, 0x00, 0x00, 0x00,
   };
 

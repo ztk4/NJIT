@@ -3,6 +3,10 @@
 using namespace std;
 
 namespace router {
+// Current version is 1.2
+const uint8_t Message::kMajorVersion = 1;
+const uint8_t Message::kMinorVersion = 2;
+
 Message::Message(uint16_t dest_id, Type type, uint16_t src_id,
     const map<uint16_t, int16_t> &table)
     : dest_id_(dest_id),
@@ -33,7 +37,10 @@ ssize_t Message::Serialize(void *buf, size_t len) const {
   // Segment into unsigned 2-byte words.
   uint16_t *buf16 = reinterpret_cast<uint16_t *>(buf);
   *buf16++ = dest_id_;                // Destination Message ID.
-  *buf16++ = ((type_ & 0x3F) << 2);   // Opcode shifted 2 bits up in LSB.
+  // LSB contains upper 6-bits of type_, and last bit is msbit of kMajorVersion.
+  *buf16++ = ((type_ & 0x3F) << 2) | ((kMajorVersion & 0x10) >> 4) |
+  // MSB contains lower 4-bits of kMajorVersion, and kMinorVersion entirely.
+              ((kMajorVersion & 0xF) << 12) | ((kMinorVersion & 0xF) << 8);
   *buf16++ = src_id_;                 // Source Message ID.
   *buf16++ = table_.size();           // Number of table rows.
   
@@ -53,11 +60,15 @@ Message Message::Deserialize(const void *buf, size_t len) {
   // Segment into unsigned 2-byte words.
   const uint16_t *buf16 = reinterpret_cast<const uint16_t *>(buf);
   size_t num_rows = buf16[3];
-  uint16_t tmp_type = buf16[1] >> 2;
+  uint16_t tmp_type = (buf16[1] & 0xFC) >> 2;
+  uint8_t major_version = ((buf16[1] & 0x1) << 4) | ((buf16[1] & 0xF000) >> 12);
+  uint8_t minor_version = ((buf16[1] & 0xF00) >> 8);
 
-  // If len is not the expected size or bad source id or bad type,
+
+  // If len is not the expected size or bad source id or bad type or bad version
   // return an error Message.
-  if (len != 8 + num_rows * 4 || buf16[2] == 0 || tmp_type >= UNKNOWN)
+  if (len != 8 + num_rows * 4 || buf16[2] == 0 || tmp_type >= UNKNOWN || 
+      kMajorVersion != major_version || kMinorVersion != minor_version)
     return Message(0, UNKNOWN, 0);
 
   map<uint16_t, int16_t> table;
