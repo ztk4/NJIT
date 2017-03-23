@@ -56,17 +56,10 @@ GMOCK_HEADERS = $(GMOCK_DIR)/include/gmock/*.h \
 
 # House-keeping build targets.
 
-.PHONY: all test check clean R0 R1
-
-all : R0 R1
-
-R0 : CXXFLAGS += -DR0
-R0 : router0
-
-R1 : CXXFLAGS += -DR1
-R1 : router1
+.PHONY: all test check clean
 
 test : $(TESTS)
+
 
 check : $(TESTS)
 	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
@@ -160,13 +153,18 @@ message_io.o : message_io.cpp message_io.h message.h socket.h
 message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-driver.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+driver0.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-router0 : driver.o message_io.o message_flow.o message.o timeout.o socket.o
+driver1.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+router0 : CXXFLAGS+=-DR0
+router0: driver0.o message_io.o message_flow.o message.o timeout.o socket.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-router1 : driver.o message_io.o message_flow.o message.o timeout.o socket.o
+router1 : CXXFLAGS+=-DR1
+router1: driver1.o message_io.o message_flow.o message.o timeout.o socket.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Pattern for simple object files depending on a single source file and a single header file
