@@ -50,6 +50,8 @@ class Message {
   /// @returns the type of this message.
   Type GetType() const { return type_; }
 
+  const char *GetTypeString() const;
+
   /// @returns a const reference to the table from the body of this message.
   const std::map<uint16_t, int16_t> &Table() const { return table_; }
 

@@ -1,5 +1,7 @@
 #include "socket.h"
 
+using namespace std;
+
 namespace util {
 // InAddress Implementation.
 InSocket::InAddress::InAddress(in_addr_t addr, in_port_t port) {
@@ -76,3 +78,17 @@ ssize_t InSocket::SendTo(const void *message, size_t length, int flags,
   return sendto(socket_, message, length, flags, addr->Value(), addr->Length());
 }
 }  // namespace util
+
+ostream &operator<<(std::ostream &o, const util::InSocket::InAddress &addr) {
+  const struct sockaddr_in in_addr =
+    *reinterpret_cast<const struct sockaddr_in *>(addr.Value());
+  uint32_t ip = in_addr.sin_addr.s_addr;
+  uint16_t port = in_addr.sin_port;
+
+  return o <<
+    ((ip >> 24) & 0xFF) << '.' <<
+    ((ip >> 16) & 0xFF) << '.' <<
+    ((ip >> 8)  & 0xFF) << '.' <<
+    ((ip)       & 0xFF) << ':' <<
+    port;
+}

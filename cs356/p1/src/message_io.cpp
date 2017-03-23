@@ -1,5 +1,7 @@
 #include "message_io.h"
 
+#include <iostream>
+
 using namespace std;
 using util::Socket;
 using util::InSocket;
@@ -30,6 +32,11 @@ bool SocketMessageIo::SendTo(const Message &m, uint16_t router_id) {
       return false;
     addr = &(it->second);
   }
+
+  // LOGGING
+  if (verbose_)
+    cout << "Sending a message of type '" << m.GetTypeString() <<
+      "' to R" << router_id << " @[" << *addr << ']' << endl;
 
   // Serialize message.
   size_t len = m.SerializedLength();
@@ -64,9 +71,17 @@ Message SocketMessageIo::ReceiveFrom(uint16_t &router_id, bool &status) {
     router_id = it->second;
   }
 
-  // Deserialize and return message.
-  return status ? Message::Deserialize(buffer, len) :
-    Message(0, Message::UNKNOWN, 0);
+  if (!status)
+    return Message(0, Message::UNKNOWN, 0);
+
+  // Deserialize message.
+  Message m = Message::Deserialize(buffer, len);
+  
+  if (verbose_)
+    cout << "Received a message of type '" << m.GetTypeString() <<
+      "' from R" << router_id << " @[" << addr << ']' << endl;
+
+  return m;
 }
 
 void SocketMessageIo::AddRouterAddressPair(uint16_t router_id,

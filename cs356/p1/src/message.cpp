@@ -3,6 +3,15 @@
 using namespace std;
 
 namespace router {
+namespace {
+const char *kTypeStrings[] = {
+  "ACK",
+  "REQUEST TABLE",
+  "TABLE RESPONSE",
+  "PUSH TABLE",
+  "UNKNOWN",
+};
+}  // anonymous namespace
 // Current version is 1.2
 const uint8_t Message::kMajorVersion = 1;
 const uint8_t Message::kMinorVersion = 2;
@@ -27,6 +36,10 @@ bool Message::operator==(const Message &m) const {
 
 bool Message::operator!=(const Message &m) const {
   return !(*this == m);
+}
+
+const char *Message::GetTypeString() const {
+  return kTypeStrings[type_];
 }
 
 ssize_t Message::Serialize(void *buf, size_t len) const {

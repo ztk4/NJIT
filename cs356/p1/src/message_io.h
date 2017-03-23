@@ -53,6 +53,10 @@ class MessageIoFactory {
 /// Implementation of MessageIo using Sockets.
 class SocketMessageIo : public MessageIo {
  public:
+  /// Creates a SocketMessageIo with optional verbose traces.
+  ///
+  /// @param verbose is true if traces are desired.
+  explicit SocketMessageIo(bool verbose) : verbose_(verbose) {}
   ~SocketMessageIo() override = default;
 
   // MUTEX LOCKS EXCLUDED
@@ -86,13 +90,22 @@ class SocketMessageIo : public MessageIo {
   static std::mutex addr_lookup_table_mutex_;   /// GUARDS addr_lookup_table_.
   static std::mutex rev_lookup_table_mutex_;    /// GUARDS rev_lookup_table_.
   static std::unique_ptr<util::Socket> socket_;
+
+  bool verbose_;
 };
 /// Implementation of MessageIoFactory for SocketMessageIo's
 class SocketMessageIoFactory : public MessageIoFactory {
  public:
+  /// Creates a factory that passes verbose onto SocketMessageIo's
+  ///
+  /// @param verbose the state to pass on.
+  SocketMessageIoFactory(bool verbose) : verbose_(verbose) {}
   ~SocketMessageIoFactory() override = default;
 
-  MessageIo *MakeMessageIo() override { return new SocketMessageIo; }
+  MessageIo *MakeMessageIo() override { return new SocketMessageIo(verbose_); }
+
+ private:
+  bool verbose_;
 };
 }  // namespace router
 

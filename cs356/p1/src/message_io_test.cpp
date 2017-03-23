@@ -38,7 +38,7 @@ class SocketMessageIoTest : public ::testing::Test {
 
   SocketMessageIoTest() 
       : m_(1, Message::ACK, 1),
-        message_io_(new SocketMessageIo()) {}
+        message_io_(new SocketMessageIo(false)) {}
 
   Message m_;
   unique_ptr<MessageIo> message_io_;

@@ -2,6 +2,7 @@
 #define UTIL_SOCKET_H_
 
 #include <functional>
+#include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
@@ -126,6 +127,10 @@ class InSocket : public Socket {
   int socket_ = -1;  /// Socket file descriptor.
 };
 }  // namespace util
+
+// LOGGING
+std::ostream &operator<<(std::ostream &o,
+    const util::InSocket::InAddress &addr);
 
 namespace std {
 /// Sepcialization of std::hash to allow hashing of InAddress
