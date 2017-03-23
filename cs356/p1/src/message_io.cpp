@@ -101,6 +101,6 @@ void SocketMessageIo::SetSocket(Socket *s) {
 }
 
 void SocketMessageIo::CloseSocket() {
-  socket_.reset();
+  socket_.release();
 }
 }  // namespace router

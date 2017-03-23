@@ -24,8 +24,7 @@ class MessageIo {
   /// @returns true if the message was sent successfully, false otherwise.
   virtual bool SendTo(const Message &m, uint16_t router_id) = 0;
 
-  /// Recieves a message from any address. This method blocks on receving a
-  /// packet, and returns on the first packet received.
+  /// Recieves a message from any address.
   ///
   /// @param router_id this reference is set to the identifier of the router
   ///                  the message is received from.
