@@ -41,7 +41,7 @@ class TimeoutFactory {
   virtual ~TimeoutFactory() = default;
 
   /// @returns a pointer to a new Timeout. Transfers ownership to caller.
-  virtual Timeout *MakeTimeout();
+  virtual Timeout *MakeTimeout() = 0;
 
  protected:
   TimeoutFactory() = default;
