@@ -40,7 +40,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = timeout_test message_test socket_test message_io_test
+TESTS = timeout_test message_test socket_test message_io_test message_flow_test
 
 # All targets required for an operational build
 TARGETS = 
@@ -123,6 +123,12 @@ message_io_test.o : message_io_test.cpp message_io.h message.h socket.h mock_soc
 message_io_test : message_io_test.o message_io.o message.o socket.o gmock_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
+message_flow_test.o : message_flow_test.cpp message_flow.h message_io.h message.h socket.h timeout.h mock_timeout.h mock_socket.h $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+message_flow_test : message_flow_test.o message_flow.o message_io.o message.o socket.o timeout.o gmock_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 # GTEST TESTS
 
 timeout_test.o : timeout_test.cpp timeout.h $(GTEST_HEADERS)
@@ -146,6 +152,9 @@ socket_test : socket_test.o socket.o gtest_main.a
 # REGULAR TARGETS
 
 message_io.o : message_io.cpp message_io.h message.h socket.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 # Pattern for simple object files depending on a single source file and a single header file
