@@ -118,7 +118,6 @@ Server::Server(MessageIoFactory *message_io_factory,
         if (status) {
           switch (m.GetType()) {
             case Message::REQUEST_TABLE:
-			  cout << router_id << ' ' << m.GetTypeString() << endl;
               GetRequestReceived(router_id, m);
               break;
             case Message::PUSH_TABLE:

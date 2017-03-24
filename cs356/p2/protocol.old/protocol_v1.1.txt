@@ -1,0 +1,142 @@
+================================================================================
+|                              ROUTING PROTOCOL                                |
+================================================================================
+Author: Zachary Kaplan
+
+Version: 1.1
+
+I. Message Format
+--------------------------------------------------------------------------------
+
+  All multi-byte fields within this message are in Least Significant Byte First
+  order.
+
+  a) Message Header:
+
+                           1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-------------------------------+-------------------------------+
+      |   1. Destination Identifier   | 2. Opcode |    3. RESERVED    |
+      +-------------------------------+-------------------------------+
+      |      4. Source Identifier     |   5. Number of Message Rows   |
+      +-------------------------------+-------------------------------+
+      |                        MESSAGE BODY ...                       |
+
+      1. Destination Identifier
+          A unique unsigned 16-bit identifier for a particular message. This is
+          used to match paired messages. This identifier is the identifier on
+          the router this message is being sent to. A 0 for this identifier
+          indiciates the destination identifier is unknown (first message of
+          a given flow).
+
+      2. Opcode
+          A 6-bit opcode that specifies what type of message this is. The 
+          message types and corresponding opcodes are listed in detail in
+          section II. Message Types.
+
+      3. RESERVERED
+          This 10-bit span is reserved for future use.
+
+      4. Source Identifier
+          A unique unsigned 16-bit identifier for a particular message. This is
+          used to match paired messages. This identifier is the identifier on
+          the router this message is being sent from. The value 0 is NOT allowed
+          in this header field.
+
+      5. Number of Message Rows
+          This is the number of 32-bit table rows that follow this header in the
+          message body. This number must be 0 for messages without a body.
+          Stored as an unsigned 16-bit integer.
+
+  b) Message Body (Optional):
+
+                           1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3
+       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-------------------------------+-------------------------------+
+      |                       MESSAGE HEADER                          |
+      +-------------------------------+-------------------------------+
+      |     1. Router Identifier      |        2. Routing Cost        |
+      +-------------------------------+-------------------------------+
+      |                 ADDITIONAL ROWS AS NEEDED                     |
+
+      1. Router Identifier
+          This is an unsigned 16-bit integer uniquely representing a single
+          router in the network.
+
+      2. Routing Cost
+          The routing cost to the specified router from the router sending the
+          message.
+
+II. Message Types
+--------------------------------------------------------------------------------
+
+    Message Type    | Opcode    | Description
+    --------------------------------------------
+    ACK                   0       Acknowledges the receipt of another message
+                                  with the same identifier. Contains NO message
+                                  body.
+
+    REQUEST TABLE         1       Request to recieve this routers current table.
+                                  Contains NO message body.
+
+    TABLE RESPONSE        2       Response with routing table of the sending
+                                  router. Contains a message body consisting of
+                                  the routing costs table.
+
+    PUSH TABLE            3       Pushes the sending router's table to the
+                                  receiving router. Contains a message body
+                                  consisting of the routing costs table.
+
+    RESERVED           4-63       Reserved for future use.
+
+III. Message Flow
+--------------------------------------------------------------------------------
+
+  The timeout for any message is 1 second. All messages in a given flow share
+  the same identifier. This is selected by the sender of the first message in a
+  flow, and is best chosen incrementally.
+
+  a) Request-Response Flow
+
+    Client                  Server
+      |                       |
+      |     REQUEST TABLE     |
+      | --------------------> |
+      |                       |
+      |     TABLE RESPONSE    |
+      | <-------------------- |
+      |                       |
+      |          ACK          |
+      | --------------------> |
+      |                       |
+
+      1. The client sends a REQUEST TABLE message to the server. If this message
+         times out before the server's table response is recieved, then this
+         request is resent.
+
+      2. The server sends a TABLE RESPONSE upon receipt of a REQUEST TABLE
+         message. Upon timeout, if an ACK has not been recieved, the server
+         should resend this response.
+
+      3. Upon receipt of a TABLE RESPONSE, the client should always send an ACK
+         regardless of if the response is a duplicate.
+
+  b) Push Flow
+
+    Client                  Server
+      |                       |
+      |       PUSH TABLE      |
+      | --------------------> |
+      |                       |
+      |          ACK          |
+      | <-------------------- |
+      |                       |
+
+      1. The client sends a PUSH TABLE message to the server. If the server's
+         ACK is not recieved before this message times out, then this message
+         should be resent.
+
+      2. Upon receipt of a PUSH TABLE message, the server should always send an
+         ACK regardless of if this push is a duplicate to a previous push.
+
+================================================================================
