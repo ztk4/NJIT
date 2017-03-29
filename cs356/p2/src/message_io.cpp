@@ -1,6 +1,6 @@
 #include "message_io.h"
 
-#include <iostream>
+#include "logging.h"
 
 using namespace std;
 using util::Socket;
@@ -35,8 +35,8 @@ bool SocketMessageIo::SendTo(const Message &m, uint16_t router_id) {
 
   // LOGGING
   if (verbose_)
-    cout << "Sending a message of type '" << m.GetTypeString() <<
-      "' to R" << router_id << " @[" << *addr << ']' << endl;
+    INFO << "Sending a message of type '" << m.GetTypeString() <<
+      "' to R" << router_id << " @[" << *addr << ']';
 
   // Serialize message.
   size_t len = m.SerializedLength();
@@ -78,8 +78,8 @@ Message SocketMessageIo::ReceiveFrom(uint16_t &router_id, bool &status) {
   Message m = Message::Deserialize(buffer, len);
   
   if (verbose_)
-    cout << "Received a message of type '" << m.GetTypeString() <<
-      "' from R" << router_id << " @[" << addr << ']' << endl;
+    INFO << "Received a message of type '" << m.GetTypeString() <<
+      "' from R" << router_id << " @[" << addr << ']';
 
   return m;
 }

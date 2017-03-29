@@ -33,7 +33,7 @@ CXX = g++
 CPPFLAGS += -isystem $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -std=c++11 -O3 -DNDEBUG -Wall -Wextra -pthread
+CXXFLAGS += -std=c++11 -O3 -Wall -Wextra -pthread
 
 # Flags passed to the C++ linker.
 LDFLAGS += -lpthread
@@ -41,6 +41,9 @@ LDFLAGS += -lpthread
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
 TESTS = timeout_test message_test socket_test message_io_test message_flow_test
+
+# All targets produced by this Makefile.
+TARGETS = router0 router1
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -56,10 +59,15 @@ GMOCK_HEADERS = $(GMOCK_DIR)/include/gmock/*.h \
 
 # House-keeping build targets.
 
-.PHONY: all test check clean
+.PHONY: all test check debug clean
+
+all : CXXFLAGS+= -DNDEBUG
+all : $(TARGETS)
+
+debug : CXXFLAGS+= -g
+debug : $(TARGETS)
 
 test : $(TESTS)
-
 
 check : $(TESTS)
 	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
@@ -147,24 +155,25 @@ socket_test : socket_test.o socket.o gtest_main.a
 
 # REGULAR TARGETS
 
-message_io.o : message_io.cpp message_io.h message.h socket.h
+timeout.o : timeout.cpp timeout.h logging.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+message_io.o : message_io.cpp message_io.h message.h socket.h logging.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 driver0.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) -DR0 $(CXXFLAGS) -c $< -o $@
 
 driver1.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) -DR1 $(CXXFLAGS) -c $< -o $@
 
-router0 : CXXFLAGS+=-DR0
-router0: driver0.o message_io.o message_flow.o message.o timeout.o socket.o
+router0 : driver0.o message_io.o message_flow.o message.o timeout.o socket.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-router1 : CXXFLAGS+=-DR1
-router1: driver1.o message_io.o message_flow.o message.o timeout.o socket.o
+router1 : driver1.o message_io.o message_flow.o message.o timeout.o socket.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Pattern for simple object files depending on a single source file and a single header file

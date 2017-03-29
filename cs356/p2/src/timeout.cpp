@@ -3,6 +3,8 @@
 #include <thread>
 #include <memory>
 
+#include "logging.h"
+
 using namespace std;
 
 namespace util {
@@ -51,6 +53,7 @@ SimpleTimeout::InternalTimeout::InternalTimeout(
     : active_(true) {
   // Spawn a thread capturing the user's callback, the period, and this.
   thread([callback, period, this]() {
+        DEBUG << "Timing Thread Spawned.";
         // A unique ptr to this, guarenteeing that this thread will always take
         // ownership of this, and delete it when done.
         unique_ptr<InternalTimeout> this_deleter(this);
@@ -61,6 +64,8 @@ SimpleTimeout::InternalTimeout::InternalTimeout(
         // Execute callback if active.
         if (active_)
           callback();
+
+        DEBUG << "Timing Thread Destroyed.";
       }).detach();  // Detach the thread.
 }
 }  // namespace util
