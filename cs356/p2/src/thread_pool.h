@@ -33,7 +33,7 @@ class ThreadPool {
   /// @param end an output iterator specifying the end of a range (exclusive).
   template <class T>
   void Map(const std::function<void(const typename T::value_type &arg)> &func,
-      T begin, T end) {
+      const T begin, const T end) {
     MapAsync(func, begin, end);
     JoinAll();
   }
@@ -42,7 +42,7 @@ class ThreadPool {
   template <class T>
   void MapAsync(
       const std::function<void(const typename T::value_type &arg)> &func,
-      T begin, T end) {
+      const T begin, const T end) {
     {  // Scope for lock
       std::lock_guard<std::mutex> queued_tasks_mutex_lock(queued_tasks_mutex_);
 
