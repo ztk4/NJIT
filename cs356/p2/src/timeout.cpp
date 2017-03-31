@@ -53,7 +53,7 @@ SimpleTimeout::InternalTimeout::InternalTimeout(
     : active_(true) {
   // Spawn a thread capturing the user's callback, the period, and this.
   thread([callback, period, this]() {
-        DEBUG << "Timing Thread Spawned.";
+        DEBUG << "Spawning new Timeout Thread.";
         // A unique ptr to this, guarenteeing that this thread will always take
         // ownership of this, and delete it when done.
         unique_ptr<InternalTimeout> this_deleter(this);
@@ -65,7 +65,7 @@ SimpleTimeout::InternalTimeout::InternalTimeout(
         if (active_)
           callback();
 
-        DEBUG << "Timing Thread Destroyed.";
+        DEBUG << "Killing this Timeout Thread.";
       }).detach();  // Detach the thread.
 }
 }  // namespace util

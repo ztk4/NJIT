@@ -1,6 +1,7 @@
 #ifndef UTIL_LOGGING_H_
 #define UTIL_LOGGING_H_
 
+#include <ios>
 #include <iostream>
 #include <sstream>
 #include <thread>
@@ -36,6 +37,20 @@ class StreamLogger {
   template <typename T>
   StreamLogger &operator<<(const T &t) {
     buffer_ << t;
+    return *this;
+  }
+
+  // For manipulators, pass onto sstream
+  StreamLogger &operator<<(std::ios_base &(*manip)(std::ios_base &)) {
+    buffer_ << manip;
+    return *this;
+  }
+  StreamLogger &operator<<(std::ios &(*manip)(std::ios &)) {
+    buffer_ << manip;
+    return *this;
+  }
+  StreamLogger &operator<<(std::ostream &(*manip)(std::ostream &)) {
+    buffer_ << manip;
     return *this;
   }
 
