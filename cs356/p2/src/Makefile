@@ -123,12 +123,6 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 
 # GMOCK TESTS
 
-thread_pool_test.o : thread_pool_test.cpp thread_pool.h $(GMOCK_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
-
-thread_pool_test : thread_pool_test.o thread_pool.o gmock_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
-
 message_io_test.o : message_io_test.cpp message_io.h message.h socket.h mock_socket.h $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
@@ -142,6 +136,12 @@ message_flow_test : message_flow_test.o message_flow.o message_io.o message.o so
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # GTEST TESTS
+
+thread_pool_test.o : thread_pool_test.cpp thread_pool.h $(GTEST_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+thread_pool_test : thread_pool_test.o thread_pool.o gtest_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 timeout_test.o : timeout_test.cpp timeout.h $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<

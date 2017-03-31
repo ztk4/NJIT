@@ -6,9 +6,7 @@
 #include <utility>
 
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 
-using testing::Each;
 using namespace std;
 
 namespace util {
