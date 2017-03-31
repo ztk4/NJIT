@@ -40,7 +40,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = timeout_test message_test socket_test message_io_test message_flow_test
+TESTS = timeout_test message_test socket_test message_io_test message_flow_test thread_pool_test
 
 # All targets produced by this Makefile.
 TARGETS = router0 router1
@@ -67,8 +67,10 @@ all : $(TARGETS)
 debug : CXXFLAGS+= -g
 debug : $(TARGETS)
 
+test : CXXFLAGS+= -g
 test : $(TESTS)
 
+check : CXXFLAGS+= -DNDEBUG
 check : $(TESTS)
 	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
 
@@ -121,6 +123,12 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 
 # GMOCK TESTS
 
+thread_pool_test.o : thread_pool_test.cpp thread_pool.h $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+thread_pool_test : thread_pool_test.o thread_pool.o gmock_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
 message_io_test.o : message_io_test.cpp message_io.h message.h socket.h mock_socket.h $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
@@ -156,6 +164,9 @@ socket_test : socket_test.o socket.o gtest_main.a
 # REGULAR TARGETS
 
 timeout.o : timeout.cpp timeout.h logging.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+thread_pool.o : thread_pool.cpp thread_pool.h logging.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 message_io.o : message_io.cpp message_io.h message.h socket.h logging.h
