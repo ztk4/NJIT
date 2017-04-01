@@ -47,9 +47,8 @@ bool DistanceVectorTable::UpdateTable(uint16_t source_id,
 
   return edited;
 }
-}  // namespace router
 
-ostream &operator<<(ostream &o, const router::DistanceVectorTable &dvt) {
+ostream &operator<<(ostream &o, const DistanceVectorTable &dvt) {
   const char *kBreak = "+-----------------+";
   o << kBreak << endl;
   o << "|   ROUTING TABLE   |" << endl;
@@ -62,3 +61,4 @@ ostream &operator<<(ostream &o, const router::DistanceVectorTable &dvt) {
 
   return o << kBreak << endl;
 }
+}  // namespace router

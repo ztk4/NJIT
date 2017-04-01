@@ -126,11 +126,10 @@ class InSocket : public Socket {
  private:
   int socket_ = -1;  /// Socket file descriptor.
 };
-}  // namespace util
 
 // LOGGING
-std::ostream &operator<<(std::ostream &o,
-    const util::InSocket::InAddress &addr);
+std::ostream &operator<<(std::ostream &o, const InSocket::InAddress &addr);
+}  // namespace util
 
 namespace std {
 /// Sepcialization of std::hash to allow hashing of InAddress

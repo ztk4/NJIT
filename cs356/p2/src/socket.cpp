@@ -83,9 +83,8 @@ ssize_t InSocket::SendTo(const void *message, size_t length, int flags,
     const Address *addr) {
   return sendto(socket_, message, length, flags, addr->Value(), addr->Length());
 }
-}  // namespace util
 
-ostream &operator<<(std::ostream &o, const util::InSocket::InAddress &addr) {
+ostream &operator<<(std::ostream &o, const InSocket::InAddress &addr) {
   const struct sockaddr_in in_addr =
     *reinterpret_cast<const struct sockaddr_in *>(addr.Value());
   uint32_t ip = in_addr.sin_addr.s_addr;
@@ -98,3 +97,4 @@ ostream &operator<<(std::ostream &o, const util::InSocket::InAddress &addr) {
     ((ip >> 24) & 0xFF) << ':' <<
     port;
 }
+}  // namespace util

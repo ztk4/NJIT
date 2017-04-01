@@ -41,10 +41,9 @@ class DistanceVectorTable {
  private:
   std::map<uint16_t, int16_t> table_;
 };
-}  // namespace router
 
 /// Printing operator overload for DistanceVectorTable.
-std::ostream &operator<<(std::ostream &o,
-    const router::DistanceVectorTable &dvt);
+std::ostream &operator<<(std::ostream &o, const DistanceVectorTable &dvt);
+}  // namespace router
 
 #endif  // ROUTER_DISTANCE_VECTOR_TABLE_H_
