@@ -6,6 +6,8 @@
 #include <map>
 
 namespace router {
+/// A class for storing this router's distance vector table, and calculating
+/// updates to it based on neighboring tables.
 class DistanceVectorTable {
  public:
   /// Constructs a new table with the specified router as the source.
@@ -27,7 +29,7 @@ class DistanceVectorTable {
   bool AddEdge(uint16_t router_id, int16_t distance);
 
   /// @returns a const reference to the mapping table.
-  const std::map<uint16_t, int16_t> &Table() const;
+  const std::map<uint16_t, int16_t> &Table() const { return table_; }
 
   /// Updates this table with new edges from a specified known source.
   ///

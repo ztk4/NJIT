@@ -40,7 +40,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = timeout_test message_test socket_test message_io_test message_flow_test thread_pool_test
+TESTS = timeout_test message_test socket_test message_io_test message_flow_test thread_pool_test distance_vector_table_test
 
 # All targets produced by this Makefile.
 TARGETS = router0 router1
@@ -122,6 +122,12 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 # GMOCK TESTS
+
+distance_vector_table_test.o : distance_vector_table_test.cpp distance_vector_table.h $(GMOCK_HEADERS)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+distance_vector_table_test : distance_vector_table_test.o distance_vector_table.o gmock_main.a
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 message_io_test.o : message_io_test.cpp message_io.h message.h socket.h mock_socket.h $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<

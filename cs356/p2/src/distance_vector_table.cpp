@@ -14,10 +14,6 @@ bool DistanceVectorTable::AddEdge(uint16_t router_id, int16_t distance) {
   return res.second;
 }
 
-const map<uint16_t, int16_t> &DistanceVectorTable::Table() const {
-  return table_;
-}
-
 bool DistanceVectorTable::UpdateTable(uint16_t source_id,
     const map<uint16_t, int16_t> &table) {
   // Lookup source_id.
