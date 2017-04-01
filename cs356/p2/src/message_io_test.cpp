@@ -26,9 +26,11 @@ class SocketMessageIoTest : public ::testing::Test {
  protected:
   static const uint16_t kRouterId;
   static const InSocket::InAddress kAddress;
+  static MockSocket *mock_socket;
+
   // Called before all tests from this fixture.
   static void SetUpTestCase() {
-    SocketMessageIo::SetSocket(mock_socket_ = new MockSocket());
+    SocketMessageIo::SetSocket(mock_socket = new MockSocket());
     SocketMessageIo::AddRouterAddressPair(kRouterId, kAddress);
   }
   // Called after all tests from this fixture run.
@@ -42,12 +44,11 @@ class SocketMessageIoTest : public ::testing::Test {
 
   Message m_;
   unique_ptr<MessageIo> message_io_;
-  static MockSocket *mock_socket_;
 };
 
 const uint16_t SocketMessageIoTest::kRouterId = 0xABCD;
 const InSocket::InAddress SocketMessageIoTest::kAddress(0xDEADBEEF, 0x4242);
-MockSocket *SocketMessageIoTest::mock_socket_;
+MockSocket *SocketMessageIoTest::mock_socket;
 
 TEST_F(SocketMessageIoTest, SendToFailsWithInvalidMessage) {
   EXPECT_FALSE(message_io_->SendTo(Message(0, Message::UNKNOWN, 0), kRouterId));
@@ -60,7 +61,7 @@ TEST_F(SocketMessageIoTest, SendToFailsWithUnknownRouterId) {
 TEST_F(SocketMessageIoTest, SendToPassesMessageAlongToSocketWithRightAddress) {
   Message passed_message(0, Message::UNKNOWN, 0);
   // Expects proper address to be passed back.
-  EXPECT_CALL(*mock_socket_, SendTo(_, _, _,
+  EXPECT_CALL(*mock_socket, SendTo(_, _, _,
         WhenDynamicCastTo<const InSocket::InAddress *>(Pointee(kAddress))))
     // Assigns the deserialization of the passed buffer to passed message
     .WillOnce(DoAll(
@@ -77,14 +78,14 @@ TEST_F(SocketMessageIoTest, SendToPassesMessageAlongToSocketWithRightAddress) {
 }
 
 TEST_F(SocketMessageIoTest, SendToFailsWithBadReturnLength) {
-  EXPECT_CALL(*mock_socket_, SendTo(_, _, _, _))
+  EXPECT_CALL(*mock_socket, SendTo(_, _, _, _))
     .WillOnce(Return(0));
 
   EXPECT_FALSE(message_io_->SendTo(Message(1, Message::ACK, 1), kRouterId));
 }
 
 TEST_F(SocketMessageIoTest, SendToSucceedsWithOkReturnLength) {
-  EXPECT_CALL(*mock_socket_, SendTo(_, _, _, _))
+  EXPECT_CALL(*mock_socket, SendTo(_, _, _, _))
     .WillOnce(Return(m_.SerializedLength()));
 
   EXPECT_TRUE(message_io_->SendTo(m_, kRouterId));
@@ -94,7 +95,7 @@ TEST_F(SocketMessageIoTest, ReceiveFromFailsWithBadReturnLength) {
   uint16_t router_id;
   bool status = true;
 
-  EXPECT_CALL(*mock_socket_, RecvFrom(_, _, _, _))
+  EXPECT_CALL(*mock_socket, RecvFrom(_, _, _, _))
     .WillOnce(DoAll(
         WithArg<3>(Invoke(
             [](Socket::Address *addr) {
@@ -111,7 +112,7 @@ TEST_F(SocketMessageIoTest, ReceiveFromFailsWithBadAddress) {
   uint16_t router_id;
   bool status = true;
 
-  EXPECT_CALL(*mock_socket_, RecvFrom(_, _, _, _))
+  EXPECT_CALL(*mock_socket, RecvFrom(_, _, _, _))
     .WillOnce(DoAll(
           WithArg<3>(Invoke(
               [](Socket::Address *addr) {
@@ -131,7 +132,7 @@ TEST_F(SocketMessageIoTest, ReceiveFromHasCorrectOutputWithGoodSocket) {
   char buf[m_.SerializedLength()];
   m_.Serialize(buf, m_.SerializedLength());
 
-  EXPECT_CALL(*mock_socket_, RecvFrom(_, _, _, _))
+  EXPECT_CALL(*mock_socket, RecvFrom(_, _, _, _))
     .WillOnce(DoAll(
           WithArg<3>(Invoke(
               [](Socket::Address *addr) {
