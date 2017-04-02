@@ -9,7 +9,8 @@ namespace util {
 /// Mock Timeout. ONLY FOR TESTING.
 class MockTimeout : public Timeout {
  public:
-  ~MockTimeout() override = default;
+  // Calls mock method Cancel on destruction.
+  ~MockTimeout() override { Cancel(); }
 
   MOCK_METHOD1(Start, bool(const std::function<void(void)> &callback));
   MOCK_METHOD0(Cancel, bool());

@@ -4,17 +4,19 @@
 #include <atomic>
 #include <cstdint>
 #include <functional>
-#include <memory>
 #include <map>
 #include <mutex>
+#include <set>
 
+#include "message.h"
 #include "message_io.h"
+#include "thread_pool.h"
 #include "timeout.h"
 
-/// Namespace for components directly related to the routing protocol.
 namespace router {
-/// Resets all ongoing connections. Removes all expectations of responses.
+/// Resets all active "connections." Essentially clears all active timeouts.
 void ResetAll();
+
 /// Client Class. Contains entry points for each type of message flow, and does
 /// not do any threading.
 class Client {
@@ -24,14 +26,14 @@ class Client {
   ///
   /// @param message_io_factory the factory to make message_io objects from.
   /// @param timeout_factory the factory to make timeouts from.
+  /// @param max_threads maximum number of threads to dedicate towards client
+  ///                    requests.
   Client(MessageIoFactory *message_io_factory,
-      util::TimeoutFactory *timeout_factory);
+      util::TimeoutFactory *timeout_factory, int max_threads = 4);
 
   /// Sends a Get Table Request message to the router specified.
   ///
   /// @param router_id the router to send the request to.
-  /// 
-  /// @returns true on success, false on failure.
   void SendGetTableRequest(uint16_t router_id);
 
   /// Sends a Push Table message containing the specified table to the router
@@ -39,14 +41,20 @@ class Client {
   ///
   /// @param router_id the router to send the request to.
   /// @param table a const reference to this router's routing table.
-  ///
-  /// @returns true on success, false on failure.
   void PushTableTo(uint16_t router_id,
+      const std::map<uint16_t, int16_t> &table);
+
+  /// Broadcasts table using PushTable to all routers specified.
+  ///
+  /// @param neighbor_ids the routers to send the request to.
+  /// @param table a const reference to this router's routing table.
+  void BroadcastTable(std::set<uint16_t> neighbor_ids,
       const std::map<uint16_t, int16_t> &table);
 
  private:
   std::unique_ptr<MessageIoFactory> message_io_factory_;
   std::unique_ptr<util::TimeoutFactory> timeout_factory_;
+  util::ThreadPool pool_;
 };
 
 /// Server Class. On construction, spawns a thread to manage the server object,
@@ -59,18 +67,32 @@ class Server {
   ///
   /// @param message_io_factory the factory to make message_io objects from.
   /// @param timeout_factory the factory to make timeouts from.
-  /// @param routing_table a reference to this router's table
+  /// @param max_threads the maximum number of threads to dedicate to serving
+  ///                    incoming requests.
   Server(MessageIoFactory *message_io_factory,
-      util::TimeoutFactory *timeout_factory,
-	  const std::map<uint16_t, int16_t> &routing_table);
+      util::TimeoutFactory *timeout_factory, int max_threads = 4);
   ~Server();
-
-  /// Attaches a callback to the receipt of table event. Attaching a new
-  /// callback will overwrite a previously attached callback.
+  
+  /// Attaches callback to the receipt of a table event. Will be called with
+  /// sender id and received table. New callbacks replace old ones.
+  /// NOTE: callback may be called from multiple threads simultaneously.
   ///
-  /// @param callback the function that will be called with the received table.
+  /// @param callback the function to call. Set to default constructed function
+  ///                 to remove the callback (default).
   void OnTableReceipt(
-      const std::function<void(const std::map<uint16_t, int16_t> &)> &callback);
+      const std::function<void(uint16_t source_id,
+        std::map<uint16_t, int16_t> table)> &callback =
+      std::function<void(uint16_t, std::map<uint16_t, int16_t>)>());
+
+  /// Attaches callback to the request for a table. Will be called with no args.
+  /// New callbacks replace old ones.
+  /// NOTE: callback may be called from multiple threads simultaneously.
+  ///
+  /// @param callback the function to call. Set to default constructed function
+  ///                 to remove the callback (default).
+  void OnTableRequest(
+      const std::function<std::map<uint16_t, int16_t>(void)> &callback = 
+      std::function<std::map<uint16_t, int16_t>(void)>());
 
  private:
   // The rest of the flows as described in the protocol.
@@ -81,11 +103,12 @@ class Server {
 
   std::unique_ptr<MessageIoFactory> message_io_factory_;
   std::unique_ptr<util::TimeoutFactory> timeout_factory_;
-  const std::map<uint16_t, int16_t> &routing_table_;
-  std::atomic<bool> active_;  // Is server active?
-  std::atomic<bool> alive_;   // Is spawned thread alive?
-  std::function<void(const std::map<uint16_t, int16_t> &)> table_receipt_;
-  std::mutex table_receipt_mutex_;
+  std::function<void(uint16_t, std::map<uint16_t, int16_t>)> receipt_cb_;
+  std::mutex receipt_cb_mutex_;
+  std::function<std::map<uint16_t, int16_t>(void)> request_cb_;
+  std::mutex request_cb_mutex_;
+  util::ThreadPool pool_;
+  std::atomic<bool> active_;
 };
 }  // namespace router
 

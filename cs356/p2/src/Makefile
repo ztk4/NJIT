@@ -138,7 +138,7 @@ message_io_test : message_io_test.o message_io.o message.o socket.o gmock_main.a
 message_flow_test.o : message_flow_test.cpp message_flow.h message_io.h message.h socket.h timeout.h mock_timeout.h mock_socket.h $(GMOCK_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-message_flow_test : message_flow_test.o message_flow.o message_io.o message.o socket.o timeout.o gmock_main.a
+message_flow_test : message_flow_test.o message_flow.o message_io.o message.o socket.o timeout.o thread_pool.o gmock_main.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # GTEST TESTS
@@ -178,7 +178,7 @@ thread_pool.o : thread_pool.cpp thread_pool.h logging.h
 message_io.o : message_io.cpp message_io.h message.h socket.h logging.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h
+message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h thread_pool.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
 driver0.o : driver.cpp message_io.h message_flow.h socket.h timeout.h

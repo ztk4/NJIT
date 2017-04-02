@@ -1,10 +1,7 @@
 #include "message_flow.h"
 
-#include <mutex>
-#include <thread>
-#include <utility>
-
 using namespace std;
+using util::ThreadPool;
 using util::Timeout;
 using util::TimeoutFactory;
 
@@ -21,6 +18,7 @@ class RepeatedSend {
         timeout_(move(timeout)) {
     Send();      
   }
+  // Disallow copy, move, and all assignment.
   RepeatedSend(const RepeatedSend &) = delete;
   RepeatedSend(RepeatedSend &&) = delete;
   RepeatedSend &operator=(const RepeatedSend &) = delete;
@@ -59,22 +57,30 @@ void InternalSendTo(uint16_t router_id, const Message &m,
     unique_ptr<Timeout> &&timeout = move(unique_ptr<Timeout>())) {
   lock_guard<mutex> sending_mutex_lock(sending_mutex);
   sending.erase(m.SourceId());  // Erase existing pair if needed.
-  // Build RepeatedSend in map.
-  sending.emplace(piecewise_construct, forward_as_tuple(m.SourceId()),
-      forward_as_tuple(router_id, m, move(message_io), move(timeout)));
+  // Build RepeatedSend in map (nothing should be moved ever).
+
+  if (timeout) {
+    // Place in map to send repeatedly until cleaned.
+    sending.emplace(piecewise_construct, forward_as_tuple(m.SourceId()),
+        forward_as_tuple(router_id, m, move(message_io), move(timeout)));
+  } else {
+    // If not sending repeatedly, construct once on stack then destruct.
+    RepeatedSend(router_id, m, move(message_io), move(timeout));
+  }
 }
 }  // anonymous namespace
+// Resets above sending map.
 void ResetAll() {
   lock_guard<mutex> sending_mutex_lock(sending_mutex);
-  for (auto it = sending.begin(); it != sending.end(); ++it)
-    sending.erase(it);
+  sending.clear();
 }
 
 // Client Implementation
 Client::Client(MessageIoFactory *message_io_factory,
-    TimeoutFactory *timeout_factory)
+    TimeoutFactory *timeout_factory, int max_threads)
     : message_io_factory_(message_io_factory),
-      timeout_factory_(timeout_factory) {}
+      timeout_factory_(timeout_factory),
+      pool_(max_threads) {}
 
 void Client::SendGetTableRequest(uint16_t router_id) {
   Message m(0, Message::REQUEST_TABLE, ++last_used_id);
@@ -93,22 +99,25 @@ void Client::PushTableTo(uint16_t router_id,
       move(unique_ptr<Timeout>(timeout_factory_->MakeTimeout())));
 }
 
+void Client::BroadcastTable(set<uint16_t> neighbor_ids,
+    const map<uint16_t, int16_t> &table) {
+  // Blocks on completion.
+  pool_.Map([this, table](uint16_t router_id) { 
+      PushTableTo(router_id, table);
+    }, neighbor_ids.begin(), neighbor_ids.end());
+}
+
 // Server Implementation
 Server::Server(MessageIoFactory *message_io_factory,
-    TimeoutFactory *timeout_factory,
-	const map<uint16_t, int16_t> &routing_table)
+    TimeoutFactory *timeout_factory, int max_threads)
     : message_io_factory_(message_io_factory),
       timeout_factory_(timeout_factory),
-	  routing_table_(routing_table),
-      active_(true),
-      alive_(true) {
-  // Claim ownership of a single message_io
-  MessageIo *message_io = message_io_factory->MakeMessageIo();
-  
-  // Spawn thread that waits on incoming connections
-  thread([this, message_io]() {
+      pool_(max_threads),
+      active_(true) {
+  // Dispatch max_threads for server, non-blocking.
+  pool_.ExecuteAsync([this]() {
       // Thread claims ownership of transferred message_io
-      unique_ptr<MessageIo> message_io_deleter(message_io);
+      unique_ptr<MessageIo> message_io(message_io_factory_->MakeMessageIo());
       // While Server is active
       while (active_) {
         uint16_t router_id;
@@ -137,30 +146,39 @@ Server::Server(MessageIoFactory *message_io_factory,
 
         this_thread::yield();
       }
-  
-      // Notify server that thread is about to terminate.
-      alive_ = false;
-    }).detach();  // Detach thread.
+    }, max_threads);
 }
 
 Server::~Server() {
-  // Notify thread the server is going down.
+  // Notify threads the server is going down.
   active_ = false;
   
-  // Wait on thread before invalidating captured pointer.
-  while (alive_)
-    this_thread::yield();
+  // Wait on pool before invalidating captured pointer.
+  pool_.JoinAll();
 }
 
 void Server::OnTableReceipt(
-    const function<void(const map<uint16_t, int16_t> &)> &callback) {
-  lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
-  table_receipt_ = callback;
+    const function<void(uint16_t, map<uint16_t, int16_t>)> &callback) {
+  lock_guard<mutex> receipt_cb_mutex_lock(receipt_cb_mutex_);
+  receipt_cb_ = callback;
+}
+
+void Server::OnTableRequest(
+    const function<map<uint16_t, int16_t>(void)> &callback) {
+  lock_guard<mutex> request_cb_mutex_lock(request_cb_mutex_);
+  request_cb_ = callback;
 }
 
 void Server::GetRequestReceived(uint16_t router_id, const Message &m) {
+  map<uint16_t, int16_t> routing_table;
+  {
+    lock_guard<mutex> request_cb_mutex_lock(request_cb_mutex_);
+    if (request_cb_)
+      routing_table = request_cb_();
+  }
+
   Message resp(m.SourceId(), Message::TABLE_RESPONSE, ++last_used_id,
-      routing_table_);
+      routing_table);
 
   InternalSendTo(router_id, resp,
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())),
@@ -174,9 +192,9 @@ void Server::PushTableReceived(uint16_t router_id, const Message &m) {
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())));
 
   {
-    lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
-    if (table_receipt_)
-		table_receipt_(m.Table());
+    lock_guard<mutex> receipt_cb_mutex_lock(receipt_cb_mutex_);
+    if (receipt_cb_)
+      receipt_cb_(router_id, m.Table());
   }
 }
 
@@ -184,9 +202,8 @@ void Server::TableResponseReceived(uint16_t router_id, const Message &m) {
   {  // Check in sending map for previous message
     lock_guard<mutex> sending_mutex_lock(sending_mutex);
     auto it = sending.find(m.DestinationId());
-    if (it == sending.end())
-      return;  // Not in map, therefore this is a duplicate response
-    sending.erase(it);  // Remove listing (mark receipt and stop sending).
+    if (it != sending.end())
+      sending.erase(it);  // Remove listing (mark receipt and stop sending).
   }
 
   Message resp(m.SourceId(), Message::ACK, m.DestinationId());
@@ -195,9 +212,9 @@ void Server::TableResponseReceived(uint16_t router_id, const Message &m) {
       move(unique_ptr<MessageIo>(message_io_factory_->MakeMessageIo())));
 
   {
-    lock_guard<mutex> table_receipt_mutex_lock(table_receipt_mutex_);
-    if (table_receipt_)
-		table_receipt_(m.Table());
+    lock_guard<mutex> receipt_cb_mutex_lock(receipt_cb_mutex_);
+    if (receipt_cb_)
+      receipt_cb_(router_id, m.Table());
   }
 }
 
