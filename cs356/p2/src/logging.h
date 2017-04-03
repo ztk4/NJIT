@@ -3,6 +3,7 @@
 
 #include <ios>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <thread>
 
@@ -27,7 +28,8 @@ namespace internal {
 class StreamLogger {
  public:
   StreamLogger(std::ostream *stream, const char *prefix) : stream_(stream) {
-    buffer_ << '[' << prefix << '@' << std::this_thread::get_id() << "] ";
+    buffer_ << '[' << prefix
+      << '@' << std::hex << std::this_thread::get_id() << "] ";
   }
   ~StreamLogger() {
     buffer_ << std::endl;

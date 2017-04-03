@@ -1,113 +1,72 @@
-#include <map>
 #include <iostream>
-#include <cstdint>
+#include <map>
 #include <thread>
-#include <vector>
-#include <cstring>
 
-#include "socket.h"
+#include "logging.h"
+#include "config_parse.h"
 #include "message_flow.h"
 #include "message_io.h"
-
-#define IP_ADDR(a, b, c, d) (\
-  ((d & 0xFF) << 24) |\
-  ((c & 0xFF) << 16) |\
-  ((b & 0xFF) << 8)  |\
-  ((a & 0xFF))\
-)
-
-using namespace router;
-using namespace util;
-using namespace std;
-
-const uint16_t kPort = 0x4242;
+#include "socket.h"
 
 #ifdef R0
-map <uint16_t, int16_t> routing_table = {
-  {0, 0}, {1, 1}, {2, 3}, {3, 7},
-};
-uint16_t my_id = 0;
+const uint16_t kRouterId = 0;
 #elif R1
-map <uint16_t, int16_t> routing_table {
- {0, 1}, {1, 0}, {2, 1},
-};
-uint16_t my_id = 1;
+const uint16_t kRouterId = 1;
+#elif R2
+const uint16_t kRouterId = 2;
+#elif R3
+const uint16_t kRouterId = 3;
 #endif
-// For request tracking
-atomic<int> receive_count(0);
 
-ostream &operator<<(ostream &o, const map<uint16_t, int16_t> &table) {
-  o << "Received Routing Table (missing entries are unroutable):"
-	  << endl;
-  for (const auto &entry : table) {
-    o << "\tR" << entry.first << ":\t" << entry.second << endl;
-  }
-  return o;
-}
+using namespace std;
+using router::Configuration;
+using router::Client;
+using router::Server;
+using router::SocketMessageIoFactory;
+using util::SimpleTimeoutFactory;
 
 int main(int argc, char **argv) {
-  bool verbose = false;
-  if (argc == 2) {
-    if (!strncmp(argv[1], "-v", 3))
-      verbose = true;
-    else
-      return -2;
-  } else if (argc > 2) {
-    return -1;
+  Configuration config(&argc, &argv, kRouterId);
+
+  // Error ocurred during configuration.
+  if (config.RetVal()) {
+    return config.RetVal();
   }
 
-  InSocket::InAddress r0(IP_ADDR(128, 235, 209, 204), kPort);
-  InSocket::InAddress r1(IP_ADDR(128, 235, 209, 205), kPort);
+  INFO << "Configuration processed successfully, Starting router R"
+    << kRouterId << "'s main loop...";
+  INFO << "Press <Enter> to terminate";
 
-  // Initialize all addresses.
-  SocketMessageIo::AddRouterAddressPair(0, r0);
-  SocketMessageIo::AddRouterAddressPair(1, r1);
+  // Create Client (takes ownership of raw pointers).
+  Client client(new SocketMessageIoFactory(config.Verbose()),
+      new SimpleTimeoutFactory);
 
-  Socket *main_socket = new InSocket(InSocket::UDP);
-#ifdef R0
-  main_socket->Bind(&r0);
-#elif R1
-  main_socket->Bind(&r1);
-#endif
-  SocketMessageIo::SetSocket(main_socket);  // Takes ownership.
+  // Setup Server Callbacks.
+  Server::OnTableReceipt([&config, &client](uint16_t source_id,
+        map<uint16_t, int16_t> table) {
+      // If table was updated, broadcast tables.
+      if (config.Dvt().UpdateTable(source_id, table)) {
+        client.BroadcastTable(config.Neighbors(),
+            static_cast<map<uint16_t, int16_t>>(config.Dvt().Table()));
+      }
+    });
+  Server::OnTableRequest([&config]() -> map<uint16_t, int16_t> {
+      return config.Dvt().Table();
+    });
 
-  // Spawn servers
-  Server *servers[4];;
-  for (int i = 0; i < 4; ++i) {
-    servers[i] = new Server(new SocketMessageIoFactory(verbose),
-        new SimpleTimeoutFactory, routing_table);
-    servers[i]->OnTableReceipt(
-        [](const map<uint16_t, int16_t> &table) {
-          cout << table << endl;
-          ++receive_count;
-        });
-  }
+  // Start Server (takes ownership of raw pointers).
+  Server server(new SocketMessageIoFactory(config.Verbose()),
+      new SimpleTimeoutFactory);
 
-  Client client(new SocketMessageIoFactory(verbose), new SimpleTimeoutFactory);
+  // Send initial Broadcast
+  client.BroadcastTable(config.Neighbors(),
+      static_cast<map<uint16_t, int16_t>>(config.Dvt().Table()));
 
-#ifdef R0
-  cout << "My initial routing Table:" << endl;
-  cout << routing_table << endl;
-
-  client.SendGetTableRequest(1);
-  while (receive_count < 1)
+  // Wait on enter.
+  while (cin.get() != '\n')
     this_thread::yield();
 
-  client.PushTableTo(1, routing_table);
-#elif R1
-  cout << "My initial routing Table:" << endl;
-  cout << routing_table << endl;
-
-  while (receive_count < 1)
-    this_thread::yield();
-#endif
-
-  // Make sure last requests are handled before dying
-  this_thread::sleep_for(chrono::seconds(5));
-
-  // Kill Servers
-  for (int i = 0; i < 4; ++i)
-    delete servers[i];
+  INFO << "Shutting down router R" << kRouterId;
 
   return 0;
 }

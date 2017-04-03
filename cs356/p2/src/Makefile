@@ -43,7 +43,7 @@ LDFLAGS += -lpthread
 TESTS = timeout_test message_test socket_test message_io_test message_flow_test thread_pool_test distance_vector_table_test
 
 # All targets produced by this Makefile.
-TARGETS = router0 router1
+TARGETS = router0 router1 router2 router3
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -75,7 +75,7 @@ check : $(TESTS)
 	@for test in *_test; do echo "Running $${test}..."; ./$${test}; done
 
 clean :
-	rm -f $(TESTS) router0 router1 gmock.a gmock_main.a gtest.a gtest_main.a *.o
+	rm -f $(TESTS) $(TARGETS) gmock.a gmock_main.a gtest.a gtest_main.a *.o
 
 # Builds gmock.a and gmock_main.a.  These libraries contain both
 # Google Mock and Google Test.  A test should link with either gmock.a
@@ -181,16 +181,31 @@ message_io.o : message_io.cpp message_io.h message.h socket.h logging.h
 message_flow.o : message_flow.cpp message_flow.h message_io.h message.h socket.h timeout.h thread_pool.h
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-driver0.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
+config_parse.o : config_parse.cpp config_parse.h message_flow.h message_io.h socket.h distance_vector_table.h
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $<
+
+driver0.o : driver.cpp message_flow.h config_parse.h socket.h message_io.h
 	$(CXX) $(CPPFLAGS) -DR0 $(CXXFLAGS) -c $< -o $@
 
-driver1.o : driver.cpp message_io.h message_flow.h socket.h timeout.h
+driver1.o : driver.cpp message_flow.h config_parse.h socket.h message_io.h
 	$(CXX) $(CPPFLAGS) -DR1 $(CXXFLAGS) -c $< -o $@
 
-router0 : driver0.o message_io.o message_flow.o message.o timeout.o socket.o
+driver2.o : driver.cpp message_flow.h config_parse.h socket.h message_io.h
+	$(CXX) $(CPPFLAGS) -DR2 $(CXXFLAGS) -c $< -o $@
+
+driver3.o : driver.cpp message_flow.h config_parse.h socket.h message_io.h
+	$(CXX) $(CPPFLAGS) -DR3 $(CXXFLAGS) -c $< -o $@
+
+router0 : driver0.o config_parse.o thread_pool.o message_io.o message_flow.o message.o timeout.o socket.o distance_vector_table.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-router1 : driver1.o message_io.o message_flow.o message.o timeout.o socket.o
+router1 : driver1.o config_parse.o thread_pool.o message_io.o message_flow.o message.o timeout.o socket.o distance_vector_table.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+router2 : driver2.o config_parse.o thread_pool.o message_io.o message_flow.o message.o timeout.o socket.o distance_vector_table.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+router3 : driver3.o config_parse.o thread_pool.o message_io.o message_flow.o message.o timeout.o socket.o distance_vector_table.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # Pattern for simple object files depending on a single source file and a single header file

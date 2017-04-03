@@ -184,12 +184,12 @@ class ServerTest : public ::testing::Test {
     server_.reset(
         new Server(mock_message_io_factory_, mock_timeout_factory_, 1));
 
-    server_->OnTableRequest([]() -> const map<uint16_t, int16_t> & {
+    Server::OnTableRequest([]() -> const map<uint16_t, int16_t> & {
         return kTable;
       });
 
     received_ = false;
-    server_->OnTableReceipt([this](uint16_t source_id, 
+    Server::OnTableReceipt([this](uint16_t source_id, 
           map<uint16_t, int16_t> table) {
         source_id_ = source_id;
         table_update_ = table;
@@ -443,11 +443,11 @@ class FlowTest : public ::testing::Test {
     server_.reset(new Server(server_mock_message_io_factory_,
           server_mock_timeout_factory_, 1));
 
-    server_->OnTableRequest([]() -> const map<uint16_t, int16_t> & {
+    Server::OnTableRequest([]() -> const map<uint16_t, int16_t> & {
         return kTable;
       });
 
-    server_->OnTableReceipt([this](uint16_t source_id, 
+    Server::OnTableReceipt([this](uint16_t source_id, 
           map<uint16_t, int16_t> table) {
         source_id_ = source_id;
         table_update_ = table;

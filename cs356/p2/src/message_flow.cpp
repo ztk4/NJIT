@@ -72,6 +72,12 @@ void InternalSendTo(uint16_t router_id, const Message &m,
   }
 }
 }  // anonymous namespace
+// Static Storage
+function<void(uint16_t, map<uint16_t, int16_t>)> Server::receipt_cb_;
+mutex Server::receipt_cb_mutex_;
+function<map<uint16_t, int16_t>(void)> Server::request_cb_;
+mutex Server::request_cb_mutex_;
+
 // Resets above sending map.
 void ResetAll() {
   lock_guard<mutex> sending_mutex_lock(sending_mutex);

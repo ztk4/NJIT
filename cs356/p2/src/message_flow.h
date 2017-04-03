@@ -80,7 +80,7 @@ class Server {
   ///
   /// @param callback the function to call. Set to default constructed function
   ///                 to remove the callback (default).
-  void OnTableReceipt(
+  static void OnTableReceipt(
       const std::function<void(uint16_t source_id,
         std::map<uint16_t, int16_t> table)> &callback =
       std::function<void(uint16_t, std::map<uint16_t, int16_t>)>());
@@ -91,7 +91,7 @@ class Server {
   ///
   /// @param callback the function to call. Set to default constructed function
   ///                 to remove the callback (default).
-  void OnTableRequest(
+  static void OnTableRequest(
       const std::function<std::map<uint16_t, int16_t>(void)> &callback = 
       std::function<std::map<uint16_t, int16_t>(void)>());
 
@@ -102,12 +102,12 @@ class Server {
   void TableResponseReceived(uint16_t router_id, const Message &m);
   void AckReceived(uint16_t router_id, const Message &m);
 
+  static std::function<void(uint16_t, std::map<uint16_t, int16_t>)> receipt_cb_;
+  static std::mutex receipt_cb_mutex_;
+  static std::function<std::map<uint16_t, int16_t>(void)> request_cb_;
+  static std::mutex request_cb_mutex_;
   std::unique_ptr<MessageIoFactory> message_io_factory_;
   std::unique_ptr<util::TimeoutFactory> timeout_factory_;
-  std::function<void(uint16_t, std::map<uint16_t, int16_t>)> receipt_cb_;
-  std::mutex receipt_cb_mutex_;
-  std::function<std::map<uint16_t, int16_t>(void)> request_cb_;
-  std::mutex request_cb_mutex_;
   util::ThreadPool pool_;
   std::atomic<bool> active_;
 };
