@@ -29,7 +29,8 @@ class StreamLogger {
  public:
   StreamLogger(std::ostream *stream, const char *prefix) : stream_(stream) {
     buffer_ << '[' << prefix
-      << '@' << std::hex << std::this_thread::get_id() << "] ";
+      << "@0x" << std::hex << std::this_thread::get_id()
+      << "] " << std::dec;
   }
   ~StreamLogger() {
     buffer_ << std::endl;

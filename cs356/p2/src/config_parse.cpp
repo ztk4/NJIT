@@ -106,12 +106,14 @@ void Configuration::ParseCfg(ifstream &cfg) {
     if (!isspace(cfg.peek())) {
       fprintf(stderr, "Error: Expected delimitting white space character on"
           " line %d\n", current_line);
+      ret_val_ = CFG_PARSE_ERROR;
       return;
     }
     // Ignore space between first and second term on line.
     if (IgnoreWhiteSpaceAndComment(cfg)) {
       fprintf(stderr, "Error: Premature EOL while parsing line %d\n",
           current_line);
+      ret_val_ = CFG_PARSE_ERROR;
       return;
     }
 
@@ -155,12 +157,14 @@ void Configuration::ParseCfg(ifstream &cfg) {
       if (!isspace(cfg.peek())) {
         fprintf(stderr, "Error: Expected delimitting white space character on"
             " line %d\n", current_line);
+        ret_val_ = CFG_PARSE_ERROR;
         return;
       }
       // Ignore space between second router and edge weight.
       if (IgnoreWhiteSpaceAndComment(cfg)) {
         fprintf(stderr, "Error: Premature EOL while parsing line %d\n",
             current_line);
+        ret_val_ = CFG_PARSE_ERROR;
         return;
       }
 
@@ -181,11 +185,13 @@ void Configuration::ParseCfg(ifstream &cfg) {
       }
     }
 
-    // Ignore the rest of the line at least, ensure at least one new line.
+    // Ignore the rest of the line at least, ensure at least one new line if
+    // not at EOF
     int lines_ignored = IgnoreWhiteSpaceAndComment(cfg);
-    if (!lines_ignored) {
+    if (!lines_ignored && cfg) {
       fprintf(stderr, "Error: Expected new line while parsing line %d\n",
           current_line);
+      ret_val_ = CFG_PARSE_ERROR;
       return;
     }
 
