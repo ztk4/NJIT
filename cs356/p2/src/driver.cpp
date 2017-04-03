@@ -25,6 +25,11 @@ using router::Server;
 using router::SocketMessageIoFactory;
 using util::SimpleTimeoutFactory;
 
+void WaitEnter() {
+  while (cin.get() != '\n')
+    this_thread::yield();
+}
+
 int main(int argc, char **argv) {
   Configuration config(&argc, &argv, kRouterId);
 
@@ -33,9 +38,15 @@ int main(int argc, char **argv) {
     return config.RetVal();
   }
 
-  INFO << "Configuration processed successfully, Starting router R"
-    << kRouterId << "'s main loop...";
-  INFO << "Press <Enter> to terminate";
+  INFO << "Configuration processed successfully";
+  INFO << "Router R" << kRouterId << "'s intial table is:" << endl
+    << config.Dvt();
+  INFO << "Press <Enter> to start the main loop.";
+  
+  WaitEnter();
+
+  INFO << "Starting router R" << kRouterId << "'s main loop...";
+  INFO << "Press <Enter> to terminate.";
 
   // Create Client (takes ownership of raw pointers).
   Client client(new SocketMessageIoFactory(config.Verbose()),
@@ -46,6 +57,9 @@ int main(int argc, char **argv) {
         map<uint16_t, int16_t> table) {
       // If table was updated, broadcast tables.
       if (config.Dvt().UpdateTable(source_id, table)) {
+        INFO << "Updated table based on message from R" << source_id << ":"
+          << endl << config.Dvt();
+
         client.BroadcastTable(config.Neighbors(),
             static_cast<map<uint16_t, int16_t>>(config.Dvt().Table()));
       }
@@ -62,9 +76,7 @@ int main(int argc, char **argv) {
   client.BroadcastTable(config.Neighbors(),
       static_cast<map<uint16_t, int16_t>>(config.Dvt().Table()));
 
-  // Wait on enter.
-  while (cin.get() != '\n')
-    this_thread::yield();
+  WaitEnter();
 
   INFO << "Shutting down router R" << kRouterId;
 
