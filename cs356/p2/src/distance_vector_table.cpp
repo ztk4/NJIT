@@ -47,7 +47,9 @@ bool DistanceVectorTable::UpdateTable(uint16_t source_id,
 ostream &operator<<(ostream &o, const DistanceVectorTable &dvt) {
   const char *kBreak = "+-----------------+";
   o << kBreak << endl;
-  o << "|   ROUTING TABLE   |" << endl;
+  o << "|  ROUTING TABLE  |" << endl;
+  o << kBreak << endl;
+  o << "| Router |  Dist  |" << endl;
   o << kBreak << endl;
 
   for (const auto &entry : dvt.Table()) {
