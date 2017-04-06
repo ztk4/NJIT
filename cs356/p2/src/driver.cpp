@@ -56,12 +56,17 @@ int main(int argc, char **argv) {
   Server::OnTableReceipt([&config, &client](uint16_t source_id,
         map<uint16_t, int16_t> table) {
       // If table was updated, broadcast tables.
+      INFO << "Received the following table from R" << source_id << ":"
+        << endl << table;
       if (config.Dvt().UpdateTable(source_id, table)) {
         INFO << "Updated table based on message from R" << source_id << ":"
           << endl << config.Dvt();
 
         client.BroadcastTable(config.Neighbors(),
             static_cast<map<uint16_t, int16_t>>(config.Dvt().Table()));
+      } else {
+        INFO << "No table update was necessary based on the message from R"
+          << source_id << endl;
       }
     });
   Server::OnTableRequest([&config]() -> map<uint16_t, int16_t> {
