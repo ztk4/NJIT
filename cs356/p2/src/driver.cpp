@@ -1,5 +1,6 @@
 #include <iostream>
 #include <map>
+#include <string>
 #include <thread>
 
 #include "logging.h"
@@ -30,6 +31,26 @@ void WaitEnter() {
     this_thread::yield();
 }
 
+// Printing overload for maps
+string TableToString(uint16_t source_id, const map<uint16_t, int16_t> &table) {
+  const char *kBreak = "+--------+--------+";
+  stringstream ss;
+
+  ss << " INCOMING TABLE (R" << source_id << ")" << endl;
+  ss << kBreak << endl;
+  ss << "| Router |  Dist  |" << endl;
+  ss << kBreak << endl;
+
+  for (const auto &entry : table) {
+    ss << "| " << setw(6) << entry.first
+      << " | " << setw(6) << entry.second << " |" << endl;
+  }
+
+  ss << kBreak << endl;
+
+  return ss.str();
+}
+
 int main(int argc, char **argv) {
   Configuration config(&argc, &argv, kRouterId);
 
@@ -57,7 +78,7 @@ int main(int argc, char **argv) {
         map<uint16_t, int16_t> table) {
       // If table was updated, broadcast tables.
       INFO << "Received the following table from R" << source_id << ":"
-        << endl << table;
+        << endl << TableToString(source_id, table);
       if (config.Dvt().UpdateTable(source_id, table)) {
         INFO << "Updated table based on message from R" << source_id << ":"
           << endl << config.Dvt();
