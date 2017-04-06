@@ -2,3 +2,8 @@
     Everything in the gtest/ directory is cloned directly from http://github.com/google/googletest.
     Additionally, the Makefile in the src/ directory is adapted from https://github.com/google/googletest/blob/master/googletest/make/Makefile.
 
+2. CPlusPlus.com
+    Consistently Referenced (particularly for STL): http://www.cplusplus.com/
+
+3. Socket Documentation
+    Referenced for use of socket api: http://pubs.opengroup.org/onlinepubs/7908799/xns/syssocket.h.html

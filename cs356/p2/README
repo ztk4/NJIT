@@ -1,5 +1,5 @@
 Zachary Kaplan
-CS356 Project 1
+CS356 Project 2
 
 File locations (From Current directory):
 src/ 
@@ -31,27 +31,31 @@ COMPILATION INSTRUCTIONS
 	I. Load in a new version of gcc
 		$ module load gcc/6.1.0
 
-	II. (OPTIONAL) Run Unit tests
+	II. (OPTIONAL) Run Unit tests (feel free to use -j)
 		$ make check
 
-	III. Make Client
-		$ make router0
-
-	IV. Make Server
-		$ make router1
+	III. Build production targets (feel free to use -j)
+    $ make
 
 EXECUTION INSTRUCTIONS
 
 	0. Should be run from src directory
 		$ cs src/
 
-	I. Run Client in verbose mode. MUST be on afsconnect3.njit.edu
-		$ ./router0 -v
+  I. Load in new version of gcc (Must be done on all machines b/c linking)
+    $ module load gcc/6.1.0
 
-	II. Run Server in verbose mode. MUST be on afsconnect4.njit.edu
-		$ ./router1 -v
+  II. Run each router in any order (with config file and in verbose mode).
+    $ ./router0 network.cfg -v  # Must be run on afsconnect1.njit.edu (unless changed in network.cfg)
+    $ ./router1 network.cfg -v  # Must be run on afsconnect2.njit.edu (unless changed in network.cfg)
+    $ ./router2 network.cfg -v  # Must be run on afsconnect3.njit.edu (unless changed in network.cfg)
+    $ ./router3 network.cfg -v  # Must be run on afsconnect4.njit.edu (unless changed in network.cfg)
 
-	III. They will self terminate, but ^C also works if needed.
+	III. Each router will print out it's initial table, but waits on <Enter> press from user on stdin.
+    <Press Enter in each terminal>
+
+  IV. After all the router's converge (trace printing will halt), press <Enter> to terminate. (^C works too).
+    <Press Enter in each terminal>
 
 CLEANUP INSTRUCTIONS
 
