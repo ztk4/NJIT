@@ -3,55 +3,58 @@ CS356 Project 2
 
 File locations (From Current directory):
 src/ 
-	All Source Code
-	*_test are unit tests and do not affect production
-	mock_* are mock implementations for testing and do not affect production
-	All other source files are used for production
+  All Source Code
+  *_test are unit tests and do not affect production
+  mock_* are mock implementations for testing and do not affect production
+  All other source files are used for production
 
 protocol.old
-	All old protocols
+  All old protocols
 
 protocol_v*.txt
-	Current protocol
+  Current protocol
 
 gtest
-	THIS IS NOT MY CODE. This is a c++ Unit testing framework.
+  THIS IS NOT MY CODE. This is a c++ Unit testing framework.
 
 *.docx
-	The assignment.
+  The assignment.
 
 REFERENCES
-	Works I referenced when writing this.
+  Works I referenced when writing this.
 
 COMPILATION INSTRUCTIONS
 
-	0. Must be run from src directory
-		cd src/
+  0. Must be run from src directory
+    cd src/
 
-	I. Load in a new version of gcc
-		$ module load gcc/6.1.0
+  I. Load in a new version of gcc
+    $ module load gcc/6.1.0
 
-	II. (OPTIONAL) Run Unit tests (feel free to use -j)
-		$ make check
+  II. (OPTIONAL) Run Unit tests (feel free to use -j)
+    $ make check
 
-	III. Build production targets (feel free to use -j)
+  III. Build production targets (feel free to use -j)
     $ make
 
 EXECUTION INSTRUCTIONS
 
-	0. Should be run from src directory
-		$ cs src/
+  0. Should be run from src directory
+    $ cs src/
 
   I. Load in new version of gcc (Must be done on all machines b/c linking)
     $ module load gcc/6.1.0
 
   II. Run each router in any order (with config file and in verbose mode).
+    NOTE: I found that the IP Address of afsconnect1 changed while I was developing this.
+          All IP Addresses can be updated in network.cfg
+
     $ ./router0 network.cfg -v  # Must be run on afsconnect1.njit.edu (unless changed in network.cfg)
     $ ./router1 network.cfg -v  # Must be run on afsconnect2.njit.edu (unless changed in network.cfg)
     $ ./router2 network.cfg -v  # Must be run on afsconnect3.njit.edu (unless changed in network.cfg)
     $ ./router3 network.cfg -v  # Must be run on afsconnect4.njit.edu (unless changed in network.cfg)
 
-	III. Each router will print out it's initial table, but waits on <Enter> press from user on stdin.
+  III. Each router will print out it's initial table, but waits on <Enter> press from user on stdin.
     <Press Enter in each terminal>
 
   IV. After all the router's converge (trace printing will halt), press <Enter> to terminate. (^C works too).
@@ -59,8 +62,8 @@ EXECUTION INSTRUCTIONS
 
 CLEANUP INSTRUCTIONS
 
-	0. Must be run from src directory
-		cd src/
+  0. Must be run from src directory
+    cd src/
 
-	I. Cleanup
-		$ make clean
+  I. Cleanup
+    $ make clean
