@@ -1,0 +1,22 @@
+No.     Time           Source                Destination           Protocol Length Info
+      1 0.000000       192.168.1.101         138.96.146.2          ICMP     106    Echo (ping) request  id=0x0200, seq=41985/420, ttl=1 (no response found!)
+
+Frame 1: 106 bytes on wire (848 bits), 106 bytes captured (848 bits)
+Ethernet II, Src: Dell_4f:36:23 (00:08:74:4f:36:23), Dst: LinksysG_da:af:73 (00:06:25:da:af:73)
+Internet Protocol Version 4, Src: 192.168.1.101, Dst: 138.96.146.2
+Internet Control Message Protocol
+    Type: 8 (Echo (ping) request)
+    Code: 0
+    Checksum: 0x51fe [correct]
+    [Checksum Status: Good]
+    Identifier (BE): 512 (0x0200)
+    Identifier (LE): 2 (0x0002)
+    Sequence number (BE): 41985 (0xa401)
+    Sequence number (LE): 420 (0x01a4)
+    [No response seen]
+    Data (64 bytes)
+
+0000  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0010  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0020  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+0030  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................

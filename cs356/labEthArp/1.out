@@ -1,0 +1,37 @@
+No.     Time           Source                Destination           Protocol Length Info
+     48 5.927945121    HonHaiPr_59:00:19     Cisco_77:e4:00        0x0800   434    IPv4
+
+Frame 48: 434 bytes on wire (3472 bits), 434 bytes captured (3472 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+    Destination: Cisco_77:e4:00 (00:25:46:77:e4:00)
+    Source: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+    Type: IPv4 (0x0800)
+Data (420 bytes)
+
+0000  45 00 01 a4 34 d0 40 00 40 06 b6 65 0a c8 cd d2   E...4.@.@..e....
+0010  80 77 f5 0c cd 4a 00 50 0c f9 67 e6 b6 6b 3b 1b   .w...J.P..g..k;.
+0020  80 18 00 e5 4f b5 00 00 01 01 08 0a 00 07 53 2f   ....O.........S/
+0030  43 4c ea ab 47 45 54 20 2f 77 69 72 65 73 68 61   CL..GET /wiresha
+0040  72 6b 2d 6c 61 62 73 2f 48 54 54 50 2d 65 74 68   rk-labs/HTTP-eth
+0050  65 72 65 61 6c 2d 6c 61 62 2d 66 69 6c 65 33 2e   ereal-lab-file3.
+0060  68 74 6d 6c 20 48 54 54 50 2f 31 2e 31 0d 0a 48   html HTTP/1.1..H
+0070  6f 73 74 3a 20 67 61 69 61 2e 63 73 2e 75 6d 61   ost: gaia.cs.uma
+0080  73 73 2e 65 64 75 0d 0a 55 73 65 72 2d 41 67 65   ss.edu..User-Age
+0090  6e 74 3a 20 4d 6f 7a 69 6c 6c 61 2f 35 2e 30 20   nt: Mozilla/5.0 
+00a0  28 58 31 31 3b 20 55 62 75 6e 74 75 3b 20 4c 69   (X11; Ubuntu; Li
+00b0  6e 75 78 20 78 38 36 5f 36 34 3b 20 72 76 3a 35   nux x86_64; rv:5
+00c0  32 2e 30 29 20 47 65 63 6b 6f 2f 32 30 31 30 30   2.0) Gecko/20100
+00d0  31 30 31 20 46 69 72 65 66 6f 78 2f 35 32 2e 30   101 Firefox/52.0
+00e0  0d 0a 41 63 63 65 70 74 3a 20 74 65 78 74 2f 68   ..Accept: text/h
+00f0  74 6d 6c 2c 61 70 70 6c 69 63 61 74 69 6f 6e 2f   tml,application/
+0100  78 68 74 6d 6c 2b 78 6d 6c 2c 61 70 70 6c 69 63   xhtml+xml,applic
+0110  61 74 69 6f 6e 2f 78 6d 6c 3b 71 3d 30 2e 39 2c   ation/xml;q=0.9,
+0120  2a 2f 2a 3b 71 3d 30 2e 38 0d 0a 41 63 63 65 70   */*;q=0.8..Accep
+0130  74 2d 4c 61 6e 67 75 61 67 65 3a 20 65 6e 2d 55   t-Language: en-U
+0140  53 2c 65 6e 3b 71 3d 30 2e 35 0d 0a 41 63 63 65   S,en;q=0.5..Acce
+0150  70 74 2d 45 6e 63 6f 64 69 6e 67 3a 20 67 7a 69   pt-Encoding: gzi
+0160  70 2c 20 64 65 66 6c 61 74 65 0d 0a 43 6f 6e 6e   p, deflate..Conn
+0170  65 63 74 69 6f 6e 3a 20 6b 65 65 70 2d 61 6c 69   ection: keep-ali
+0180  76 65 0d 0a 55 70 67 72 61 64 65 2d 49 6e 73 65   ve..Upgrade-Inse
+0190  63 75 72 65 2d 52 65 71 75 65 73 74 73 3a 20 31   cure-Requests: 1
+01a0  0d 0a 0d 0a                                       ....

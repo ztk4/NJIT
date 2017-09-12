@@ -1,0 +1,8 @@
+No.     Time           Source                Destination           Protocol Length Info
+     98 5.230502071    10.200.205.210        192.0.2.1             DHCP     342    DHCP Release  - Transaction ID 0x7bd4fb37
+
+Frame 98: 342 bytes on wire (2736 bits), 342 bytes captured (2736 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Cisco_77:e4:00 (00:25:46:77:e4:00)
+Internet Protocol Version 4, Src: 10.200.205.210, Dst: 192.0.2.1
+User Datagram Protocol, Src Port: 68, Dst Port: 67
+Bootstrap Protocol (Release)

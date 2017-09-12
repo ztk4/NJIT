@@ -1,0 +1,98 @@
+No.     Time           Source                Destination           Protocol Length Info
+     50 5.942055550    Cisco_77:e4:00        HonHaiPr_59:00:19     0x0800   1417   IPv4
+
+Frame 50: 1417 bytes on wire (11336 bits), 1417 bytes captured (11336 bits) on interface 0
+Ethernet II, Src: Cisco_77:e4:00 (00:25:46:77:e4:00), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+    Destination: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+    Source: Cisco_77:e4:00 (00:25:46:77:e4:00)
+    Type: IPv4 (0x0800)
+Data (1403 bytes)
+
+0000  45 00 05 7b e1 57 40 00 34 06 12 07 80 77 f5 0c   E..{.W@.4....w..
+0010  0a c8 cd d2 00 50 cd 4a b6 6b 3b 1b 0c f9 69 56   .....P.J.k;...iV
+0020  80 10 00 eb 58 a5 00 00 01 01 08 0a 43 4c ea b9   ....X.......CL..
+0030  00 07 53 2f 48 54 54 50 2f 31 2e 31 20 32 30 30   ..S/HTTP/1.1 200
+0040  20 4f 4b 0d 0a 44 61 74 65 3a 20 54 68 75 2c 20    OK..Date: Thu, 
+0050  31 33 20 41 70 72 20 32 30 31 37 20 31 38 3a 31   13 Apr 2017 18:1
+0060  36 3a 30 37 20 47 4d 54 0d 0a 53 65 72 76 65 72   6:07 GMT..Server
+0070  3a 20 41 70 61 63 68 65 2f 32 2e 34 2e 36 20 28   : Apache/2.4.6 (
+0080  43 65 6e 74 4f 53 29 20 4f 70 65 6e 53 53 4c 2f   CentOS) OpenSSL/
+0090  31 2e 30 2e 31 65 2d 66 69 70 73 20 50 48 50 2f   1.0.1e-fips PHP/
+00a0  35 2e 34 2e 31 36 20 6d 6f 64 5f 70 65 72 6c 2f   5.4.16 mod_perl/
+00b0  32 2e 30 2e 31 30 20 50 65 72 6c 2f 76 35 2e 31   2.0.10 Perl/v5.1
+00c0  36 2e 33 0d 0a 4c 61 73 74 2d 4d 6f 64 69 66 69   6.3..Last-Modifi
+00d0  65 64 3a 20 54 68 75 2c 20 31 33 20 41 70 72 20   ed: Thu, 13 Apr 
+00e0  32 30 31 37 20 30 35 3a 35 39 3a 30 31 20 47 4d   2017 05:59:01 GM
+00f0  54 0d 0a 45 54 61 67 3a 20 22 31 31 39 34 2d 35   T..ETag: "1194-5
+0100  34 64 30 36 30 35 38 36 32 34 38 62 22 0d 0a 41   4d060586248b"..A
+0110  63 63 65 70 74 2d 52 61 6e 67 65 73 3a 20 62 79   ccept-Ranges: by
+0120  74 65 73 0d 0a 43 6f 6e 74 65 6e 74 2d 4c 65 6e   tes..Content-Len
+0130  67 74 68 3a 20 34 35 30 30 0d 0a 4b 65 65 70 2d   gth: 4500..Keep-
+0140  41 6c 69 76 65 3a 20 74 69 6d 65 6f 75 74 3d 35   Alive: timeout=5
+0150  2c 20 6d 61 78 3d 31 30 30 0d 0a 43 6f 6e 6e 65   , max=100..Conne
+0160  63 74 69 6f 6e 3a 20 4b 65 65 70 2d 41 6c 69 76   ction: Keep-Aliv
+0170  65 0d 0a 43 6f 6e 74 65 6e 74 2d 54 79 70 65 3a   e..Content-Type:
+0180  20 74 65 78 74 2f 68 74 6d 6c 3b 20 63 68 61 72    text/html; char
+0190  73 65 74 3d 55 54 46 2d 38 0d 0a 0d 0a 3c 68 74   set=UTF-8....<ht
+01a0  6d 6c 3e 3c 68 65 61 64 3e 20 0a 3c 74 69 74 6c   ml><head> .<titl
+01b0  65 3e 48 69 73 74 6f 72 69 63 61 6c 20 44 6f 63   e>Historical Doc
+01c0  75 6d 65 6e 74 73 3a 54 48 45 20 42 49 4c 4c 20   uments:THE BILL 
+01d0  4f 46 20 52 49 47 48 54 53 3c 2f 74 69 74 6c 65   OF RIGHTS</title
+01e0  3e 3c 2f 68 65 61 64 3e 0a 0a 0a 3c 62 6f 64 79   ></head>...<body
+01f0  20 62 67 63 6f 6c 6f 72 3d 22 23 66 66 66 66 66    bgcolor="#fffff
+0200  66 22 20 6c 69 6e 6b 3d 22 23 33 33 30 30 30 30   f" link="#330000
+0210  22 20 76 6c 69 6e 6b 3d 22 23 36 36 36 36 33 33   " vlink="#666633
+0220  22 3e 0a 3c 70 3e 3c 62 72 3e 0a 3c 2f 70 3e 0a   ">.<p><br>.</p>.
+0230  3c 70 3e 3c 2f 70 3e 3c 63 65 6e 74 65 72 3e 3c   <p></p><center><
+0240  62 3e 54 48 45 20 42 49 4c 4c 20 4f 46 20 52 49   b>THE BILL OF RI
+0250  47 48 54 53 3c 2f 62 3e 3c 62 72 3e 0a 20 20 3c   GHTS</b><br>.  <
+0260  65 6d 3e 41 6d 65 6e 64 6d 65 6e 74 73 20 31 2d   em>Amendments 1-
+0270  31 30 20 6f 66 20 74 68 65 20 43 6f 6e 73 74 69   10 of the Consti
+0280  74 75 74 69 6f 6e 3c 2f 65 6d 3e 0a 3c 2f 63 65   tution</em>.</ce
+0290  6e 74 65 72 3e 0a 0a 3c 70 3e 54 68 65 20 43 6f   nter>..<p>The Co
+02a0  6e 76 65 6e 74 69 6f 6e 73 20 6f 66 20 61 20 6e   nventions of a n
+02b0  75 6d 62 65 72 20 6f 66 20 74 68 65 20 53 74 61   umber of the Sta
+02c0  74 65 73 20 68 61 76 69 6e 67 2c 20 61 74 20 74   tes having, at t
+02d0  68 65 20 74 69 6d 65 20 6f 66 20 61 64 6f 70 74   he time of adopt
+02e0  69 6e 67 0a 74 68 65 20 43 6f 6e 73 74 69 74 75   ing.the Constitu
+02f0  74 69 6f 6e 2c 20 65 78 70 72 65 73 73 65 64 20   tion, expressed 
+0300  61 20 64 65 73 69 72 65 2c 20 69 6e 20 6f 72 64   a desire, in ord
+0310  65 72 20 74 6f 20 70 72 65 76 65 6e 74 20 6d 69   er to prevent mi
+0320  73 63 6f 6e 73 74 72 75 63 74 69 6f 6e 0a 6f 72   sconstruction.or
+0330  20 61 62 75 73 65 20 6f 66 20 69 74 73 20 70 6f    abuse of its po
+0340  77 65 72 73 2c 20 74 68 61 74 20 66 75 72 74 68   wers, that furth
+0350  65 72 20 64 65 63 6c 61 72 61 74 6f 72 79 20 61   er declaratory a
+0360  6e 64 20 72 65 73 74 72 69 63 74 69 76 65 20 63   nd restrictive c
+0370  6c 61 75 73 65 73 0a 73 68 6f 75 6c 64 20 62 65   lauses.should be
+0380  20 61 64 64 65 64 2c 20 61 6e 64 20 61 73 20 65    added, and as e
+0390  78 74 65 6e 64 69 6e 67 20 74 68 65 20 67 72 6f   xtending the gro
+03a0  75 6e 64 20 6f 66 20 70 75 62 6c 69 63 20 63 6f   und of public co
+03b0  6e 66 69 64 65 6e 63 65 20 69 6e 20 74 68 65 0a   nfidence in the.
+03c0  47 6f 76 65 72 6e 6d 65 6e 74 20 77 69 6c 6c 20   Government will 
+03d0  62 65 73 74 20 69 6e 73 75 72 65 20 74 68 65 20   best insure the 
+03e0  62 65 6e 65 66 69 63 65 6e 74 20 65 6e 64 73 20   beneficent ends 
+03f0  6f 66 20 69 74 73 20 69 6e 73 74 69 74 75 74 69   of its instituti
+0400  6f 6e 3b 20 3c 2f 70 3e 3c 70 3e 20 20 52 65 73   on; </p><p>  Res
+0410  6f 6c 76 65 64 2c 20 62 79 20 74 68 65 20 53 65   olved, by the Se
+0420  6e 61 74 65 20 61 6e 64 20 48 6f 75 73 65 20 6f   nate and House o
+0430  66 20 52 65 70 72 65 73 65 6e 74 61 74 69 76 65   f Representative
+0440  73 20 6f 66 20 74 68 65 20 55 6e 69 74 65 64 0a   s of the United.
+0450  53 74 61 74 65 73 20 6f 66 20 41 6d 65 72 69 63   States of Americ
+0460  61 2c 20 69 6e 20 43 6f 6e 67 72 65 73 73 20 61   a, in Congress a
+0470  73 73 65 6d 62 6c 65 64 2c 20 74 77 6f 2d 74 68   ssembled, two-th
+0480  69 72 64 73 20 6f 66 20 62 6f 74 68 20 48 6f 75   irds of both Hou
+0490  73 65 73 20 63 6f 6e 63 75 72 72 69 6e 67 2c 0a   ses concurring,.
+04a0  74 68 61 74 20 74 68 65 20 66 6f 6c 6c 6f 77 69   that the followi
+04b0  6e 67 20 61 72 74 69 63 6c 65 73 20 62 65 20 70   ng articles be p
+04c0  72 6f 70 6f 73 65 64 20 74 6f 20 74 68 65 20 4c   roposed to the L
+04d0  65 67 69 73 6c 61 74 75 72 65 73 20 6f 66 20 74   egislatures of t
+04e0  68 65 20 73 65 76 65 72 61 6c 0a 53 74 61 74 65   he several.State
+04f0  73 2c 20 61 73 20 61 6d 65 6e 64 6d 65 6e 74 73   s, as amendments
+0500  20 74 6f 20 74 68 65 20 43 6f 6e 73 74 69 74 75    to the Constitu
+0510  74 69 6f 6e 20 6f 66 20 74 68 65 20 55 6e 69 74   tion of the Unit
+0520  65 64 20 53 74 61 74 65 73 3b 20 61 6c 6c 20 6f   ed States; all o
+0530  72 20 61 6e 79 0a 6f 66 20 77 68 69 63 68 20 61   r any.of which a
+0540  72 74 69 63 6c 65 73 2c 20 77 68 65 6e 20 72 61   rticles, when ra
+0550  74 69 66 69 65 64 20 62 79 20 74 68 72 65 65 2d   tified by three-
+0560  66 6f 75 72 74 68 73 20 6f 66 20 74 68 65 20 73   fourths of the s
+0570  61 69 64 20 4c 65 67 69 73 6c 61                  aid Legisla

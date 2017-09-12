@@ -1,0 +1,35 @@
+No.     Time           Source                Destination           Protocol Length Info
+    112 6.536348515    0.0.0.0               255.255.255.255       DHCP     342    DHCP Discover - Transaction ID 0x74f07121
+
+Frame 112: 342 bytes on wire (2736 bits), 342 bytes captured (2736 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Internet Protocol Version 4, Src: 0.0.0.0, Dst: 255.255.255.255
+User Datagram Protocol, Src Port: 68, Dst Port: 67
+Bootstrap Protocol (Discover)
+
+No.     Time           Source                Destination           Protocol Length Info
+    114 6.542536702    192.0.2.1             10.200.206.179        DHCP     450    DHCP Offer    - Transaction ID 0x74f07121
+
+Frame 114: 450 bytes on wire (3600 bits), 450 bytes captured (3600 bits) on interface 0
+Ethernet II, Src: Cisco_64:57:60 (b0:00:b4:64:57:60), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+Internet Protocol Version 4, Src: 192.0.2.1, Dst: 10.200.206.179
+User Datagram Protocol, Src Port: 67, Dst Port: 68
+Bootstrap Protocol (Offer)
+
+No.     Time           Source                Destination           Protocol Length Info
+    115 6.542678477    0.0.0.0               255.255.255.255       DHCP     342    DHCP Request  - Transaction ID 0x74f07121
+
+Frame 115: 342 bytes on wire (2736 bits), 342 bytes captured (2736 bits) on interface 0
+Ethernet II, Src: HonHaiPr_59:00:19 (34:68:95:59:00:19), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Internet Protocol Version 4, Src: 0.0.0.0, Dst: 255.255.255.255
+User Datagram Protocol, Src Port: 68, Dst Port: 67
+Bootstrap Protocol (Request)
+
+No.     Time           Source                Destination           Protocol Length Info
+    116 6.545852517    192.0.2.1             10.200.206.179        DHCP     450    DHCP ACK      - Transaction ID 0x74f07121
+
+Frame 116: 450 bytes on wire (3600 bits), 450 bytes captured (3600 bits) on interface 0
+Ethernet II, Src: Cisco_64:57:60 (b0:00:b4:64:57:60), Dst: HonHaiPr_59:00:19 (34:68:95:59:00:19)
+Internet Protocol Version 4, Src: 192.0.2.1, Dst: 10.200.206.179
+User Datagram Protocol, Src Port: 67, Dst Port: 68
+Bootstrap Protocol (ACK)
