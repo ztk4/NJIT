@@ -8,8 +8,9 @@
 
 #include <cassert>
 #include <functional>
-#include <vector>
+#include <initializer_list>
 #include <utility>
+#include <vector>
 
 namespace mp1 {
 // Priority Queue implementation for arbitrary type T.
@@ -26,7 +27,7 @@ class PriorityQueue {
     Heapify();
   }
   // Initializer List ctor, construts a queue from an initializer list.
-  PriorityQueue(initializer_list<T> il) : heap_(il) {
+  PriorityQueue(std::initializer_list<T> il) : heap_(il) {
     Heapify();
   }
 
@@ -42,7 +43,6 @@ class PriorityQueue {
     heap_.push_back(t);
     SiftUp(heap_.size() - 1);
   }
-  using Insert = Push;  // Alias for Push (to match book).
 
   // Removes the highest priority element from the queue and returns it.
   T Pop() {
@@ -57,7 +57,6 @@ class PriorityQueue {
 
     return val;  // Move would block copy elision.
   }
-  using Pop = ExtractMax;  // Alias for Pop (to match book).
 
   // Slightly optimized function for pushing an element while popping the
   // highest priority element. Prefer this method for a push immediately
@@ -80,12 +79,11 @@ class PriorityQueue {
 
     return heap_.front();
   }
-  using Peek = Maximum;  // Alias for Peek (to match book).
 
   // Returns current size.
-  const size_t size() const { return heap_.size(); }
+  size_t size() const { return heap_.size(); }
   // Returns if empty.
-  const bool empty() const { return heap_.empty(); }
+  bool empty() const { return heap_.empty(); }
 
  private:
   // Enforces the binary-heap invariant on heap_, assuming it's unsorted.
@@ -109,26 +107,24 @@ class PriorityQueue {
     bool done = false;
     while (!done) {
       // Child indexes
-      int child1 = 2*parent + 1, child2 = child1 + 1;
+      size_t child1 = 2*parent + 1, child2 = child1 + 1;
       // Reference to highest priority among val, and both children.
-      const T &best = val;   // Assume val is best.
+      const T *best = &val;  // Assume val is best.
       int best_id = parent;  // Assume index of best is parent.
 
-      if (child1 < heap_.size() && comp_(heap_[child1], best)) {
+      if (child1 < heap_.size() && comp_(heap_[child1], *best)) {
         // Child1 is better than our current best.
-        best = heap_[child1];
+        best = &heap_[child1];
         best_id = child1;
-        parent = child1;  // The next parent will be child1.
       }
 
-      if (child2 < heap_.size() && comp_(heap_[child2], best)) {
+      if (child2 < heap_.size() && comp_(heap_[child2], *best)) {
         // Child2 is better than our current best.
-        best = heap_[child2];
+        best = &heap_[child2];
         best_id = child2;
-        parent = child2;  // The next parent will be child2.
       }
 
-      heap_[parent] = std::move(best);  // Put best into parent position.
+      heap_[parent] = std::move(*best);  // Put best into parent position.
       
       if (best_id == parent) {
         // Both children hold the heap invariant, sift down is done.

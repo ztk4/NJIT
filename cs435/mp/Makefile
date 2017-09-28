@@ -1,6 +1,6 @@
-CC        = g++
+CXX       = g++
 CPPFLAGS += 
-CXXFLAGS += -O3
+CXXFLAGS += -O3 -Wall -Wextra
 LDFLAGS  += -lm
 
 # TODO: Fill in top level targets
