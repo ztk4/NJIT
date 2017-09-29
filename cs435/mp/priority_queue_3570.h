@@ -62,7 +62,9 @@ class PriorityQueue {
   // highest priority element. Prefer this method for a push immediately
   // followed by a pop.
   T PushPop(const T &t) {
-    if (empty()) {
+    // Return passed value if the queue is empty, or if it is higher priority
+    // than the element at the front of the queue.
+    if (empty() || comp_(t, heap_.front())) {
       return t;
     }
 
