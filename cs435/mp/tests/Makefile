@@ -96,7 +96,7 @@ gmock_main.a : gmock-all.o gtest-all.o gmock_main.o
 
 # GMOCK TESTS
 
-priority_queue_test.o: ../priority_queue_3570.h priority_queue_test.cc
+priority_queue_test.o: ../utils_3570.h ../priority_queue_3570.h priority_queue_test.cc
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
 		-c priority_queue_test.cc
 priority_queue_test: priority_queue_test.o gmock_main.a

@@ -6,11 +6,12 @@
 #ifndef MP1_PRIORITY_QUEUE_H_
 #define MP1_PRIORITY_QUEUE_H_
 
-#include <cassert>
 #include <functional>
 #include <initializer_list>
 #include <utility>
 #include <vector>
+
+#include "utils_3570.h"
 
 namespace mp1 {
 // Priority Queue implementation for arbitrary type T.
@@ -46,7 +47,7 @@ class PriorityQueue {
 
   // Removes the highest priority element from the queue and returns it.
   T Pop() {
-    assert(("Can't pop from an empty priority queue", !empty()));
+    CHECK(!empty()) << "Can't pop from an empty priority queue";
 
     // Move out best value.
     T val = std::move(heap_.front());
@@ -77,7 +78,7 @@ class PriorityQueue {
 
   // Returns a reference to the next element to be popped.
   const T &Peek() const {
-    assert(("Can't peek an empty priortiy queue", !empty()));
+    CHECK(!empty()) << "Can't peek an empty priortiy queue";
 
     return heap_.front();
   }
