@@ -18,7 +18,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # create to the list.
-TESTS = priority_queue_test
+TESTS = priority_queue_test bit_stream_test
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -104,3 +104,13 @@ priority_queue_test: priority_queue_test.o gmock_main.a
 
 # GTEST TESTS
 
+bit_stream_test.o: ../utils_3570.h ../bit_stream_3570.h bit_stream_test.cc
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
+		-c bit_stream_test.cc
+bit_stream_test: bit_stream_test.o bit_stream.o gtest_main.a
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+# INTERMEDIATE TARGETS
+
+bit_stream.o: ../utils_3570.h ../bit_stream_3570.h ../bit_stream_3570.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ../bit_stream_3570.cc -o $@
