@@ -41,7 +41,6 @@ class OutputBitStream {
 
   // Aligns the stream to a n-byte boundry, if at that boundry this is a no-op.
   // Pads out to the boundary using the padding byte.
-  // Returns true on success.
   void Align(mp1::Align n, uint8_t pad = 0x00);
 
   // Packs an arbitray value into the stream. The value will be packed as its
@@ -92,8 +91,66 @@ inline OutputBitStream &operator<<(OutputBitStream &obs, Arithmetic a) {
   return obs;
 }
 
-// TODO: Implement.
-class InputBitStream {};
+class InputBitStream {
+ public:
+  // Constructs an input bitstream from an istream. Does not take ownership of
+  // the stream, and will not destruct or close it.
+  // NB: is may not be nullptr.
+  explicit InputBitStream(std::istream *is);
+  // Disallow Copy and Assign.
+  InputBitStream(const InputBitStream &) = delete;
+  InputBitStream &operator=(const InputBitStream &) = delete;
+
+  ~InputBitStream() = default;
+
+  // Aligns the stream to a n-byte boundary, if at the boundary this is a no-op.
+  // Skips bits until at the boundary.
+  void Align(mp1::Align n);
+
+  // Reads an arbitrary value from the stream. The value will be unpacked as its
+  // memory layout, so this should only be used on POD types.
+  // NOTE: bool and vector<bool> are usually not packed and instead are put,
+  //       so make sure to use Get for those types.
+  // NB: T must be a trivial type.
+  template <typename T,
+            std::enable_if<std::is_trivial<T>::value>* = nullptr>
+  T Unpack() {
+    T val;
+    AlignedUnpack(static_cast<char *>(&val), sizeof(T));
+    return val;
+  }
+  // Unpacks len BYTES to the aligned pointer mem.
+  void AlignedUnpack(char *mem, size_t len);
+
+  // Retrieves the next bit from the stream.
+  bool Get();
+  // Retrieves several bits from the stream, size is in BITS.
+  std::vector<bool> Get(size_t size);
+
+  // Returns the state of the underlying stream.
+  bool Ok() const { return static_cast<bool>(is_); }
+
+ private:
+  // Underlying stream.
+  std::istream &is_;
+  // Current byte state.
+  uint8_t curr_ = 0;
+  // Number of bits in curr_ that have a meaningful state (starting at LSB).
+  // 0 indicates that there is NO partial state in curr_.
+  uint8_t bits_ = 0;
+};
+
+// Free InputBitStream operator overloads.
+inline InputBitStream &operator>>(InputBitStream &ibs, bool &bit) {
+  bit = ibs.Get();
+  return ibs;
+}
+template <typename Arithmetic,
+          std::enable_if<std::is_arithmetic<Arithmetic>::value>* = nullptr>
+inline InputBitStream &operator>>(InputBitStream &ibs, Arithmetic &a) {
+  a = ibs.Unpack<Arithmetic>();
+  return ibs;
+}
 }  // namespace mp1
 
 #endif  // MP1_BIT_STREAM_H_

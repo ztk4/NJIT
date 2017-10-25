@@ -17,6 +17,9 @@ inline uint8_t MaskUnset(uint8_t byte, uint8_t mask) {
 inline uint8_t MaskPut(uint8_t val, uint8_t byte, uint8_t mask) {
   return MaskSet(MaskUnset(byte, mask), val & mask);
 }
+inline uint8_t MaskGet(uint8_t byte, uint8_t mask) {
+  return byte & mask;
+}
 
 // Mask Helpers
 // Gets a mask for just the speicifed bit (0-indexed).
@@ -47,6 +50,9 @@ inline uint8_t BitUnset(uint8_t byte, uint8_t bit) {
 // Puts the given boolean at the given bit of byte (0-indexed).
 inline uint8_t BitPut(bool b, uint8_t byte, uint8_t bit) {
   return b ? BitSet(byte, bit) : BitUnset(byte, bit);
+}
+inline uint8_t BitGet(uint8_t byte, uint8_t bit) {
+  return MaskGet(byte, BitMask(bit));
 }
 }  // anonymous namespace
 
@@ -89,15 +95,15 @@ void OutputBitStream::AlignedPack(const char *mem, size_t len) {
   }
 
   // Bit index of where to split each byte of mem.
-  // byte 0..split (inclusive) goes into the more significant of the current
+  // bits 0..split (inclusive) goes into the more significant of the current
   //               byte.
-  // byte split+1..7 (inclusive) goes into the less significant part of the next
+  // bits split+1..7 (inclusive) goes into the less significant part of the next
   //                 byte.
   uint8_t split = 7 - bits_;
   for (const char *byte = mem; byte < mem + len; ++byte) {
     // Lower and Upper part of current byte of mem (about split).
-    auto lower = *byte & LsbMask(split);
-    auto upper = *byte & MsbMask(split + 1);
+    auto lower = MaskGet(*byte, LsbMask(split));
+    auto upper = MaskGet(*byte, MsbMask(split + 1));
     
     // Lower part of byte goes into upper part of curr_.
     curr_ |= (lower << bits_);
@@ -121,5 +127,65 @@ void OutputBitStream::Put(const std::vector<bool> &bits) {
   for (bool bit : bits) {
     Put(bit);
   }
+}
+
+// InputBitStream Implementation
+InputBitStream::InputBitStream(std::istream *is) : is_(*NOTNULL(is)) {}
+
+void InputBitStream::Align(mp1::Align n) {
+  if (bits_) {  // curr_ contains valid state.
+    curr_ = bits_ = 0;  // Clear that state (skip rest of current byte).
+  }
+
+  auto boundary = static_cast<long long>(n);
+  auto rem = is_.tellg() % boundary;
+  if (rem) {  // Alignment is needed.
+    // Ignore boundary - rem bytes.
+    is_.ignore(boundary - rem);
+  }
+}
+
+void InputBitStream::AlignedUnpack(char *mem, size_t len) {
+  if (!bits_) {  // No current state.
+    // Just stream the bytes.
+    is_.get(mem, len);
+    return;
+  }
+
+  // Bit index of where the output byte (in mem) will be split.
+  // bits split+1..7 (inclusive) get the remainder of the current byte.
+  // bits 0..split (inclusive) get the beginning of the next byte.
+  uint8_t split = 7 - bits_;
+  for (char *byte = mem; byte < mem + len; ++byte) {
+    // Lower half of byte.
+    *byte = MaskGet(curr_, LsbMask(bits_ - 1)) << (split + 1);
+
+    curr_ = is_.get();  // Get next byte.
+
+    // Upper half of byte.
+    *byte |= MaskGet(curr_, MsbMask(bits_)) >> bits_;
+  }
+}
+
+bool InputBitStream::Get() {
+  if (!bits_) {  // No state in curr_.
+    curr_ = is_.get();
+    bits_ = 8;
+  }
+
+  bool bit = BitGet(curr_, bits_ - 1);
+  --bits_;
+  return bit;
+}
+
+std::vector<bool> InputBitStream::Get(size_t size) {
+  std::vector<bool> bits;
+  bits.reserve(size);
+
+  for (size_t i = 0; i < size; ++i) {
+    bits.push_back(Get());
+  }
+
+  return bits;
 }
 }  // namespace mp1
