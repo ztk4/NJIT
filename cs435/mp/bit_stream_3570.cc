@@ -88,6 +88,8 @@ void OutputBitStream::Align(mp1::Align n, uint8_t pad) {
 }
 
 void OutputBitStream::AlignedPack(const char *mem, size_t len) {
+  DCHECK(len) << "Length must not be 0.";
+
   if (!bits_) {  // No current state.
     // Just stream the bytes.
     os_.write(mem, len);
@@ -146,24 +148,40 @@ void InputBitStream::Align(mp1::Align n) {
 }
 
 void InputBitStream::AlignedUnpack(char *mem, size_t len) {
+  DCHECK(len) << "Length must not be 0.";
+
   if (!bits_) {  // No current state.
-    // Just stream the bytes.
-    is_.get(mem, len);
+    if (len >= 2) {
+      // This method adds a \0 at the end and so will only read len-1 characters.
+      // Therefore it only works with len >= 2.
+      is_.get(mem, len);
+    }
+
+    // We don't need mem to be null-terminated, but have no gaurentee it's
+    // allocated past len bytes, so we just override the place nullbyte with the
+    // next byte in the stream if available.
+    if (is_)
+      mem[len - 1] = is_.get();
+
     return;
   }
 
-  // Bit index of where the output byte (in mem) will be split.
-  // bits split+1..7 (inclusive) get the remainder of the current byte.
-  // bits 0..split (inclusive) get the beginning of the next byte.
-  uint8_t split = 7 - bits_;
+  // Splitting Logic
+  // bits 0..bits_-1 (inclusive) gets the remainder of the current byte.
+  // bits bits_..7 (inclusive) gets the beggining of the next byte.
   for (char *byte = mem; byte < mem + len; ++byte) {
     // Lower half of byte.
-    *byte = MaskGet(curr_, LsbMask(bits_ - 1)) << (split + 1);
+    *byte = curr_;  // No mask needed because internally we >> curr.
 
-    curr_ = is_.get();  // Get next byte.
+    char c = is_.get();  // Get next byte.
+    // If curr is EOF, then don't use it and leave stuff zeroed.
+    if (c == EOF)
+      break;
 
+    curr_ = c;
     // Upper half of byte.
-    *byte |= MaskGet(curr_, MsbMask(bits_)) >> bits_;
+    *byte |= MaskGet(curr_, LsbMask(7 - bits_)) << bits_;
+    curr_ >>= (8 - bits_);
   }
 }
 
@@ -173,8 +191,10 @@ bool InputBitStream::Get() {
     bits_ = 8;
   }
 
-  bool bit = BitGet(curr_, bits_ - 1);
+  bool bit = BitGet(curr_, 0);
   --bits_;
+  curr_ >>= 1;
+
   return bit;
 }
 

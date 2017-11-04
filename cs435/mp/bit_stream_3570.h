@@ -49,7 +49,7 @@ class OutputBitStream {
   //       Prefer to insert bools and vector<bool> via Put.
   template <typename T>
   void Pack(const T &t) {
-    const char *mem = static_cast<const char *>(&t);
+    const char *mem = reinterpret_cast<const char *>(&t);
     AlignedPack(mem, sizeof(T));
   }
   // Packs arbitary memory pointed to by mem of length len in BYTES.
@@ -72,24 +72,6 @@ class OutputBitStream {
   // 0 indiciates that there is NO partial state in curr_.
   uint8_t bits_ = 0;
 };
-
-// Free OutputBitStream operator overloads.
-// Default implementations for bool, vector<bool>, and arithmetic types.
-inline OutputBitStream &operator<<(OutputBitStream &obs, bool bit) {
-  obs.Put(bit);
-  return obs;
-}
-inline OutputBitStream &operator<<(OutputBitStream &obs,
-    const std::vector<bool> &bits) {
-  obs.Put(bits);
-  return obs;
-}
-template <typename Arithmetic,
-          std::enable_if<std::is_arithmetic<Arithmetic>::value>* = nullptr>
-inline OutputBitStream &operator<<(OutputBitStream &obs, Arithmetic a) {
-  obs.Pack(a);
-  return obs;
-}
 
 class InputBitStream {
  public:
@@ -116,7 +98,7 @@ class InputBitStream {
             std::enable_if<std::is_trivial<T>::value>* = nullptr>
   T Unpack() {
     T val;
-    AlignedUnpack(static_cast<char *>(&val), sizeof(T));
+    AlignedUnpack(reinterpret_cast<char *>(&val), sizeof(T));
     return val;
   }
   // Unpacks len BYTES to the aligned pointer mem.
@@ -139,18 +121,6 @@ class InputBitStream {
   // 0 indicates that there is NO partial state in curr_.
   uint8_t bits_ = 0;
 };
-
-// Free InputBitStream operator overloads.
-inline InputBitStream &operator>>(InputBitStream &ibs, bool &bit) {
-  bit = ibs.Get();
-  return ibs;
-}
-template <typename Arithmetic,
-          std::enable_if<std::is_arithmetic<Arithmetic>::value>* = nullptr>
-inline InputBitStream &operator>>(InputBitStream &ibs, Arithmetic &a) {
-  a = ibs.Unpack<Arithmetic>();
-  return ibs;
-}
 }  // namespace mp1
 
 #endif  // MP1_BIT_STREAM_H_
