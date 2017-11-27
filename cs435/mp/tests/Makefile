@@ -121,5 +121,5 @@ prefix_cache_test: prefix_cache_test.o prefix_cache.o bit_stream.o gmock_main.a
 bit_stream.o: ../utils_3570.h ../bit_stream_3570.h ../bit_stream_3570.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ../bit_stream_3570.cc -o $@
 
-prefix_cache.o: ../utils_3570.h ../prefix_cache_3570.h ../bit_stream_3570.h ../prefix_cache_3570.cc
+prefix_cache.o: ../utils_3570.h ../prefix_cache_3570.h ../bit_stream_3570.h ../priority_queue_3570.h ../prefix_cache_3570.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ../prefix_cache_3570.cc -o $@
