@@ -7,6 +7,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+using ::testing::Pair;
 using ::testing::StrEq;
 
 namespace mp1 {
@@ -49,6 +50,35 @@ TEST_F(OutputBitStreamTest, PutsAlignedNumberOfBitsIndividually) {
   }
 
   EXPECT_EQ(os_.str(), std::string(1, kTestByte));
+}
+
+TEST_F(OutputBitStreamTest, TellOffsetOnByteBoundary) {
+  {
+    auto obs = MakeObs();
+
+    int mask = 0x01;
+    for (int i = 0; i < 8; ++i) {
+      obs->Put(kTestByte & mask);
+      mask <<= 1;
+    }
+
+    EXPECT_THAT(obs->Tell(), Pair(1, 0));
+  }
+}
+
+TEST_F(OutputBitStreamTest, TellOffsetOffByteBoundary) {
+  {
+    auto obs = MakeObs();
+    
+    int mask = 0x01;
+    for (int i = 0; i < 11; ++i) {
+      obs->Put(kTestByte & mask);
+      mask <<= 1;
+      if (!mask) mask = 0x01;
+    }
+
+    EXPECT_THAT(obs->Tell(), Pair(1, 3));
+  }
 }
 
 TEST_F(OutputBitStreamTest, PutsAlignedNumebrOfBitsByVector) {
@@ -323,6 +353,27 @@ TEST_F(InputBitStreamTest, AlignEightWorks) {
   ibs->Align(Align::kEight);
 
   EXPECT_EQ(is_.tellg(), 8);
+}
+
+TEST_F(InputBitStreamTest, TellOffsetOnByteBoundary) {
+  is_.str(kTestString);
+
+  auto ibs = MakeIbs();
+  for (int i = 0; i < 8; ++i)
+    ibs->Get();
+
+  EXPECT_THAT(ibs->Tell(), Pair(1, 0));
+}
+
+TEST_F(InputBitStreamTest, TellOffsetOffByteBoundary) {
+  is_.str(kTestString);
+
+  auto ibs = MakeIbs();
+
+  for (int i = 0; i < 11; ++i)
+    ibs->Get();
+
+  EXPECT_THAT(ibs->Tell(), Pair(1, 3));
 }
 
 TEST_F(InputBitStreamTest, AlignedUnpackWorksWhenNotAlreadyAligned) {

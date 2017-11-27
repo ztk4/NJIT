@@ -87,6 +87,10 @@ void OutputBitStream::Align(mp1::Align n, uint8_t pad) {
   }
 }
 
+std::pair<std::streampos, uint8_t> OutputBitStream::Tell() const {
+  return std::make_pair(os_.tellp(), bits_);
+}
+
 void OutputBitStream::AlignedPack(const char *mem, size_t len) {
   DCHECK(len) << "Length must not be 0.";
 
@@ -145,6 +149,12 @@ void InputBitStream::Align(mp1::Align n) {
     // Ignore boundary - rem bytes.
     is_.ignore(boundary - rem);
   }
+}
+
+std::pair<std::streampos, uint8_t> InputBitStream::Tell() const {
+  // If there is partial byte state, technically still on previous byte.
+  return bits_ ? std::make_pair(is_.tellg() - 1L, 8 - bits_)
+               : std::make_pair(is_.tellg(), 0);
 }
 
 void InputBitStream::AlignedUnpack(char *mem, size_t len) {

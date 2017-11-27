@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <iostream>
 #include <vector>
+#include <utility>
 
 namespace mp1 {
 // Specifies byte alignment options.
@@ -42,6 +43,9 @@ class OutputBitStream {
   // Aligns the stream to a n-byte boundry, if at that boundry this is a no-op.
   // Pads out to the boundary using the padding byte.
   void Align(mp1::Align n, uint8_t pad = 0x00);
+
+  // Returns position in input sequence as a pair (byte offset, bit offset).
+  std::pair<std::streampos, uint8_t> Tell() const;
 
   // Packs an arbitray value into the stream. The value will be packed as its
   // memory layout, so this should only be used on POD types.
@@ -88,6 +92,9 @@ class InputBitStream {
   // Aligns the stream to a n-byte boundary, if at the boundary this is a no-op.
   // Skips bits until at the boundary.
   void Align(mp1::Align n);
+
+  // Returns position in input sequence as a pair (byte offset, bit offset).
+  std::pair<std::streampos, uint8_t> Tell() const;
 
   // Reads an arbitrary value from the stream. The value will be unpacked as its
   // memory layout, so this should only be used on POD types.
