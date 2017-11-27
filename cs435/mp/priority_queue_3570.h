@@ -40,8 +40,8 @@ class PriorityQueue {
 
   // PUBLIC INTERFACE
   // Inserts an element into the queue.
-  void Push(const T &t) {
-    heap_.push_back(t);
+  void Push(T t) {
+    heap_.push_back(std::move(t));
     SiftUp(heap_.size() - 1);
   }
 
@@ -112,7 +112,7 @@ class PriorityQueue {
       // Child indexes
       size_t child1 = 2*parent + 1, child2 = child1 + 1;
       // Reference to highest priority among val, and both children.
-      const T *best = &val;  // Assume val is best.
+      T *best = &val;  // Assume val is best.
       int best_id = parent;  // Assume index of best is parent.
 
       if (child1 < heap_.size() && comp_(heap_[child1], *best)) {

@@ -7,12 +7,22 @@
 
 #include <iterator>
 #include <memory>
+#include <string>
 
 #include "utils_3570.h"
 #include "priority_queue_3570.h"
 
 namespace mp1 {
-PrefixCache PrefixCache::MakePrefixCache(
+namespace {
+// For internal logging
+std::string ToString(const std::vector<bool> &prefix) {
+  std::string s = "0b";
+  for (bool b : prefix) s.push_back(b ? '1' : '0');
+  return s;
+}
+}  // anonymous namespace
+
+PrefixCache PrefixCache::Make(
     const std::vector<std::pair<char, uint64_t>> &char_freqs) {
   // Build the cache's tree.
   PrefixCache cache;
@@ -40,12 +50,12 @@ PrefixCache PrefixCache::MakePrefixCache(
 // prefix code:
 //    Exactly the number of bits specified in the previous field.
 void PrefixCache::Serialize(OutputBitStream *obs) const {
-  obs->Pack(static_cast<char>(to_code.size() - 1));
+  obs->Pack(static_cast<char>(to_code_.size() - 1));
 
   for (const auto &entry : to_code_) {
-    obs->Pack(entry->first);
-    obs->Pack(static_cast<char>(entry->second.size()));
-    obs->Put(entry->second);
+    obs->Pack(entry.first);
+    obs->Pack(static_cast<char>(entry.second.size()));
+    obs->Put(entry.second);
   }
 }
 
@@ -59,20 +69,26 @@ PrefixCache PrefixCache::Deserialize(InputBitStream *ibs) {
     char len = ibs->Unpack<char>();
     auto prefix = ibs->Get(len);
 
+    LOG(DEBUG) << "Read character '" << c << "' with code " << ToString(prefix)
+               << " from serial.";
+
     cache.to_code_[c] = prefix;
     cache.tree_.AddPrefixCode(c, prefix);
   }
+
+  return cache;
 }
 
 char PrefixCache::GetChar(InputBitStream *ibs) const {
   return tree_.GetChar(ibs);
 }
 
-void WritePrefix(char c, OutputBitStream *obs) const {
+int PrefixCache::WritePrefix(char c, OutputBitStream *obs) const {
   auto entry = to_code_.find(c);
   CHECK(entry != to_code_.end()) << "Invalid character";
 
   obs->Put(entry->second);
+  return entry->second.size();
 }
 
 // Huff Tree Impl
@@ -91,8 +107,8 @@ PrefixCache::HuffTree::HuffTree(
 
   // Define a comparator for unique_ptr<HuffNode>
   struct HuffNodeComparator {
-    bool operator()(std::unique_ptr<HuffNode> &const n1,
-                    std::unique_ptr<HuffNode> &const n2) const {
+    bool operator()(const std::unique_ptr<HuffNode> &n1,
+                    const std::unique_ptr<HuffNode> &n2) const {
       return n1->freq < n2->freq;
     }
   };
@@ -108,14 +124,16 @@ PrefixCache::HuffTree::HuffTree(
     auto min2 = pqueue.Pop();
 
     // Create a node combining the two minimum nodes.
-    std::uniqe_ptr<HuffNode> parent(new HuffNode(std::move(min1),
-                                                 std::move(min2)));
+    std::unique_ptr<HuffNode> parent(new HuffNode(std::move(min1),
+                                                  std::move(min2)));
     // Insert the parent back into the queue.
-    pqueue.Insert(std::move(parent));
+    pqueue.Push(std::move(parent));
   }
 
   // Store the remaining element as root.
   root_ = pqueue.Pop();
+
+  DCHECK(pqueue.empty());
 }
 
 char PrefixCache::HuffTree::GetChar(InputBitStream *ibs) const {
@@ -123,9 +141,9 @@ char PrefixCache::HuffTree::GetChar(InputBitStream *ibs) const {
 
   while(node && !node->leaf) {
     if (ibs->Get()) {
-      node = node->right;
+      node = node->right.get();
     } else {
-      node = node->left;
+      node = node->left.get();
     }
   }
 
@@ -146,25 +164,33 @@ void PrefixCache::HuffTree::AddPrefixCode(char c,
       if (!node->right) {
         node->right.reset(new HuffNode);
       }
-      node = node->right;
+      node = node->right.get();
     } else {
       if (!node->left) {
         node->left.reset(new HuffNode);
       }
-      node = node->left;
+      node = node->left.get();
     }
   }
 
   node->leaf = true;
   node->c = c;
 
-  return true;
+  return;
 }
 
 void PrefixCache::HuffTree::AddCodesToCache(
+    std::unordered_map<char, std::vector<bool>> *cache) const {
+  RecursiveAddCodesToCache(cache, root_.get(), {});
+}
+
+void PrefixCache::HuffTree::RecursiveAddCodesToCache(
     std::unordered_map<char, std::vector<bool>> *cache, HuffNode *node,
-    std::vector<bool> prefix) {
+    std::vector<bool> prefix) const {
   if (node->leaf) {
+    LOG(DEBUG) << "Character '" << node->c << "' gets code "
+               << ToString(prefix);
+
     (*cache)[node->c] = std::move(prefix);
   } else {
     std::vector<bool> left_prefix = prefix;
@@ -172,8 +198,8 @@ void PrefixCache::HuffTree::AddCodesToCache(
     left_prefix.push_back(false);
     right_prefix.push_back(true);
 
-    AddCodes(cache, node->left, std::move(left_prefix));
-    AddCodes(cache, node->right, std::move(right_prefix));
+    RecursiveAddCodesToCache(cache, node->left.get(), std::move(left_prefix));
+    RecursiveAddCodesToCache(cache, node->right.get(), std::move(right_prefix));
   }
 }
 }  // namespace mp1

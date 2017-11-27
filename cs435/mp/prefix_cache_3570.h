@@ -23,7 +23,7 @@ class PrefixCache {
  public:
   // Makes a new optimal PrefixCache from a list of characters and their
   // frequencies. (Implementation uses huffman encodings).
-  static PrefixCache MakePrefixCache(
+  static PrefixCache Make(
       const std::vector<std::pair<char, uint64_t>> &char_freqs);
   // Creates a prefix cache from a serialization in a stream.
   static PrefixCache Deserialize(InputBitStream *ibs);
@@ -36,7 +36,8 @@ class PrefixCache {
   char GetChar(InputBitStream *ibs) const;
 
   // Writes the prefix associated with a character to the passed stream.
-  void WritePrefix(char c, OutputBitStream *obs) const;
+  // Returns the number of bits written.
+  int WritePrefix(char c, OutputBitStream *obs) const;
 
  private:
   PrefixCache() = default;
@@ -61,9 +62,8 @@ class PrefixCache {
     void AddPrefixCode(char c, const std::vector<bool> &prefix);
 
     // Recursive walk that adds all codes to a prefix cache's cache.
-    void AddCodesToCache(std::unorderd_map<char, std::vector<bool>> *cache,
-                         HuffNode *node = root.get(),
-                         std::vector<bool> prefix = {}) const;
+    void AddCodesToCache(
+        std::unordered_map<char, std::vector<bool>> *cache) const;
 
    private:
     // Internal Node Structure
@@ -85,7 +85,7 @@ class PrefixCache {
           c(0),
           left(std::move(NOTNULL(left))),
           right(std::move(NOTNULL(right))),
-          freq(left->freq + right->freq) {}
+          freq(this->left->freq + this->right->freq) {}
 
       // Default move constructor/assignment.
       HuffNode(HuffNode &&) = default;
@@ -101,6 +101,10 @@ class PrefixCache {
       // Freqeuncy (Either of this character, or sum of children).
       uint64_t freq;
     };
+
+    void RecursiveAddCodesToCache(
+        std::unordered_map<char, std::vector<bool>> *cache,
+        HuffNode *node, std::vector<bool> prefix) const;
 
     // The root of this huff tree.
     std::unique_ptr<HuffNode> root_;
