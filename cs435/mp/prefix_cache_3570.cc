@@ -50,7 +50,7 @@ PrefixCache PrefixCache::Make(
 // prefix code:
 //    Exactly the number of bits specified in the previous field.
 void PrefixCache::Serialize(OutputBitStream *obs) const {
-  obs->Pack(static_cast<char>(to_code_.size() - 1));
+  obs->Pack(static_cast<uint8_t>(to_code_.size() - 1));
 
   for (const auto &entry : to_code_) {
     obs->Pack(entry.first);
@@ -62,7 +62,9 @@ void PrefixCache::Serialize(OutputBitStream *obs) const {
 // Inverse of the above serialization.
 PrefixCache PrefixCache::Deserialize(InputBitStream *ibs) {
   PrefixCache cache;
-  int size = ibs->Unpack<char>() + 1;
+  int size = static_cast<int>(ibs->Unpack<uint8_t>()) + 1;
+
+  LOG(DEBUG) << "Serialized Cache Size: " << size;
 
   for (int i = 0; i < size; ++i) {
     char c = ibs->Unpack<char>();

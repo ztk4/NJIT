@@ -15,10 +15,12 @@
 #include "bit_stream_3570.h"
 #include "prefix_cache_3570.h"
 
+using mp1::Align;
 using mp1::PrefixCache;
 using mp1::OutputBitStream;
 using std::cerr;
 using std::ifstream;
+using std::ios;
 using std::ofstream;
 using std::string;
 using std::unordered_map;
@@ -26,6 +28,8 @@ using std::vector;
 
 // ENCODING FORMAT:
 // Four Byte Header: ZKHE (Zachary Kaplan Huffman Encoded).
+// Padding Bits: 1-byte integer representing the number of padding bits used at
+//               the end of the encoding section to align to the byte boundary.
 // Serialized Prefix Codes: See prefix_cache_3570.cc for details.
 // Huffman Encodig of the File: Sequential prefix codes for each byte of the
 //                              original file.
@@ -41,8 +45,8 @@ int main(int argc, char **argv) {
   string filename = argv[1];
   string huffname = filename + ".huf";
   {
-    ifstream input(filename);
-    ofstream output(huffname);
+    ifstream input(filename, ios::in | ios::binary);
+    ofstream output(huffname, ios::out | ios::binary);
 
     if (!input) {
       cerr << "Unable to open input file " << filename << '\n';
@@ -77,6 +81,7 @@ int main(int argc, char **argv) {
 
       // Write header to file.
       obs.AlignedPack("ZKHE", 4);
+      obs.Pack('\0');  // Pack a 0 as the number of padding bits for now.
       // Serialize codes to file.
       cache.Serialize(&obs);
       // Encode the original file.
@@ -87,6 +92,18 @@ int main(int argc, char **argv) {
         if (!input) break;
         cache.WritePrefix(c, &obs);
       }
+
+      // Figure out how many bits will be used for padding.
+      auto pos = obs.Tell();
+      char padding_bits = pos.second ? 8 - pos.second : 0;
+
+      // Flush stream content.
+      obs.Align(Align::kOne);
+      obs.Flush();
+
+      // Seek back to the padding offset, and fill it in.
+      output.seekp(4);
+      obs.Pack(padding_bits);
     }
   }
 
