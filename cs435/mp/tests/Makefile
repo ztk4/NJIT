@@ -18,7 +18,7 @@ LDFLAGS += -lpthread
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # create to the list.
-TESTS = priority_queue_test bit_stream_test prefix_cache_test hash_table_test
+TESTS = priority_queue_test bit_stream_test prefix_cache_test hash_table_test lexicon_test
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
@@ -117,9 +117,15 @@ prefix_cache_test: prefix_cache_test.o prefix_cache.o bit_stream.o gmock_main.a
 # GTEST TESTS
 
 hash_table_test.o: ../utils_3570.h ../hash_table_3570.h hash_table_test.cc
-	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) -I$(GMOCK_DIR) $(CXXFLAGS) \
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) \
 		-c hash_table_test.cc
 hash_table_test: hash_table_test.o gtest_main.a
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+lexicon_test.o: ../utils_3570.h ../lexicon_3570.h lexicon_test.cc
+	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) \
+		-c lexicon_test.cc
+lexicon_test: lexicon.o lexicon_test.o gtest_main.a
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # INTERMEDIATE TARGETS
@@ -129,3 +135,6 @@ bit_stream.o: ../utils_3570.h ../bit_stream_3570.h ../bit_stream_3570.cc
 
 prefix_cache.o: ../utils_3570.h ../prefix_cache_3570.h ../bit_stream_3570.h ../priority_queue_3570.h ../prefix_cache_3570.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ../prefix_cache_3570.cc -o $@
+
+lexicon.o: ../utils_3570.h ../hash_table_3570.h ../lexicon_3570.h ../lexicon_3570.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c ../lexicon_3570.cc -o $@
