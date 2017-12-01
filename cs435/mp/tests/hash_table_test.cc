@@ -45,7 +45,21 @@ class HashTableTest : public ::testing::Test {
 
     std::function<void()> cb;
   };
-  using TestTable = HashTable<Key, Value, Hasher, GetKey>;
+  struct KeyPred {
+    explicit KeyPred(const std::function<void()> &cb = []{}) : cb(cb) {}
+    KeyPred(const KeyPred &) = default;
+    KeyPred &operator=(const KeyPred &) = default;
+    KeyPred(KeyPred &&) = default;
+    KeyPred &operator=(KeyPred &&) = default;
+
+    bool operator()(int k1, int k2) const { 
+      if (cb) cb();
+      return k1 == k2;
+    }
+
+    std::function<void()> cb;
+  };
+  using TestTable = HashTable<Key, Value, KeyPred, Hasher, GetKey>;
 
   // Useful constants.
   static constexpr size_t kCap = 15;
@@ -64,13 +78,15 @@ TEST_F(HashTableTest, CapacityOnlyConstructor) {
 }
 
 TEST_F(HashTableTest, ConstructorWithFunctors) {
+  bool pred_cb_called = false;
   bool hash_cb_called = false;
   bool key_cb_called = false;
 
+  auto pred_cb = [&pred_cb_called] { pred_cb_called = true; };
   auto hash_cb = [&hash_cb_called] { hash_cb_called = true; };
   auto key_cb = [&key_cb_called] { key_cb_called = true; };
 
-  TestTable table(kCap, Hasher(hash_cb), GetKey(key_cb));
+  TestTable table(kCap, KeyPred(pred_cb), Hasher(hash_cb), GetKey(key_cb));
 
   EXPECT_TRUE(table.Empty());
   EXPECT_FALSE(table.Full());
@@ -80,21 +96,24 @@ TEST_F(HashTableTest, ConstructorWithFunctors) {
 
   // Should invoke the hash.
   table.Insert(1, Value{1, 2});
-  // Should invoke the key cb.
+  // Should invoke the key cb and the predicate cb.
   table.Search(1);
 
   EXPECT_TRUE(hash_cb_called);
   EXPECT_TRUE(key_cb_called);
+  EXPECT_TRUE(pred_cb_called);
 }
 
 TEST_F(HashTableTest, FunctorsCarryOverAfterSetCapacity) {
+  bool pred_cb_called = false;
   bool hash_cb_called = false;
   bool key_cb_called = false;
 
+  auto pred_cb = [&pred_cb_called] { pred_cb_called = true; };
   auto hash_cb = [&hash_cb_called] { hash_cb_called = true; };
   auto key_cb = [&key_cb_called] { key_cb_called = true; };
 
-  TestTable table(kCap, Hasher(hash_cb), GetKey(key_cb));
+  TestTable table(kCap, KeyPred(pred_cb), Hasher(hash_cb), GetKey(key_cb));
 
   table.SetCapacity(kCap * 2);
 
@@ -103,6 +122,7 @@ TEST_F(HashTableTest, FunctorsCarryOverAfterSetCapacity) {
 
   EXPECT_TRUE(hash_cb_called);
   EXPECT_TRUE(key_cb_called);
+  EXPECT_TRUE(pred_cb_called);
 }
 
 TEST_F(HashTableTest, SetCapacityIncreasesTheCapacity) {

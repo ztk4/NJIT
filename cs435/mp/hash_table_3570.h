@@ -17,27 +17,32 @@ namespace mp2 {
 // Uses naive quadratic probing for collision resolution.
 template <typename Key,           // The type used to key into the table.
           typename Value,         // The type of the value stored in the table.
+          typename KeyPred,       // A functor that compares keys.
           typename HashFunctor,   // A functor that hashes a key.
           typename KeyFunctor>    // A functor that retrieves keys from an
                                   // instance of the value type.
 class HashTable {
  public:
   // Creates an empty hash table with the specified capacity.
-  explicit HashTable(size_t capacity, HashFunctor hasher = HashFunctor(),
+  explicit HashTable(size_t capacity, KeyPred pred = KeyPred(),
+                     HashFunctor hasher = HashFunctor(),
                      KeyFunctor get_key = KeyFunctor())
-    : hasher_(hasher),
+    : pred_(pred),
+      hasher_(hasher),
       get_key_(get_key),
       capacity_(capacity),
       table_(new Entry[capacity]) {}
 
   // Disallow copy and assign.
-  HashTable(const HashTable<Key, Value, HashFunctor, KeyFunctor> &) = delete;
-  HashTable<Key, Value, HashFunctor, KeyFunctor> &operator=(
-      const HashTable<Key, Value, HashFunctor, KeyFunctor> &) = delete;
+  HashTable(
+      const HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &) = delete;
+  HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &operator=(
+      const HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &) = delete;
   // Allow move operations.
-  HashTable(HashTable<Key, Value, HashFunctor, KeyFunctor> &&) = default;
-  HashTable<Key, Value, HashFunctor, KeyFunctor> &operator=(
-      HashTable<Key, Value, HashFunctor, KeyFunctor> &&) = default;
+  HashTable(
+      HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &&) = default;
+  HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &operator=(
+      HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> &&) = default;
 
   // Boolean size functions.
   bool Empty() const { return size_ == 0; }
@@ -53,9 +58,8 @@ class HashTable {
 
     // Setting the capacity involves re-inserting every element, so we might
     // as well make a new HashTable, insert into it, then move it to this one.
-    HashTable<Key, Value, HashFunctor, KeyFunctor> new_table(capacity,
-                                                             hasher_,
-                                                             get_key_);
+    HashTable<Key, Value, KeyPred, HashFunctor, KeyFunctor> new_table(
+        capacity, pred_, hasher_, get_key_);
 
     // Go through each entry, and insert each as needed to the new table.
     for (Entry *e = table_.get(); e != table_.get() + capacity_; ++e) {
@@ -81,7 +85,7 @@ class HashTable {
     for (size_t i = 0; i < capacity_; ++i) {
       const auto &entry = table_[hash];
       if (entry.state == Entry::kOpen) return std::make_pair(false, Value());
-      if (entry.state == Entry::kFull && key == get_key_(entry.value)) {
+      if (entry.state == Entry::kFull && pred_(key, get_key_(entry.value))) {
         return std::make_pair(true, entry.value);
       }
 
@@ -116,7 +120,7 @@ class HashTable {
           // Can't break right away, must make sure key isn't already in table.
           // Only set dest if unset.
           if (!dest) dest = &entry;
-        } else if (key == get_key_(entry.value)) {  // Full and matches.
+        } else if (pred_(key, get_key_(entry.value))) {  // Full and matches.
           return false;  // Can't insert, element already in table.
         }
 
@@ -149,7 +153,7 @@ class HashTable {
     for (size_t i = 0; i < capacity_; ++i) {
       auto &entry = table_[hash];
       if (entry.state == Entry::kOpen) return std::make_pair(false, Value());
-      if (entry.state == Entry::kFull && key == get_key_(entry.value)) {
+      if (entry.state == Entry::kFull && pred_(key, get_key_(entry.value))) {
         entry.state = Entry::kDeleted;
         --size_;
         return std::make_pair(true, entry.value);
@@ -171,6 +175,7 @@ class HashTable {
   };
 
   // Functor instances.
+  KeyPred pred_;
   HashFunctor hasher_;
   KeyFunctor get_key_;
   // Size information.
