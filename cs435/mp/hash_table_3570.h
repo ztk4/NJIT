@@ -141,17 +141,18 @@ class HashTable {
 
     return true;
   }
-  // Returns true on success. (Fails only when key is not in the map).
-  bool Delete(Key key) {
+  // Returns (true, value) on success, and (false, ***) when key is not found.
+  std::pair<bool, Value> Delete(Key key) {
     auto hash = hasher_(key) % capacity_;
 
     // Try deleting up to capacity times.
     for (size_t i = 0; i < capacity_; ++i) {
       auto &entry = table_[hash];
+      if (entry.state == Entry::kOpen) return std::make_pair(false, Value());
       if (entry.state == Entry::kFull && key == get_key_(entry.value)) {
         entry.state = Entry::kDeleted;
         --size_;
-        return true;
+        return std::make_pair(true, entry.value);
       }
 
       // Quadratic Probing.
@@ -159,7 +160,7 @@ class HashTable {
       hash %= capacity_;
     }
 
-    return false;
+    return std::make_pair(false, Value());
   }
 
  private:

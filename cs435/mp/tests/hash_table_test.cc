@@ -191,7 +191,9 @@ TEST_F(HashTableTest, DeleteFailsOnMissingKey) {
 
   table.Insert(1, Value{1, 2});
 
-  EXPECT_FALSE(table.Delete(5));
+  auto res = table.Delete(5);
+
+  EXPECT_FALSE(res.first);
   EXPECT_EQ(table.Size(), 1);
 }
 
@@ -200,7 +202,11 @@ TEST_F(HashTableTest, DeleteDecreasesSizeWhenValid) {
 
   table.Insert(1, Value{1, 2});
 
-  EXPECT_TRUE(table.Delete(1));
+  auto res = table.Delete(1);
+
+  EXPECT_TRUE(res.first);
+  EXPECT_EQ(res.second.key, 1);
+  EXPECT_EQ(res.second.value, 2);
   EXPECT_EQ(table.Size(), 0);
 }
 
