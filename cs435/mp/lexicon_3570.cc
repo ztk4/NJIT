@@ -5,7 +5,9 @@
 
 #include "lexicon_3570.h"
 
+#include <cmath>
 #include <cstring>
+#include <iomanip>
 #include <utility>
 
 #include "logging_3570.h"
@@ -46,12 +48,12 @@ bool Lexicon::SetArenaSize(size_t arena_size) {
 
 ssize_t Lexicon::Search(const char *str) const {
   auto res = table_.Search(str);
-  return (res.first ? res.second : -1);
+  return (res.first ? table_.GetIndex(res.second) : -1);
 }
 
 ssize_t Lexicon::Insert(const char *str) {
-  bool success = table_.Insert(str, arena_base_);
-  if (success) {
+  auto res = table_.Insert(str, arena_base_);
+  if (res.first) {
     // Check if the string will fit in the arena, and resize if needed.
     size_t len = strlen(str);
     if (len >= arena_size_ - arena_base_) {
@@ -63,10 +65,9 @@ ssize_t Lexicon::Insert(const char *str) {
     }
 
     // Insert the string into the arena, and update arena_base_.
-    size_t old_base = arena_base_;
     strcpy(arena_.get() + arena_base_, str);
-    arena_base_ += len;
-    return old_base;
+    arena_base_ += len + 1;
+    return table_.GetIndex(res.second);
   }
 
   return -1;
@@ -76,8 +77,8 @@ ssize_t Lexicon::Delete(const char *str) {
   auto res = table_.Delete(str);
   if (res.first) {
     // Set this string's representation to all '*' in the arena.
-    for (char *c = arena_.get() + res.second; *c; ++c) *c = '*';
-    return res.second;
+    for (char *c = arena_.get() + res.second->value; *c; ++c) *c = '*';
+    return table_.GetIndex(res.second);
   }
 
   return -1;
@@ -102,5 +103,27 @@ size_t Lexicon::StringHasher::operator()(const char *str) const {
 // Fetches a key string from the arena based on it's index.
 const char *Lexicon::GetKey::operator()(size_t idx) const {
   return lexicon->arena_.get() + idx;
+}
+
+void Lexicon::Print(std::ostream *os) const {
+  (*os) << "    T\t\tA: ";
+  for (char *c = arena_.get(); c < arena_.get() + arena_size_; ++c) {
+    os->put(*c ? *c : '\\');
+  }
+  (*os) << '\n';
+
+  int width = log10(arena_base_);
+
+  using Entry = decltype(table_)::Entry;
+  table_.ForEach([os, width, this](const Entry *entry) {
+    auto slot = table_.GetIndex(entry);
+    (*os) << std::setw(width) << slot << ":";
+
+    if (entry->state == Entry::kFull)
+      (*os) << ' ' << std::setw(width) << entry->value;
+    (*os) << '\n';
+
+    return true;
+  });
 }
 }  // namespace mp2

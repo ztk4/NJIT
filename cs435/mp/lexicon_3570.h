@@ -6,6 +6,7 @@
 #ifndef MP2_LEXICON_H_
 #define MP2_LEXICON_H_
 
+#include <iostream>
 #include <memory>
 
 #include "hash_table_3570.h"
@@ -40,6 +41,9 @@ class Lexicon {
   ssize_t Insert(const char *str);
   // Returns the hash_table index of the str if deleted, otherwise -1.
   ssize_t Delete(const char *str);
+
+  // Prints this lexicon's arena and hash table.
+  void Print(std::ostream *os) const;
 
  private:
   // Predicate for comparing keys.

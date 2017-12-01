@@ -136,9 +136,9 @@ TEST_F(HashTableTest, SetCapacityIncreasesTheCapacity) {
 TEST_F(HashTableTest, InsertIncreasesSize) {
   TestTable table(kCap);
 
-  bool success = table.Insert(1, Value{1, 2});
+  auto res = table.Insert(1, Value{1, 2});
 
-  EXPECT_TRUE(success);
+  EXPECT_TRUE(res.first);
   EXPECT_EQ(table.Size(), 1);
 }
 
@@ -147,7 +147,7 @@ TEST_F(HashTableTest, CannotDoubleInsertKey) {
 
   table.Insert(1, Value{1, 2});
 
-  EXPECT_FALSE(table.Insert(1, Value{1, 3}));
+  EXPECT_FALSE(table.Insert(1, Value{1, 3}).first);
   EXPECT_EQ(table.Size(), 1);
 }
 
@@ -159,8 +159,8 @@ TEST_F(HashTableTest, SearchFindsInsertedKey) {
   auto res = table.Search(1);
 
   EXPECT_TRUE(res.first);
-  EXPECT_EQ(res.second.key, 1);
-  EXPECT_EQ(res.second.value, 2);
+  EXPECT_EQ(res.second->value.key, 1);
+  EXPECT_EQ(res.second->value.value, 2);
 }
 
 TEST_F(HashTableTest, SearchFailsOnMissingKey) {
@@ -188,9 +188,9 @@ TEST_F(HashTableTest, InsertSucceedsAfterCollision) {
 
   table.Insert(1, Value{1, 2});
 
-  bool success = table.Insert(1 + kCap, Value{1 + kCap, 10});
+  auto res = table.Insert(1 + kCap, Value{1 + kCap, 10});
 
-  EXPECT_TRUE(success);
+  EXPECT_TRUE(res.first);
 }
 
 TEST_F(HashTableTest, SearchSucceedsAfterCollision) {
@@ -202,8 +202,8 @@ TEST_F(HashTableTest, SearchSucceedsAfterCollision) {
   auto res = table.Search(1 + kCap);
 
   EXPECT_TRUE(res.first);
-  EXPECT_EQ(res.second.key, 1 + kCap);
-  EXPECT_EQ(res.second.value, 10);
+  EXPECT_EQ(res.second->value.key, 1 + kCap);
+  EXPECT_EQ(res.second->value.value, 10);
 }
 
 TEST_F(HashTableTest, DeleteFailsOnMissingKey) {
@@ -225,16 +225,16 @@ TEST_F(HashTableTest, DeleteDecreasesSizeWhenValid) {
   auto res = table.Delete(1);
 
   EXPECT_TRUE(res.first);
-  EXPECT_EQ(res.second.key, 1);
-  EXPECT_EQ(res.second.value, 2);
+  EXPECT_EQ(res.second->value.key, 1);
+  EXPECT_EQ(res.second->value.value, 2);
   EXPECT_EQ(table.Size(), 0);
 }
 
 TEST_F(HashTableTest, FullIndicatesWhenTableIsFull) {
   TestTable table(2);
 
-  EXPECT_TRUE(table.Insert(1, Value{1, 2}));
-  EXPECT_TRUE(table.Insert(3, Value{3, 4}));
+  EXPECT_TRUE(table.Insert(1, Value{1, 2}).first);
+  EXPECT_TRUE(table.Insert(3, Value{3, 4}).first);
 
   EXPECT_TRUE(table.Full());
 }
@@ -245,7 +245,7 @@ TEST_F(HashTableTest, InsertSucceedsEvenWhenTableIsFull) {
   table.Insert(1, Value{1, 2});
   table.Insert(3, Value{3, 4});
   
-  EXPECT_TRUE(table.Insert(5, Value{5, 6}));
+  EXPECT_TRUE(table.Insert(5, Value{5, 6}).first);
   EXPECT_EQ(table.Size(), 3);
 }
 

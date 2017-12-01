@@ -4,9 +4,10 @@ CXXFLAGS += -std=c++11 -O3 -Wall -Wextra
 LDFLAGS  += -lm
 
 # TODO: Fill in top level targets
-TARGETS = henc_3570 hdec_3570
+TARGETS = henc_3570 hdec_3570 mplexicon_3570
 
 MP1_HEADERS = $(addsuffix _3570.h, utils logging bit_stream priority_queue prefix_cache)
+MP2_HEADERS = $(addsuffix _3570.h, utils logging hash_table lexicon)
 
 .PHONY: all debug clean opt targets
 
@@ -19,9 +20,11 @@ debug: CXXFLAGS += -ggdb
 debug: targets
 
 clean:
-	rm *.o $(TARGETS)
+	rm -rf *.o $(TARGETS)
 
 targets: $(TARGETS)
+
+# MP1
 
 henc_3570: henc_3570.o bit_stream_3570.o prefix_cache_3570.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
@@ -40,3 +43,14 @@ bit_stream_3570.o: $(MP1_HEADERS) bit_stream_3570.cc
 
 prefix_cache_3570.o: $(MP1_HEADERS) prefix_cache_3570.cc
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c prefix_cache_3570.cc -o $@
+
+# MP2
+
+mplexicon_3570: mplexicon_3570.o lexicon_3570.o
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+
+mplexicon_3570.o: $(MP2_HEADERS) mplexicon_3570.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c mplexicon_3570.cc -o $@
+
+lexicon_3570.o: $(MP2_HEADERS) lexicon_3570.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c lexicon_3570.cc -o $@
