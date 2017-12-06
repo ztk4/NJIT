@@ -10,10 +10,10 @@ HANDOUT 2 ADHERED; NO BUGS TO REPORT
 
 THIS SUBMISSION REQUIRES C++11:
 
-GCC version 6.1.1 is the version I recommend for building this project, therefore
+GCC version 6.1.0 is the version I recommend for building this project, therefore
 please execute the following commands on afs to ensure proper compilation:
 
-$ module load gcc/6.1.1
+$ module load gcc/6.1.0
 $ make -j8
 
 ### TESTING INSTRUCTIONS ###
