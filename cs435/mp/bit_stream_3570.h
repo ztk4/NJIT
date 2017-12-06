@@ -1,5 +1,4 @@
-// Zachary Kaplan [3570]
-// CS435-001
+// Zachary Kaplan [3570] CS435-001 MP
 // MP 1
 // 9/30/17
 

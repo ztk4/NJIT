@@ -1,9 +1,12 @@
+# Zachary Kaplan [3570] CS435-001 MP
+# ALL
+# 9/27/17
+
 CXX       = g++
 CPPFLAGS += 
 CXXFLAGS += -std=c++11 -O3 -Wall -Wextra
 LDFLAGS  += -lm
 
-# TODO: Fill in top level targets
 TARGETS = henc_3570 hdec_3570 mplexicon_3570
 
 MP1_HEADERS = $(addsuffix _3570.h, utils logging bit_stream priority_queue prefix_cache)

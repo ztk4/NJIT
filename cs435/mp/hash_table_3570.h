@@ -1,6 +1,5 @@
-// Zachary Kaplan [3570]
-// CS435-001
-// MP2
+// Zachary Kaplan [3570] CS435-001 MP
+// MP 2
 // 11/30/17
 
 #ifndef MP2_HASH_TABLE_H_

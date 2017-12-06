@@ -1,1 +1,27 @@
-TODO
+Zachary Kaplan [3570] CS435-001 MP
+ALL
+12/6/17
+
+### STATUS ###
+
+HANDOUT 2 ADHERED; NO BUGS TO REPORT
+
+### COMPILATION INSTRUCTIONS ###
+
+THIS SUBMISSION REQUIRES C++11:
+
+Please execute the following commands on afs to ensure proper compilation:
+
+$ module load gcc/6.1.1
+$ make -j8
+
+### TESTING INSTRUCTIONS ###
+
+The executables for option 1 are named henc_3570 and hdec_3570 and may be invoked as follows:
+
+$ ./henc_3570 file.ext
+$ ./hdec_3570 file.ext.huf
+
+The executables for option 2 are named mplexicon_3570 and may be invoked as follows:
+
+$ ./mplexicon_3570 batch.txt

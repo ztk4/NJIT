@@ -1,5 +1,4 @@
-// Zachary Kaplan [3570]
-// CS435-001
+// Zachary Kaplan [3570] CS435-001 MP
 // ALL
 // PREEXISTING
 

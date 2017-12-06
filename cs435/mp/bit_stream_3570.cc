@@ -1,3 +1,7 @@
+// Zachary Kaplan [3570] CS435-001 MP
+// MP 1
+// 10/21/17
+
 #include "bit_stream_3570.h"
 
 #include "utils_3570.h"
