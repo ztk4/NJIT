@@ -10,7 +10,8 @@ HANDOUT 2 ADHERED; NO BUGS TO REPORT
 
 THIS SUBMISSION REQUIRES C++11:
 
-Please execute the following commands on afs to ensure proper compilation:
+GCC version 6.1.1 is the version I recommend for building this project, therefore
+please execute the following commands on afs to ensure proper compilation:
 
 $ module load gcc/6.1.1
 $ make -j8
@@ -25,3 +26,10 @@ $ ./hdec_3570 file.ext.huf
 The executables for option 2 are named mplexicon_3570 and may be invoked as follows:
 
 $ ./mplexicon_3570 batch.txt
+
+### NOTES ###
+
+Details on the specific format used .huf files for option 1 can be found in a
+comment block in prefix_cache_3570.cc right above the method
+PrefixCache::Serialize. This it NOT necessary information to compile or run
+tests, but still could be useful info. 
