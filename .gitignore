@@ -5,3 +5,4 @@
 *.img
 .~lock*
 cs485/repo/**/*
+.__afs*
