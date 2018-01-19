@@ -22,7 +22,7 @@ static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
       "rep movsb;"        /* Move %ecx bytes of str at %esi into str at %edi */
       : /* No Ouputs */
       : "S" (src), "D" (dest), "r" (s_idx), "c" (e_idx)
-      : "cc"  /* condition codes (rflags) modified */
+      : "cc", "memory"
       );
   
   return dest;
