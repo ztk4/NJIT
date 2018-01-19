@@ -16,20 +16,20 @@ static inline char *sub_str(char *dest, char *src, int s_idx, int e_idx) {
 
 /* ASM implementation of sub_str */
 static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
-  asm("addq %q2, %%rsi;" /* Add start index to src */
-      "subl %k2, %%ecx;" /* Get length of substr as e - s */
-      "cld;"             /* Clear direction bit (force increment) */
-      "rep movsb;"       /* Move %ecx bytes of src into dest */
+  asm("addq %q2, %%rsi;"  /* Add start index to src (ptrs are 64-bit) */
+      "subl %k2, %%ecx;"  /* Get length of substr as e - s (int is 32-bit) */
+      "cld;"              /* Clear direction bit (force increment) */
+      "rep movsb;"        /* Move %ecx bytes of str at %esi into str at %edi */
       : /* No Ouputs */
       : "S" (src), "D" (dest), "r" (s_idx), "c" (e_idx)
-      : "cc"
+      : "cc"  /* condition codes (rflags) modified */
       );
   
   return dest;
 }
 
 /* Helper for parsing integers w/ error handling */
-int parse_int(char *str) {
+static int parse_int(char *str) {
   errno = 0;
 
   long tmp = strtol(str, NULL, 0);
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 
   /* Validate that substring indices are valid (don't expose the stack!) */
   len = strlen(src);
-  if (e_idx < s_idx || e_idx > len) {
+  if (e_idx < s_idx || e_idx > len || s_idx < 0) {
     fputs("Error: Indices overflow the input string, or the start index "
           "exceeds the end index\n", stderr);
     return 3;
@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
     return 4;
   }
 
-  /* Call our sub_str routines */
+  /* Call our sub_str routines (assigment is redundant but clear) */
   dst_c   =     sub_str(dst_c,   src, s_idx, e_idx);
   dst_asm = asm_sub_str(dst_asm, src, s_idx, e_idx);
   
