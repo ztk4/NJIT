@@ -16,16 +16,24 @@ static inline char *sub_str(char *dest, char *src, int s_idx, int e_idx) {
 
 /* ASM implementation of sub_str */
 static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
-  asm("addq %q2, %%rsi;"  /* Add start index to src (ptrs are 64-bit) */
-      "subl %k2, %%ecx;"  /* Get length of substr as e - s (int is 32-bit) */
-      "cld;"              /* Clear direction bit (force increment) */
-      "rep movsb;"        /* Move %ecx bytes of str at %esi into str at %edi */
-      : /* No Ouputs */
-      : "S" (src), "D" (dest), "r" (s_idx), "c" (e_idx)
-      : "cc", "memory"
+  char *odest;  // The original destination pointer.
+  /* Some of the following is influenced by the answer to my SO question here:
+   * https://stackoverflow.com/questions/48362759/gcc-inline-assembly-g-constraint-and-parameter-size
+   */
+  asm(
+      "movq %%rdi, %[odest];   \n\t" /* Save original dest for return */
+      "movslq %[s_idx], %%rax; \n\t" /* Sign extend s_idx to 64-bits */
+      "addq %%rax, %%rsi;      \n\t" /* Add start index to src */
+      "subl %%eax, %%ecx;      \n\t" /* Get length of substr as e - s (0-ext) */
+      "rep movsb; \n\t" /* Move %ecx bytes of str at %esi into str at %edi */
+      : "+S" (src), "+D" (dest), "+&c" (e_idx), [odest]"=&g" (odest),
+        "=m" (*(char (*)[]) dest)  /* Tells compiler we are writing to dest */
+      : [s_idx]"g" (s_idx),
+        "m" (*(const char (*)[]) src)  /* We are reading from src */
+      : "cc", "rax"
       );
   
-  return dest;
+  return odest;
 }
 
 /* Helper for parsing integers w/ error handling */
