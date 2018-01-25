@@ -7,7 +7,7 @@
 /* C implementation of sub_str */
 static inline char *sub_str(char *dest, char *src, int s_idx, int e_idx) {
   char *pdest = dest, *psrc;
-  for (psrc = src + s_idx; psrc < src + e_idx; ++psrc) {
+  for (psrc = src + s_idx; psrc <= src + e_idx; ++psrc) {
     *pdest++ = *psrc;
   }
 
@@ -25,8 +25,9 @@ static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
       "movslq %[s_idx], %%rax; \n\t" /* Sign extend s_idx to 64-bits */
       "addq %%rax, %%rsi;      \n\t" /* Add start index to src */
       "subl %%eax, %%ecx;      \n\t" /* Get length of substr as e - s (0-ext) */
+      "addl    $1, %%ecx;      \n\t" /* Add 1 to length to include e_idx */
       "rep movsb; \n\t" /* Move %ecx bytes of str at %esi into str at %edi */
-      : "+S" (src), "+D" (dest), "+&c" (e_idx), [odest]"=&g" (odest),
+      : "+&S" (src), "+D" (dest), "+&c" (e_idx), [odest]"=&g" (odest),
         "=m" (*(char (*)[]) dest)  /* Tells compiler we are writing to dest */
       : [s_idx]"g" (s_idx),
         "m" (*(const char (*)[]) src)  /* We are reading from src */
@@ -69,14 +70,14 @@ int main(int argc, char **argv) {
 
   /* Validate that substring indices are valid (don't expose the stack!) */
   len = strlen(src);
-  if (e_idx < s_idx || e_idx > len || s_idx < 0) {
+  if (e_idx < s_idx || e_idx >= len || s_idx < 0) {
     fputs("Error: Indices overflow the input string, or the start index "
           "exceeds the end index\n", stderr);
     return 3;
   }
 
   /* Allocate storage for destination strings */
-  sub_len = e_idx - s_idx;
+  sub_len = e_idx - s_idx + 1;
   dst_c = (char *) malloc(sub_len + 1);
   dst_asm = (char *) malloc(sub_len + 1);
   /* The following implies ENOMEM */
