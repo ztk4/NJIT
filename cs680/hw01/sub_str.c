@@ -47,7 +47,7 @@ static int parse_int(char *str) {
   /* Handle any error */
   if (errno) {
     fprintf(stderr, "Error parsing integer '%s': %s\n", str, strerror(errno));
-    exit(2);
+    exit(-2);
   }
 
   return tmp;
@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 
   if (argc != 4) {
     printf("Usage: %s string s_idx e_idx\n", *argv);
-    return 1;
+    return -1;
   }
 
   /* Get inputs from command line */
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
   if (e_idx < s_idx || e_idx >= len || s_idx < 0) {
     fputs("Error: Indices overflow the input string, or the start index "
           "exceeds the end index\n", stderr);
-    return 3;
+    return -3;
   }
 
   /* Allocate storage for destination strings */
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
   /* The following implies ENOMEM */
   if (!dst_c || !dst_asm) {
     perror("Failed to allocate destination buffers");
-    return 4;
+    return -4;
   }
 
   /* Call our sub_str routines (assigment is redundant but clear) */
@@ -94,15 +94,18 @@ int main(int argc, char **argv) {
   dst_c[sub_len] = '\0';
   dst_asm[sub_len] = '\0';
 
+  /* Check if results match */
+  int result = strcmp(dst_c, dst_asm);
+
   /* Output results, and indiciate if they match */
   printf("C   sub_str: '%s'\n"
          "ASM sub_str: '%s'\n"
          "Results %s\n",
-         dst_c, dst_asm, (strcmp(dst_c, dst_asm) ? "Differ." : "Match!"));
+         dst_c, dst_asm, (result ? "Differ." : "Match!"));
 
   /* Free dynamically allocated memory (unnecessary but good practice) */
   free(dst_c);
   free(dst_asm);
 
-  return 0;
+  return result;
 }
