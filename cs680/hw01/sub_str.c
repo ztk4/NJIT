@@ -20,7 +20,7 @@ static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
   /* Some of the following is influenced by the answer to my SO question here:
    * https://stackoverflow.com/questions/48362759/gcc-inline-assembly-g-constraint-and-parameter-size
    */
-  __asm__(
+  asm(
       "movq %%rdi, %[odest];   \n\t" /* Save original dest for return */
       "movslq %[s_idx], %%rax; \n\t" /* Sign extend s_idx to 64-bits */
       "addq %%rax, %%rsi;      \n\t" /* Add start index to src */
