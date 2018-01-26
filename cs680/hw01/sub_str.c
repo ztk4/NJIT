@@ -16,7 +16,7 @@ static inline char *sub_str(char *dest, char *src, int s_idx, int e_idx) {
 
 /* ASM implementation of sub_str */
 static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
-  char *odest;  // The original destination pointer.
+  char *odest;  /* The original destination pointer. */
   /* Some of the following is influenced by the answer to my SO question here:
    * https://stackoverflow.com/questions/48362759/gcc-inline-assembly-g-constraint-and-parameter-size
    */
@@ -39,9 +39,10 @@ static inline char *asm_sub_str(char *dest, char *src, int s_idx, int e_idx) {
 
 /* Helper for parsing integers w/ error handling */
 static int parse_int(char *str) {
+  long tmp;
   errno = 0;
 
-  long tmp = strtol(str, NULL, 0);
+  tmp = strtol(str, NULL, 0);
   /* Explicitly check for integer overflow */
   if (!errno && (tmp > INT_MAX || tmp < INT_MIN)) errno = ERANGE;
   /* Handle any error */
@@ -55,7 +56,7 @@ static int parse_int(char *str) {
 
 int main(int argc, char **argv) {
   char *src, *dst_c, *dst_asm;
-  int s_idx, e_idx;
+  int s_idx, e_idx, result;
   size_t len, sub_len;
 
   if (argc != 4) {
@@ -95,7 +96,7 @@ int main(int argc, char **argv) {
   dst_asm[sub_len] = '\0';
 
   /* Check if results match */
-  int result = strcmp(dst_c, dst_asm);
+  result = strcmp(dst_c, dst_asm);
 
   /* Output results, and indiciate if they match */
   printf("C   sub_str: '%s'\n"
