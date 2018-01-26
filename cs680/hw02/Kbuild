@@ -1,4 +1,4 @@
 # Kbuild for building external modules in this directory.
 
 # Each object this rule depends on is added as a module.
-obj-m := hello1.o
+obj-m := hello1.o hello2.o

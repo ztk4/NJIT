@@ -1,0 +1,26 @@
+/*
+ * Slightly more complex kernel modules that uses __init and __exit which allows
+ * the kernel to optimize memory usage when possible.
+ * Also uses __initdata which has similar memory optimizations applied.
+ */
+
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+
+static int hello2_data __initdata = 2;
+
+/* TODO: Check if My Name should actually be my name */
+static int __init hello2_init(void) {
+  printk(KERN_INFO "My Name: Loading Hello%d module - Hello World %d.\n",
+         hello2_data, hello2_data);
+  return 0;
+}
+
+static void __exit hello2_exit(void) {
+  printk(KERN_INFO "My Name: Exiting Hello%d module - Goodbye World %d.\n",
+         hello2_data, hello2_data);
+}
+
+module_init(hello2_init);
+module_exit(hello2_exit);
