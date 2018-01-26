@@ -1,1 +1,7 @@
 tgz/**
+*.o
+*.mod.*
+**/modules.order
+**/Module.symvers
+.*
+*.ko
