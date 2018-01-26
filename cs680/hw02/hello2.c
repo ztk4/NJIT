@@ -8,6 +8,11 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 
+/* Documentation Constants */
+#define LIC     "GPL"
+#define AUTHOR  "Zachary Kaplan"
+#define DESCR   "Improved first module"
+
 static int hello2_data __initdata = 2;
 
 /* TODO: Check if My Name should actually be my name */
@@ -24,3 +29,9 @@ static void __exit hello2_exit(void) {
 
 module_init(hello2_init);
 module_exit(hello2_exit);
+
+/* Documentation */
+
+MODULE_LICENSE(LIC);
+MODULE_AUTHOR(AUTHOR);
+MODULE_DESCRIPTION(DESCR);

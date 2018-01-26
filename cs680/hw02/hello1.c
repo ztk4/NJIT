@@ -7,6 +7,11 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 
+/* Documentation Constants */
+#define LIC     "GPL"
+#define AUTHOR  "Zachary Kaplan"
+#define DESCR   "My first module"
+
 /* TODO: Check if My Name should actually be my name */
 static int hello1_init(void) {
   printk(KERN_INFO "My Name: Loading Hello1 module - Hello World 1.\n");
@@ -19,3 +24,9 @@ static void hello1_exit(void) {
 
 module_init(hello1_init);
 module_exit(hello1_exit);
+
+/* Documentation */
+
+MODULE_LICENSE(LIC);
+MODULE_AUTHOR(AUTHOR);
+MODULE_DESCRIPTION(DESCR);
