@@ -14,8 +14,9 @@ KDIR ?= /lib/modules/`uname -r`/build
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules
 
-install:
-	$(MAKE) INSTALL_MOD_DIR=hello -C $(KDIR) M=$(PWD) modules_install
+# Not needed when dynamically loading and unloading with insmod and rmmod.
+#install:
+#	$(MAKE) INSTALL_MOD_DIR=hello -C $(KDIR) M=$(PWD) modules_install
 
 clean:
 	$(MAKE) -C $(KDIR) M=$(PWD) clean
