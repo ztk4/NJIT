@@ -18,8 +18,8 @@ static int __init hello2_init(void) {
 }
 
 static void __exit hello2_exit(void) {
-  printk(KERN_INFO "My Name: Exiting Hello%d module - Goodbye World %d.\n",
-         hello2_data, hello2_data);
+  /* NOTE: Can't use hello2_data here because it's freed after init returns */
+  printk(KERN_INFO "My Name: Exiting Hello2 module - Goodbye World 2.\n");
 }
 
 module_init(hello2_init);
