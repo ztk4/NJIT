@@ -12,14 +12,13 @@
 #define AUTHOR  "Zachary Kaplan"
 #define DESCR   "My first module"
 
-/* TODO: Check if My Name should actually be my name */
 static int hello1_init(void) {
-  printk(KERN_INFO "My Name: Loading Hello1 module - Hello World 1.\n");
+  printk(KERN_INFO AUTHOR ": Loading Hello1 module - Hello World 1.\n");
   return 0;
 }
 
 static void hello1_exit(void) {
-  printk(KERN_INFO "My Name: Exiting Hello1 module - Goodbye World 1.\n");
+  printk(KERN_INFO AUTHOR ": Exiting Hello1 module - Goodbye World 1.\n");
 }
 
 module_init(hello1_init);

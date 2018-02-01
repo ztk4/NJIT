@@ -15,16 +15,15 @@
 
 static int hello2_data __initdata = 2;
 
-/* TODO: Check if My Name should actually be my name */
 static int __init hello2_init(void) {
-  printk(KERN_INFO "My Name: Loading Hello%d module - Hello World %d.\n",
+  printk(KERN_INFO AUTHOR ": Loading Hello%d module - Hello World %d.\n",
          hello2_data, hello2_data);
   return 0;
 }
 
 static void __exit hello2_exit(void) {
   /* NOTE: Can't use hello2_data here because it's freed after init returns */
-  printk(KERN_INFO "My Name: Exiting Hello2 module - Goodbye World 2.\n");
+  printk(KERN_INFO AUTHOR ": Exiting Hello2 module - Goodbye World 2.\n");
 }
 
 module_init(hello2_init);

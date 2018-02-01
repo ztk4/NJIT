@@ -50,7 +50,7 @@ static int __init hello3_init(void) {
 }
 
 static void __exit hello3_exit(void) {
-  printk(KERN_INFO "Exiting Hello 3: Goodbye World 3\n");
+  printk(KERN_INFO AUTHOR ": Goodbye World 3\n");
 }
 
 module_init(hello3_init);
