@@ -12,4 +12,4 @@ insmod hello3.ko recipient='"Zachary Kaplan"' addr_lines='"141 Warren Street,Roo
 sleep 1
 rmmod hello3.ko
 
-dmesg
+dmesg --color=always | tail -n22
