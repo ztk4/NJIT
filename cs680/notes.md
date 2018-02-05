@@ -43,9 +43,9 @@ Each zone is split up into regions of different memory types.
 
 ### Allocation
 
-0. get\_free\_pages (gets full pages)
-0. kmalloc (gets just a certain number of bytes for kernel use)
-0. vmalloc (non-consecutive block of memory [usually large allocations])
+1. get\_free\_pages (gets full pages)
+1. kmalloc (gets just a certain number of bytes for kernel use)
+1. vmalloc (non-consecutive block of memory [usually large allocations])
 
 ## Addressing
 
