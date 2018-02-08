@@ -75,4 +75,54 @@ Each zone is split up into regions of different memory types.
 - Each entry of a PT points to the base of a 4K page
     - offset is relative to this pointer (refers to a single byte).
 
+### BIOS e820 Map
+
+```c
+/* The following is pseudo-code-ish */
+/* Type semantics and pointer semantics are not really observed */
+struct e820map {
+    struct e820_entry e820_map[128];
+} boot_params;
+
+struct e820_entry {
+    addr;
+    size;
+    type;
+};
+
+/* global */
+struct e820map e820 = { nr_map, e820_entry, map };
+
+struct memblock {
+    current_limit;
+    memory_size;
+    memblock_type memory;    /* Regions are all usable */
+    memblock_type reserved;  /* Regions are all reserved */
+};
+
+struct memblock_type {
+    cnt;
+    max;
+    struct region regions[N];
+};
+
+struct region {
+    base;
+    size;
+    nid = 0;  /* node id */
+};
+```
+
+#### Boot Flow
+
+- detect\_memory
+- start\_kernel
+    - setup\_arch
+        - setup\_memory\_map (Works on boot_params e820_map)
+    - memblock\_x86\_fill (Works on global e820 map)
+    - init\_mem\_mapping
+    - initmem\_init (base, size, nid)
+    - pagetable\_init
+        - zonesizes\_init
+
 
