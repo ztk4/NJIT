@@ -125,4 +125,31 @@ struct region {
     - pagetable\_init
         - zonesizes\_init
 
+### More Memory Layout
 
+```c
+/* Again pseudo code like */
+/* Type names are almost certainly wrong */
+
+struct {
+    node_mem_map;
+    struct zone node_zones[N];
+} pglist_data;
+
+struct zone {
+    struct free_area free_list[N];
+};
+
+struct free_area {
+    mem_type type;
+    struct page pages[N];
+};
+
+enum mem_type {
+    isolate,
+    reserve,
+    movable,
+    reclaimable,
+    unmovable,
+};  
+```
