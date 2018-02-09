@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Takes files matching .name.region and makes a new file
+# name_s_len.txt by taking len lines starting at s of another file.
+# The contents of .name.region must be:
+# [/]path/to/file s len
+
+cd $1;
+
+for region in .*.region; do
+  data=($(cat $region));
+  f=${data[0]};
+  s=${data[1]};
+  len=${data[2]};
+
+  name=${region#.};
+  name=${name%.region};
+  name=${name}_${s}_${len}.txt
+  echo "$f[$s:$((s + len - 1))]" > $name
+  cat -n $f | tail -n+$s | head -n$len >> $name
+done

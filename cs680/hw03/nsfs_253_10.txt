@@ -1,0 +1,11 @@
+/home/zach/kernel/cs680/fs/nsfs.c[253:262]
+   253	void __init nsfs_init(void)
+   254	{
+   255	  /* CUSTOM EDIT FOR CS680
+   256	   * Add print line.
+   257	   */
+   258	  printk(KERN_INFO "Zachary Kaplan: nsfs_init(void)\n");
+   259	
+   260		nsfs_mnt = kern_mount(&nsfs);
+   261		if (IS_ERR(nsfs_mnt))
+   262			panic("can't set nsfs up\n");

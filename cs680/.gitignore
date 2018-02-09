@@ -3,5 +3,4 @@ tgz/**
 *.mod.*
 **/modules.order
 **/Module.symvers
-.*
 *.ko

@@ -1,0 +1,11 @@
+/home/zach/kernel/cs680/kernel/sched/isolation.c[56:65]
+    56	void __init housekeeping_init(void)
+    57	{
+    58	  /*
+    59	   * CUSTOM EDIT FOR CS680
+    60	   * Add printline
+    61	   */
+    62	  printk(KERN_INFO "Zachary Kaplan: housekeeping_init(void)\n");
+    63	
+    64		if (!housekeeping_flags)
+    65			return;

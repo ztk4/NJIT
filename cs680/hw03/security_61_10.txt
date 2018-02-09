@@ -1,0 +1,11 @@
+/home/zach/kernel/cs680/security/security.c[61:70]
+    61	int __init security_init(void)
+    62	{
+    63		int i;
+    64		struct list_head *list = (struct list_head *) &security_hook_heads;
+    65	
+    66	  /*
+    67	   * CUSTOM EDIT FOR CS680
+    68	   * Added a print line to indiciate when this function is called.
+    69	   */
+    70	  printk(KERN_INFO "Zachary Kaplan: security_init(void)\n");

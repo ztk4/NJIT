@@ -1,0 +1,51 @@
+/home/zach/kernel/cs680/arch/x86/kernel/setup.c[828:877]
+   828	void __init setup_arch(char **cmdline_p)
+   829	{
+   830		memblock_reserve(__pa_symbol(_text),
+   831				 (unsigned long)__bss_stop - (unsigned long)_text);
+   832	
+   833		early_reserve_initrd();
+   834	
+   835		/*
+   836		 * At this point everything still needed from the boot loader
+   837		 * or BIOS or kernel text should be early reserved or marked not
+   838		 * RAM in e820. All other memory is free game.
+   839		 */
+   840	
+   841	#ifdef CONFIG_X86_32
+   842		memcpy(&boot_cpu_data, &new_cpu_data, sizeof(new_cpu_data));
+   843	
+   844		/*
+   845		 * copy kernel address range established so far and switch
+   846		 * to the proper swapper page table
+   847		 */
+   848		clone_pgd_range(swapper_pg_dir     + KERNEL_PGD_BOUNDARY,
+   849				initial_page_table + KERNEL_PGD_BOUNDARY,
+   850				KERNEL_PGD_PTRS);
+   851	
+   852		load_cr3(swapper_pg_dir);
+   853		/*
+   854		 * Note: Quark X1000 CPUs advertise PGE incorrectly and require
+   855		 * a cr3 based tlb flush, so the following __flush_tlb_all()
+   856		 * will not flush anything because the cpu quirk which clears
+   857		 * X86_FEATURE_PGE has not been invoked yet. Though due to the
+   858		 * load_cr3() above the TLB has been flushed already. The
+   859		 * quirk is invoked before subsequent calls to __flush_tlb_all()
+   860		 * so proper operation is guaranteed.
+   861		 */
+   862		__flush_tlb_all();
+   863	#else
+   864	  /*
+   865	   * CUSTOM EDIT FOR CS680
+   866	   * Modified:
+   867	   * > printk(KERN_INFO "Command line: %s\n", boot_command_line);
+   868	   * in order to annotate the printline further and add my name.
+   869	   */
+   870	  printk(KERN_INFO "Zachary Kaplan: setup_arch(): command_line=%s\n",
+   871	         boot_command_line);
+   872	#endif
+   873	
+   874		/*
+   875		 * If we have OLPC OFW, we might end up relocating the fixmap due to
+   876		 * reserve_top(), so do this before touching the ioremap area.
+   877		 */

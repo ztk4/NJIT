@@ -1,0 +1,11 @@
+/home/zach/kernel/cs680/kernel/sched/core.c[5823:5832]
+  5823	void __init sched_init(void)
+  5824	{
+  5825		int i, j;
+  5826		unsigned long alloc_size = 0, ptr;
+  5827	
+  5828	  /*
+  5829	   * CUSTOM EDIT FOR CS680
+  5830	   * Add print line
+  5831	   */
+  5832	  printk(KERN_INFO "Zachary Kaplan: sched_init(void)\n");
