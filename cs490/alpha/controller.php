@@ -9,21 +9,17 @@
 // This JSON response will take the following format:
 // {
 //   "description": "controller response",
-//   "oneOf": [
-//     "properties": {
-//       "err": { "type": "string" }
-//      },
-//      "properties": {
-//        "localSuccess": { "type": "boolean" },
-//        "njitSuccess": { "type": "boolean" }
-//      }
-//   ]
+//    "properties": {
+//      "err": { "type": "string" }
+//      "localSuccess": { "type": "boolean" },
+//      "njitSuccess": { "type": "boolean" }
+//    }
 // }
 
 // Constants used within this script.
 $njit_webauth = "https://cp4.njit.edu/cp/home/login";
 $njit_key = 'njitSuccess';
-$local_db = "https://web.njit.edu/~UCID/path/to/script.php";  // TODO: Fill in.
+$local_db = "https://web.njit.edu/~poa5/login_handler.php";
 $local_key = 'localSuccess';
 
 // Set the content type for good measure.
@@ -70,7 +66,7 @@ if (!isset($_POST['user'])) {
 
   // Second, lets hit the backend storage script.
   $local_post = array(
-    'user' => $user,  // TODO: Ensure this format is okay.
+    'user' => $user,
     'pass' => $pass
   );
   $cp = curl_init($local_db);
@@ -80,10 +76,13 @@ if (!isset($_POST['user'])) {
   curl_setopt($cp, CURLOPT_RETURNTRANSFER, true);
 
   $resp = json_decode(curl_exec($cp));
+  curl_close($cp);
   if (is_null($resp)) {
     $data['err'] = "Failed to parse local db response as JSON";
+  } else if (is_null($resp->status)) {
+    $data['err'] = "Failed to read property 'status' from local db response";
   } else {
-    $data[$local_key] = $resp->found;
+    $data[$local_key] = $resp->status === 'success';
   }
 }
 
