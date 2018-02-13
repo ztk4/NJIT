@@ -115,6 +115,12 @@ int seccomp2() {
   ALLOW(SYS_getrandom),
   ALLOW(SYS_sigaltstack),
 
+  // Allow execve so this process can run the python environment.
+  // I have been unsuccesful in filtering this further, so I have to just
+  // whitelist the syscall, but since PR_NO_NEW_PRIVS is set to 1 in order to
+  // enter seccomp filter mode, this is probably okay.
+  ALLOW(SYS_execve),
+
   // These syscalls also occur during python startup, but we are filtering
   // beyond just the syscall number for these.
   // Filtering below influenced by: http://khamidou.com/sandboxing/
@@ -135,12 +141,6 @@ int seccomp2() {
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 0),
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 1),
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 2),
-  
-  // Allow execve so this process can run the python environment.
-  // I have been unsuccesful in filtering this further, so I have to just
-  // whitelist the syscall, but since PR_NO_NEW_PRIVS is set to 1 in order to
-  // enter seccomp filter mode, this is probably okay.
-  ALLOW(SYS_execve),
   
   // If no filters above matched, kill the process.
   BPF_STMT(RET_CONST, SECCOMP_RET_KILL)
