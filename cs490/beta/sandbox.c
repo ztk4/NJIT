@@ -55,6 +55,24 @@
     LOAD_ARG(n), \
     BPF_JUMP(JEQ_CONST, (data_val), 0, 1), \
     BPF_STMT(RET_CONST, SECCOMP_RET_ALLOW)
+// Shortcut for allowing syscalls with 2 matchings args.
+#define ALLOW_CALL_IF_ARGS_MATCH2(syscall, n1, dval1, n2, dval2) \
+    LOAD_NR, \
+    BPF_JUMP(JEQ_CONST, (syscall), 0, 5), \
+    LOAD_ARG(n1), \
+    BPF_JUMP(JEQ_CONST, (dval1), 0, 3), \
+    LOAD_ARG(n2), \
+    BPF_JUMP(JEQ_CONST, (dval2), 0, 1), \
+    BPF_STMT(RET_CONST, SECCOMP_RET_ALLOW)
+// Shortcut for erroring on syscalls with 2 matching args.
+#define ERRNO_CALL_IF_ARGS_MATCH2(err, syscall, n1, dval1, n2, dval2) \
+    LOAD_NR, \
+    BPF_JUMP(JEQ_CONST, (syscall), 0, 5), \
+    LOAD_ARG(n1), \
+    BPF_JUMP(JEQ_CONST, (dval1), 0, 3), \
+    LOAD_ARG(n2), \
+    BPF_JUMP(JEQ_CONST, (dval2), 0, 1), \
+    BPF_STMT(RET_CONST, SECCOMP_RET_ERRNO+(err))
 
 // Enables filtered seccomp mode for this process.
 // This is the primary sandboxing done by this executable.
@@ -147,7 +165,8 @@ int seccomp2() {
   ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD_CLOEXEC),
   ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFD),
   ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFL),
-  
+  ALLOW_CALL_IF_ARGS_MATCH2(SYS_fcntl, 1, F_SETFD, 2, FD_CLOEXEC),
+
 #ifdef SANDBOX_TRACE_UNMATCHED
   // If no filters above matched, send signal to tracer.
   BPF_STMT(RET_CONST, SECCOMP_RET_TRACE)
