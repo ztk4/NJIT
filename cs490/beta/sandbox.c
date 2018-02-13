@@ -32,13 +32,13 @@
 // Shortcut for accepting on match.
 //   1. if acc == value continue (0), otherwise skip 1 line (1).
 //   2. return allow.
-#define ALLOW(value) \
+#define ALLOW_IF_EQ(value) \
     BPF_JUMP(JEQ_CONST, (value), 0, 1), \
     BPF_STMT(RET_CONST, SECCOMP_RET_ALLOW)
 // Shortcut for rejecting on mismatch.
 //   1. if acc == value skip 1 line (1), otherwise continue (0).
 //   2. return disallow.
-#define REQUIRE(value) \
+#define REQUIRE_EQ(value) \
     BPF_JUMP(JEQ_CONST, (value), 1, 0), \
     BPF_STMT(RET_CONST, SECCOMP_RET_KILL)
 // Shortcuts for loading fields of seccomp_data
@@ -63,63 +63,63 @@ int seccomp2() {
   // Load arch.
   LOAD_ARCH,
   // Filter on arch.
-  REQUIRE(AUDIT_ARCH_X86_64),
+  REQUIRE_EQ(AUDIT_ARCH_X86_64),
   
   // Load syscall number.
   LOAD_NR,
   // Filter on syscall number.
   // Default rules allowed by strict mode (except write which is handled later).
-  ALLOW(SYS_rt_sigreturn),
-  ALLOW(SYS_exit),
-  ALLOW(SYS_read),
+  ALLOW_IF_EQ(SYS_rt_sigreturn),
+  ALLOW_IF_EQ(SYS_exit),
+  ALLOW_IF_EQ(SYS_read),
 
   // Syscalls that probably don't need to be blocked, and are often used.
   // Influenced by: https://github.com/stedolan/Sandbox/blob/master/sandbox.c
-  ALLOW(SYS_uname),
-  ALLOW(SYS_set_thread_area),
-  ALLOW(SYS_time),
-  ALLOW(SYS_gettimeofday),
-  ALLOW(SYS_sched_getaffinity),
-  ALLOW(SYS_getpid),
-  ALLOW(SYS_clock_gettime),
+  ALLOW_IF_EQ(SYS_uname),
+  ALLOW_IF_EQ(SYS_set_thread_area),
+  ALLOW_IF_EQ(SYS_time),
+  ALLOW_IF_EQ(SYS_gettimeofday),
+  ALLOW_IF_EQ(SYS_sched_getaffinity),
+  ALLOW_IF_EQ(SYS_getpid),
+  ALLOW_IF_EQ(SYS_clock_gettime),
 
   // Syscalls used by python during startup (we have to allow these).
-  ALLOW(SYS_brk),
-  ALLOW(SYS_access),
-  ALLOW(SYS_mmap),
-  ALLOW(SYS_mprotect),
-  ALLOW(SYS_fstat),
-  ALLOW(SYS_close),
-  ALLOW(SYS_arch_prctl),
-  ALLOW(SYS_munmap),
-  ALLOW(SYS_set_tid_address),
-  ALLOW(SYS_set_robust_list),
-  ALLOW(SYS_rt_sigaction),
-  ALLOW(SYS_rt_sigprocmask),
-  ALLOW(SYS_stat),
-  ALLOW(SYS_getrlimit),
-  ALLOW(SYS_readlink),
-  ALLOW(SYS_sysinfo),
-  ALLOW(SYS_geteuid),
-  ALLOW(SYS_getegid),
-  ALLOW(SYS_getuid),
-  ALLOW(SYS_getgid),
-  ALLOW(SYS_lstat),
-  ALLOW(SYS_getdents),
-  ALLOW(SYS_lseek),
-  ALLOW(SYS_dup),
-  ALLOW(SYS_getcwd),
-  ALLOW(SYS_exit_group),
-  ALLOW(SYS_connect),
-  ALLOW(SYS_futex),
-  ALLOW(SYS_getrandom),
-  ALLOW(SYS_sigaltstack),
+  ALLOW_IF_EQ(SYS_brk),
+  ALLOW_IF_EQ(SYS_access),
+  ALLOW_IF_EQ(SYS_mmap),
+  ALLOW_IF_EQ(SYS_mprotect),
+  ALLOW_IF_EQ(SYS_fstat),
+  ALLOW_IF_EQ(SYS_close),
+  ALLOW_IF_EQ(SYS_arch_prctl),
+  ALLOW_IF_EQ(SYS_munmap),
+  ALLOW_IF_EQ(SYS_set_tid_address),
+  ALLOW_IF_EQ(SYS_set_robust_list),
+  ALLOW_IF_EQ(SYS_rt_sigaction),
+  ALLOW_IF_EQ(SYS_rt_sigprocmask),
+  ALLOW_IF_EQ(SYS_stat),
+  ALLOW_IF_EQ(SYS_getrlimit),
+  ALLOW_IF_EQ(SYS_readlink),
+  ALLOW_IF_EQ(SYS_sysinfo),
+  ALLOW_IF_EQ(SYS_geteuid),
+  ALLOW_IF_EQ(SYS_getegid),
+  ALLOW_IF_EQ(SYS_getuid),
+  ALLOW_IF_EQ(SYS_getgid),
+  ALLOW_IF_EQ(SYS_lstat),
+  ALLOW_IF_EQ(SYS_getdents),
+  ALLOW_IF_EQ(SYS_lseek),
+  ALLOW_IF_EQ(SYS_dup),
+  ALLOW_IF_EQ(SYS_getcwd),
+  ALLOW_IF_EQ(SYS_exit_group),
+  ALLOW_IF_EQ(SYS_connect),
+  ALLOW_IF_EQ(SYS_futex),
+  ALLOW_IF_EQ(SYS_getrandom),
+  ALLOW_IF_EQ(SYS_sigaltstack),
 
   // Allow execve so this process can run the python environment.
   // I have been unsuccesful in filtering this further, so I have to just
   // whitelist the syscall, but since PR_NO_NEW_PRIVS is set to 1 in order to
   // enter seccomp filter mode, this is probably okay.
-  ALLOW(SYS_execve),
+  ALLOW_IF_EQ(SYS_execve),
 
   // These syscalls also occur during python startup, but we are filtering
   // beyond just the syscall number for these.
@@ -141,9 +141,20 @@ int seccomp2() {
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 0),
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 1),
   ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 2),
+
+  // Only allow a couple fcntl operations.
+  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD),
+  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD_CLOEXEC),
+  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFD),
+  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFL),
   
+#ifdef SANDBOX_TRACE_UNMATCHED
+  // If no filters above matched, send signal to tracer.
+  BPF_STMT(RET_CONST, SECCOMP_RET_TRACE)
+#else
   // If no filters above matched, kill the process.
   BPF_STMT(RET_CONST, SECCOMP_RET_KILL)
+#endif  // SANDBOX_TRACE_UNMATCHED
   };
   static struct sock_fprog seccomp_filterprog = {
     .len = sizeof(seccomp_filter)/sizeof(seccomp_filter[0]),
