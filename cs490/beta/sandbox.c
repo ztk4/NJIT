@@ -2,6 +2,7 @@
 // This should not be taken as a completely secure sandbox, but it blocks some
 // of the system calls that can be used for malicious activity.
 
+#include <argp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -10,6 +11,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <time.h>
 
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -18,6 +20,7 @@
 #include <sys/types.h>
 #include <sys/prctl.h>
 #include <sys/syscall.h>
+#include <sys/wait.h>
 
 #include <linux/filter.h>
 #include <linux/seccomp.h>
@@ -148,6 +151,7 @@ int seccomp2() {
   ALLOW_IF_EQ(SYS_getrandom),
   ALLOW_IF_EQ(SYS_sigaltstack),
   ALLOW_IF_EQ(SYS_select),
+  ALLOW_IF_EQ(SYS_mremap),
 
   // Allow execve so this process can run the python environment.
   // I have been unsuccesful in filtering this further, so I have to just
@@ -183,7 +187,7 @@ int seccomp2() {
   ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFL),
   ALLOW_CALL_IF_ARGS_MATCH2(SYS_fcntl, 1, F_SETFD, 2, FD_CLOEXEC),
 
-#ifdef SANDBOX_TRACE_UNMATCHED
+#ifdef SANDBOX_TRACE_MODE
   // If no filters above matched, send signal to tracer.
   BPF_STMT(RET_CONST, SECCOMP_RET_TRACE)
 #else
@@ -229,13 +233,186 @@ char *make_env_str(char *name) {
   return result;
 }
 
-int main(int argc, char **argv) {
-  // For now just try to activate seccomp and report if it succeeds.
-  
-  // TODO: Actual arg parsing, consider argp.
-  if (argc < 2)
-    return -1;
+// ARGP Definitions.
+const char *argp_program_version = "0.1.0";
 
+static char doc[] = "Runs an executable within a seccomp-filter style sandbox."
+                    "The path to the executable must be an absolute path. "
+                    "This sandbox is in no way mean to be impenetrable, but is "
+                    "meant to provide a moderate amount of protection when "
+                    "executing software from an unknown source. The use of a "
+                    "sandbox like this is often most secure when paired with "
+                    "additional sandboxing at the application level.";
+static char args_doc[] = "-- sandboxee [SANDBOXEE_ARG...]";
+static const struct argp_option cmd_options[] = {
+  // Resource Group
+  { NULL, 0, NULL, 0,
+    "specify process resource limits:" },
+  { "cpu_timout", 'c', "SECONDS", 0,
+    "Maximum time the sandboxed program will run on the CPU. This include both "
+    "user and sys time, but not idle time. The default is 60 seconds." },
+  { "stack_size", 's', "SIZE", 0,
+    "Maximum stack size. Units may be specified in human readable form with a "
+    "suffixed unit [GMK]B?. Bytes will be assumed if not specified. The "
+    "default is 16M." },
+  { "heap_size", 'd', "SIZE", 0,
+    "Maximum heap size. Units may be specified in human readable form with a "
+    "suffixed unit [GMK]B?. Bytes will be assumed if not specified. The "
+    "default is 16M." },
+  { "virt_size", 'a', "SIZE", 0,
+    "Maximum size for the sandboxee's virtual memory pool (address space). "
+    "Units may be specified in human readable form with a suffixed unit "
+    "[GMK]B?. Bytes will be assumed if not specified. The default is 100M." },
+  // Monitoring Group
+  { NULL, 0, NULL, 0,
+    "specifiy monitoring parameters:" },
+  { "real_timeout", 'r', "SECONDS", 0,
+    "Maximum time the sandboxed program can run for in seconds. This "
+    "is analagous to wall clock time. The default is 15 seconds." },
+
+  { 0 }
+};
+
+// The storage for the above args (defaults specified).
+static uint32_t real_timeout = 60;
+static rlim_t cpu_timeout = 15;
+static rlim_t stack_size = 16u << 20;  // 16M
+static rlim_t heap_size = 16u << 20;   // 16M
+static rlim_t virt_size = 100u << 20;  // 100M
+static char **sandboxee_args = NULL;   // Points to the start of sandboxee args.
+
+// Quick method for handling byte values.
+long str_to_bytes(char *str) {
+  char *end;
+  long res;
+  int shift = 0;
+
+  // Try to read a numerical value.
+  res = strtol(str, &end, 0);
+  if (!errno) {
+    end += strspn(end, " \t\n\r\v\f");
+    switch (*end) {
+     case 'G': shift += 10;  // FALLTHROUGH
+     case 'M': shift += 10;  // FALLTRHOUGH
+     case 'K': shift += 10;
+      ++end;
+      break;
+    }
+    if (*end == 'B') ++end;  // Allow for suffix of B (or just B by itself).
+
+    if (*end) errno = EINVAL;
+    else if (res <= 0) errno = ERANGE;
+  }
+
+  return errno ? -1 : (res << shift);
+}
+
+// Option parsing.
+static error_t parse_opt(int key, char *arg, struct argp_state *state) {
+  errno = 0;
+
+  switch (key) {
+   case 'c': {
+    char *end;
+    long tmp = strtol(arg, &end, 0);
+    if (errno || *end || tmp <= 0)  {
+      argp_error(state, "invalid cpu timeout '%s'", arg);
+      return EINVAL;
+    }
+    cpu_timeout = tmp;
+    break;
+   }
+   case 'r': {
+    char *end;
+    long tmp = strtol(arg, &end, 0);
+    if (errno || * end || tmp <= 0) {
+      argp_error(state, "invalid real timeout '%s'", arg);
+      return EINVAL;
+    }
+    real_timeout = tmp;
+    break;
+   }
+
+   case 's': {
+    stack_size = str_to_bytes(arg);
+    if (errno) {
+      argp_error(state, "invalid stack size '%s'", arg);
+      return EINVAL;
+    }
+    break;
+   }
+   case 'd': {
+    heap_size = str_to_bytes(arg);
+    if (errno) {
+      argp_error(state, "invalid heap size '%s'", arg);
+      return EINVAL;
+    }
+    break;
+   }
+   case 'a': {
+    virt_size = str_to_bytes(arg);
+    if (errno) {
+      argp_error(state, "invalid virt mem size '%s'", arg);
+      return EINVAL;
+    }
+    break;
+   }
+
+   // No more options, just regular args left (sandboxee args).
+   case ARGP_KEY_ARGS: {
+    sandboxee_args = state->argv + state->next;
+    if (state->next >= state->argc) {
+      argp_error(state, "no sandboxee specified");
+      return EINVAL;
+    }
+    break;
+   }
+
+   // Cleanup
+   case ARGP_KEY_END: {
+    if (!sandboxee_args) {
+      argp_error(state, "no sandboxee specified");
+      return EINVAL;
+    }
+    break;
+   }
+
+   default:
+    return ARGP_ERR_UNKNOWN;
+  }
+
+  return 0;
+}
+
+// For argument parsing.
+static struct argp argp = { cmd_options, parse_opt, args_doc, doc };
+
+// Return codes.
+enum return_code {
+  RET_OK = 0,
+  RET_DO_NOT_USE_RESERVED = 1,
+  RET_UNABLE_TO_SECCOMP,  // Unable to enter seccomp filter mode.
+  RET_UNABLE_TO_EXECVE,   // Unable to execve the sandboxee.
+  RET_UNABLE_TO_TIME,     // Couldn't start real timer.
+  RET_REAL_TIMEOUT,       // Child took to much real (wall clock) time.
+  RET_CHILD_MEM_FAULT,    // SEGV from bad memory access or out of mem.
+  RET_CHILD_SYS_KILL,     // KILL from system (probably seccomp violation).
+  RET_CHILD_SIG_OTHER,    // Some other signal killed the child.
+  RET_CHILD_BAD_STATE,    // Child responded to wait with unknown wait status.
+  RET_UNABLE_TO_FORK,     // Unable to fork a child process.
+  RET_UNABLE_TO_RLIMIT,   // Unable to limit child process's resources.
+};
+
+// Forks the process, then the child process enter seccomp filter mode and
+// execve's the sandboxee. This method should only return on the parent.
+pid_t fork_sandboxee() {
+  pid_t child_id = fork();
+
+  // We are the parent process (child may or may not have been created).
+  if (child_id)
+    return child_id;
+
+  // Otherwise we are the child.
   // Capture some of the environment to forward.
   char *env_with_nulls[] = {
     make_env_str("USER"),
@@ -258,16 +435,152 @@ int main(int argc, char **argv) {
     if (*src) *dst++ = *src;
   *dst = NULL;  // Terminate env with NULL.
 
+  errno = 0;
+
+  // Set resource limits.
+  struct rlimit resource_lim;
+
+  // CPU
+  if (getrlimit(RLIMIT_CPU, &resource_lim)) {
+    perror("Couldn't get cpu rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+  resource_lim.rlim_cur = cpu_timeout;
+  if (setrlimit(RLIMIT_CPU, &resource_lim)) {
+    perror("Couldn't set cpu rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+
+  // STACK
+  if (getrlimit(RLIMIT_STACK, &resource_lim)) {
+    perror("Couldn't get stack rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+  resource_lim.rlim_max = stack_size;
+  if (resource_lim.rlim_cur > stack_size)
+    resource_lim.rlim_cur = stack_size;
+  if (setrlimit(RLIMIT_STACK, &resource_lim)) {
+    perror("Couldn't set stack rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+
+  // DATA (includes heap).
+  if (getrlimit(RLIMIT_DATA, &resource_lim)) {
+    perror("Couldn't get data rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+  resource_lim.rlim_max = heap_size;
+  if (resource_lim.rlim_cur > heap_size)
+    resource_lim.rlim_cur = heap_size;
+  if (setrlimit(RLIMIT_DATA, &resource_lim)) {
+    perror("Couldn't set data rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+
+  // VIRT
+  if (getrlimit(RLIMIT_AS, &resource_lim)) {
+    perror("Couldn't get virtual memory rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+  resource_lim.rlim_max = virt_size;
+  if (resource_lim.rlim_cur > virt_size)
+    resource_lim.rlim_cur = virt_size;
+  if (setrlimit(RLIMIT_AS, &resource_lim)) {
+    perror("Couldn't set virtual memory rlimit");
+    return -RET_UNABLE_TO_RLIMIT;
+  }
+
   // Enter seccomp filter mode.
   errno = 0;
   if (seccomp2()) {
-    perror("Coulnd't enter seccomp filter mode: ");
-    return -2;
+    perror("Coulnd't enter seccomp filter mode");
+    return -RET_UNABLE_TO_SECCOMP;
   }
 
-  // Run the program specified by argv[1] with args argv[1]..argv[argc-1]
+  // Run the program specified by argv[after_opts] with all other args.
   // our minimal environment.
-  execve(argv[1], argv + 1, env);
+  execve(sandboxee_args[0], sandboxee_args, env);
 
-  return -3;  // execve failed.
+  return -RET_UNABLE_TO_EXECVE;  // execve failed.
+}
+
+int main(int argc, char **argv) {
+  // Handle args.
+  argp_parse(&argp, argc, argv, 0, 0, NULL);
+
+#ifdef SANDBOX_TRACE_MODE
+  // Warn the user if running in TRACE mode.
+  fprintf(stderr, "WARNING: Running in TRACE mode. DO NOT USE IN PRODUCTION!\n"
+                  "         Recompile without -DSANDBOX_TRACE_MODE to\n"
+                  "         generate a production binary.\n");
+#endif  // SANDBOX_TRACE_MODE
+  
+  pid_t child_pid = fork_sandboxee();
+
+  if (child_pid > 0) {
+    // We are the parent, and the child forked succesfully.
+    errno = 0;
+    int wstatus;
+    uint32_t s_elapsed = 0;
+    struct timespec child_start, curr;
+    if (!clock_gettime(CLOCK_REALTIME, &child_start)) {
+      // Spinlock until child finished or until real time has expired.
+      do {
+        // Check if child has exited by some means.
+        if (waitpid(child_pid, &wstatus, WNOHANG)) break;
+
+        // Check if timed out.
+        if (clock_gettime(CLOCK_REALTIME, &curr)) break;
+        s_elapsed =
+            (uint32_t) (curr.tv_sec - child_start.tv_sec +
+                        (double)(curr.tv_nsec - child_start.tv_nsec)*1e-9);
+      } while(s_elapsed < real_timeout);
+    }
+
+    // Couldn't measure time or process timed out.
+    if (errno || s_elapsed >= real_timeout) {
+      // Kill the (now rougue) child process.
+      kill(child_pid, SIGKILL);  // Would only fail if child is already dead.
+      // Print an error message and quit.
+      if (errno) {
+        perror("Unable to time sandboxee, killed");
+        return RET_UNABLE_TO_TIME;
+      } else {
+        fprintf(stderr, "Sandboxee exceeded real time limit, killed\n");
+        return RET_REAL_TIMEOUT;
+      }
+    }
+
+    // The child process has exited.
+    if (WIFEXITED(wstatus)) {
+      // Child exited by it's own volition (exit, _exit, etc).
+      int status = WEXITSTATUS(wstatus);
+      if (status)
+        fprintf(stderr, "Sandboxee execution failed\n");
+
+      return status;
+    } else if (WIFSIGNALED(wstatus)) {
+      // Some signal terminated the child (SIGKILL, SIGSYS, etc).
+      fprintf(stderr, "Sandboxee was terminated by signal %s\n",
+                      strsignal(WTERMSIG(wstatus)));
+      switch (WTERMSIG(wstatus)) {
+       case SIGKILL: return RET_CHILD_SYS_KILL;
+       case SIGSEGV: return RET_CHILD_MEM_FAULT;
+       default     : return RET_CHILD_SIG_OTHER;
+      }
+    } else {
+      // Not sure what's going on, kill the child to be safe and then exit.
+      kill(child_pid, SIGKILL);
+      fprintf(stderr, "Sandboxee entered unspecified state, killed\n");
+      return RET_CHILD_BAD_STATE;
+    }
+
+  } else if (child_pid == -1) {
+    fprintf(stderr, "Unable to fork child process\n");
+    return RET_UNABLE_TO_FORK;
+  } else {
+    // We are the child, and we at some point failed to execve the sandboxee.
+    // Significant error messages have already been printed at this point.
+    return -child_pid;  // Error codes from fork_child.
+  }
 }
