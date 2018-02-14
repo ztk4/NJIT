@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <string.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -29,6 +31,15 @@
 #define JEQ_CONST (BPF_JMP+BPF_JEQ+BPF_K)
 // Instruction for loading a word with an absolute offset.
 #define LDW_ABS   (BPF_LD+BPF_W+BPF_ABS)
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+#  define ARG_LO_OFF (0)
+#  define ARG_HI_OFF (sizeof(uint32_t))
+#elif __BYTE_ORDER == __BIG_ENDIAN
+#  define ARG_LO_OFF (sizeof(uint32_t))
+#  define ARG_HI_OFF (0)
+#else
+#  error "Unable to determine endianness"
+#endif  // __BYTE_ORDER
 // Shortcut for accepting on match.
 //   1. if acc == value continue (0), otherwise skip 1 line (1).
 //   2. return allow.
@@ -46,33 +57,37 @@
     BPF_STMT(LDW_ABS, offsetof(struct seccomp_data, arch))
 #define LOAD_NR \
     BPF_STMT(LDW_ABS, offsetof(struct seccomp_data, nr))
-#define LOAD_ARG(n) \
-    BPF_STMT(LDW_ABS, offsetof(struct seccomp_data, args) + (n)*8)
+// Shortcuts for getting lo and hi word from a value.
+#define MASKW_LO(value) ( ((uint32_t)(value)) & 0xFFFFFFFF )
+#define MASKW_HI(value) MASKW_LO( ((uint64_t)(value) >> 32) )
+// Argument loading influenced by:
+// github.com/openssh/openssh-portable/blob/master/sandbox-seccomp-filter.c
+#define LOAD_ARG_LO(n) \
+    BPF_STMT(LDW_ABS, offsetof(struct seccomp_data, args[(n)]) + ARG_LO_OFF)
+#define LOAD_ARG_HI(n) \
+    BPF_STMT(LDW_ABS, offsetof(struct seccomp_data, args[(n)]) + ARG_HI_OFF)
 // Shortcut for allowing syscalls with a matching arg.
 #define ALLOW_CALL_IF_ARG_MATCH(syscall, n, data_val) \
     LOAD_NR, \
-    BPF_JUMP(JEQ_CONST, (syscall), 0, 3), \
-    LOAD_ARG(n), \
-    BPF_JUMP(JEQ_CONST, (data_val), 0, 1), \
+    BPF_JUMP(JEQ_CONST, (syscall), 0, 5), \
+    LOAD_ARG_LO(n), \
+    BPF_JUMP(JEQ_CONST, MASKW_LO(data_val), 0, 3), \
+    LOAD_ARG_HI(n), \
+    BPF_JUMP(JEQ_CONST, MASKW_HI(data_val), 0, 1), \
     BPF_STMT(RET_CONST, SECCOMP_RET_ALLOW)
 // Shortcut for allowing syscalls with 2 matchings args.
 #define ALLOW_CALL_IF_ARGS_MATCH2(syscall, n1, dval1, n2, dval2) \
     LOAD_NR, \
-    BPF_JUMP(JEQ_CONST, (syscall), 0, 5), \
-    LOAD_ARG(n1), \
-    BPF_JUMP(JEQ_CONST, (dval1), 0, 3), \
-    LOAD_ARG(n2), \
-    BPF_JUMP(JEQ_CONST, (dval2), 0, 1), \
+    BPF_JUMP(JEQ_CONST, (syscall), 0, 9), \
+    LOAD_ARG_LO(n1), \
+    BPF_JUMP(JEQ_CONST, MASKW_LO(dval1), 0, 7), \
+    LOAD_ARG_HI(n1), \
+    BPF_JUMP(JEQ_CONST, MASKW_HI(dval1), 0, 5), \
+    LOAD_ARG_LO(n2), \
+    BPF_JUMP(JEQ_CONST, MASKW_LO(dval2), 0, 3), \
+    LOAD_ARG_HI(n2), \
+    BPF_JUMP(JEQ_CONST, MASKW_HI(dval2), 0, 1), \
     BPF_STMT(RET_CONST, SECCOMP_RET_ALLOW)
-// Shortcut for erroring on syscalls with 2 matching args.
-#define ERRNO_CALL_IF_ARGS_MATCH2(err, syscall, n1, dval1, n2, dval2) \
-    LOAD_NR, \
-    BPF_JUMP(JEQ_CONST, (syscall), 0, 5), \
-    LOAD_ARG(n1), \
-    BPF_JUMP(JEQ_CONST, (dval1), 0, 3), \
-    LOAD_ARG(n2), \
-    BPF_JUMP(JEQ_CONST, (dval2), 0, 1), \
-    BPF_STMT(RET_CONST, SECCOMP_RET_ERRNO+(err))
 
 // Enables filtered seccomp mode for this process.
 // This is the primary sandboxing done by this executable.
@@ -132,6 +147,7 @@ int seccomp2() {
   ALLOW_IF_EQ(SYS_futex),
   ALLOW_IF_EQ(SYS_getrandom),
   ALLOW_IF_EQ(SYS_sigaltstack),
+  ALLOW_IF_EQ(SYS_select),
 
   // Allow execve so this process can run the python environment.
   // I have been unsuccesful in filtering this further, so I have to just
@@ -189,11 +205,58 @@ int seccomp2() {
   return 0;
 }
 
+// Returns a char * to a string of the form NAME=VALUE, where the value was
+// grabbed from the current environment or NULL if no such value existed.
+// If not NULL, the return value may be freed when done.
+char *make_env_str(char *name) {
+  char *value = getenv(name);
+  char *result = NULL;
+
+  if (value) {
+    size_t nlen = strlen(name);
+    size_t vlen = strlen(value);
+
+    // Two extra characters are needed for the = and the \0.
+    result = (char *) malloc(nlen + vlen + 2);
+    if (result) {
+      strcpy(result, name);
+      result[nlen] = '=';
+      strcpy(result + nlen + 1, value);
+      result[nlen + vlen + 2] = '\0';
+    }
+  }
+
+  return result;
+}
+
 int main(int argc, char **argv) {
   // For now just try to activate seccomp and report if it succeeds.
   
+  // TODO: Actual arg parsing, consider argp.
   if (argc < 2)
     return -1;
+
+  // Capture some of the environment to forward.
+  char *env_with_nulls[] = {
+    make_env_str("USER"),
+    make_env_str("LOGNAME"),
+    make_env_str("HOME"),
+    make_env_str("LANG"),
+    make_env_str("PATH"),
+    make_env_str("PWD"),
+    make_env_str("SHELL"),
+    make_env_str("TERM"),
+    make_env_str("PAGER"),
+    make_env_str("EDITOR"),
+    NULL,
+  };
+  size_t env_len = sizeof(env_with_nulls)/sizeof(env_with_nulls[0]);
+
+  char *env[env_len], **src, **dst;
+  // Only copy over non-null pointers.
+  for (src = env_with_nulls, dst = env; src < env_with_nulls + env_len; ++src)
+    if (*src) *dst++ = *src;
+  *dst = NULL;  // Terminate env with NULL.
 
   // Enter seccomp filter mode.
   errno = 0;
@@ -203,8 +266,7 @@ int main(int argc, char **argv) {
   }
 
   // Run the program specified by argv[1] with args argv[1]..argv[argc-1]
-  // and an empty environment.
-  char *env[] = { NULL };
+  // our minimal environment.
   execve(argv[1], argv + 1, env);
 
   return -3;  // execve failed.
