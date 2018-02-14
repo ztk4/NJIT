@@ -274,8 +274,8 @@ static const struct argp_option cmd_options[] = {
 };
 
 // The storage for the above args (defaults specified).
-static uint32_t real_timeout = 60;
-static rlim_t cpu_timeout = 15;
+static uint32_t real_timeout = 15;
+static rlim_t cpu_timeout = 60;
 static rlim_t stack_size = 16u << 20;  // 16M
 static rlim_t heap_size = 16u << 20;   // 16M
 static rlim_t virt_size = 100u << 20;  // 100M
@@ -396,6 +396,7 @@ enum return_code {
   RET_UNABLE_TO_TIME,     // Couldn't start real timer.
   RET_REAL_TIMEOUT,       // Child took to much real (wall clock) time.
   RET_CHILD_MEM_FAULT,    // SEGV from bad memory access or out of mem.
+  RET_CHILD_CPU_TIMEOUT,  // XCPU from system indicates exceeded cpu timeout.
   RET_CHILD_SYS_KILL,     // KILL from system (probably seccomp violation).
   RET_CHILD_SIG_OTHER,    // Some other signal killed the child.
   RET_CHILD_BAD_STATE,    // Child responded to wait with unknown wait status.
@@ -566,6 +567,7 @@ int main(int argc, char **argv) {
       switch (WTERMSIG(wstatus)) {
        case SIGKILL: return RET_CHILD_SYS_KILL;
        case SIGSEGV: return RET_CHILD_MEM_FAULT;
+       case SIGXCPU: return RET_CHILD_CPU_TIMEOUT;
        default     : return RET_CHILD_SIG_OTHER;
       }
     } else {
