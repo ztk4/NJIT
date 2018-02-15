@@ -153,3 +153,79 @@ enum mem_type {
     unmovable,
 };  
 ```
+# Processes
+
+#### Kernel
+- kernel threads
+- tasks
+- light-weight
+
+#### User
+- posix
+- p-threads
+
+### Kernel Processes
+- P0 - hardcoded
+    - swapper/init\_task
+    - Creates kthreads (directly)
+        - P1: kernel_thread(...)
+        - P2: kernel_thread(...)
+
+- P1 - created by P0
+    - kernel\_init
+    - also creates user procs.
+
+- P2 - created by P0
+    - kthreadd
+    - fork (indirect creation of kthreads):
+        - copy: parent's state to child proc.
+        - insert: proc into RB-tree for procs.
+
+- P3 - created by P2 indirectly
+    - ksoftirqd
+
+- P4 - created by P2 indirectly
+    - migration/kworker
+
+### Kernel Stack
+
+#### Layout in P0
+```c
+/* Some of the structs are not formally structs, and instead are just memory
+ * regions.
+ */
+union thread_union {
+  struct thread_info thread_info;
+  unsigned long stack[THREAD_SIZE/sizeof(long)];
+} init_thread_union = {
+  INIT_TASK(init_task)
+};
+// The above instance init_thread_union is the thread_union of P0 (hence init).
+// The macros INIT_TASK initializes all fields of the task to what P0's fields
+// should be. These fields are all essentially hardcoded into the macro.
+
+struct task_struct {
+  parent = &tsk;
+  mm = NULL;  // mmap
+  thread = INIT_THREAD;  // points to thread struct.
+  comm = "swapper";
+} tsk;
+
+#define INIT_TASK(tsk) ...  // for setting up tsk
+
+struct thread_struct {
+  sp;
+  ip;
+  /* etc... */
+};
+
+// NOTE: struct completion is a kernel utility for conditional synchronization.
+//       done is the condition, while wait is for blocking.
+struct completion {
+  unsigned int done;
+  wait_queue_head_t wait;
+} kthreadd_done;
+```
+
+A context switch involves switching %e/rsp to point into to the next proc's
+thread\_union.
