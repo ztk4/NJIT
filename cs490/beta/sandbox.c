@@ -96,103 +96,103 @@
 // This is the primary sandboxing done by this executable.
 int seccomp2() {
   static struct sock_filter seccomp_filter[] = {
-  // Load arch.
-  LOAD_ARCH,
-  // Filter on arch.
-  REQUIRE_EQ(AUDIT_ARCH_X86_64),
-  
-  // Load syscall number.
-  LOAD_NR,
-  // Filter on syscall number.
-  // Default rules allowed by strict mode (except write which is handled later).
-  ALLOW_IF_EQ(SYS_rt_sigreturn),
-  ALLOW_IF_EQ(SYS_exit),
-  ALLOW_IF_EQ(SYS_read),
+    // Load arch.
+    LOAD_ARCH,
+    // Filter on arch.
+    REQUIRE_EQ(AUDIT_ARCH_X86_64),
+    
+    // Load syscall number.
+    LOAD_NR,
+    // Filter on syscall number.
+    // Default rules allowed by strict mode (except write).
+    ALLOW_IF_EQ(SYS_rt_sigreturn),
+    ALLOW_IF_EQ(SYS_exit),
+    ALLOW_IF_EQ(SYS_read),
 
-  // Syscalls that probably don't need to be blocked, and are often used.
-  // Influenced by: https://github.com/stedolan/Sandbox/blob/master/sandbox.c
-  ALLOW_IF_EQ(SYS_uname),
-  ALLOW_IF_EQ(SYS_set_thread_area),
-  ALLOW_IF_EQ(SYS_time),
-  ALLOW_IF_EQ(SYS_gettimeofday),
-  ALLOW_IF_EQ(SYS_sched_getaffinity),
-  ALLOW_IF_EQ(SYS_getpid),
-  ALLOW_IF_EQ(SYS_clock_gettime),
+    // Syscalls that probably don't need to be blocked, and are often used.
+    // Influenced by: https://github.com/stedolan/Sandbox/blob/master/sandbox.c
+    ALLOW_IF_EQ(SYS_uname),
+    ALLOW_IF_EQ(SYS_set_thread_area),
+    ALLOW_IF_EQ(SYS_time),
+    ALLOW_IF_EQ(SYS_gettimeofday),
+    ALLOW_IF_EQ(SYS_sched_getaffinity),
+    ALLOW_IF_EQ(SYS_getpid),
+    ALLOW_IF_EQ(SYS_clock_gettime),
 
-  // Syscalls used by python during startup (we have to allow these).
-  ALLOW_IF_EQ(SYS_brk),
-  ALLOW_IF_EQ(SYS_access),
-  ALLOW_IF_EQ(SYS_mmap),
-  ALLOW_IF_EQ(SYS_mprotect),
-  ALLOW_IF_EQ(SYS_fstat),
-  ALLOW_IF_EQ(SYS_close),
-  ALLOW_IF_EQ(SYS_arch_prctl),
-  ALLOW_IF_EQ(SYS_munmap),
-  ALLOW_IF_EQ(SYS_set_tid_address),
-  ALLOW_IF_EQ(SYS_set_robust_list),
-  ALLOW_IF_EQ(SYS_rt_sigaction),
-  ALLOW_IF_EQ(SYS_rt_sigprocmask),
-  ALLOW_IF_EQ(SYS_stat),
-  ALLOW_IF_EQ(SYS_getrlimit),
-  ALLOW_IF_EQ(SYS_readlink),
-  ALLOW_IF_EQ(SYS_sysinfo),
-  ALLOW_IF_EQ(SYS_geteuid),
-  ALLOW_IF_EQ(SYS_getegid),
-  ALLOW_IF_EQ(SYS_getuid),
-  ALLOW_IF_EQ(SYS_getgid),
-  ALLOW_IF_EQ(SYS_lstat),
-  ALLOW_IF_EQ(SYS_getdents),
-  ALLOW_IF_EQ(SYS_lseek),
-  ALLOW_IF_EQ(SYS_dup),
-  ALLOW_IF_EQ(SYS_getcwd),
-  ALLOW_IF_EQ(SYS_exit_group),
-  ALLOW_IF_EQ(SYS_connect),
-  ALLOW_IF_EQ(SYS_futex),
-  ALLOW_IF_EQ(SYS_getrandom),
-  ALLOW_IF_EQ(SYS_sigaltstack),
-  ALLOW_IF_EQ(SYS_select),
-  ALLOW_IF_EQ(SYS_mremap),
+    // Syscalls used by python during startup (we have to allow these).
+    ALLOW_IF_EQ(SYS_brk),
+    ALLOW_IF_EQ(SYS_access),
+    ALLOW_IF_EQ(SYS_mmap),
+    ALLOW_IF_EQ(SYS_mprotect),
+    ALLOW_IF_EQ(SYS_fstat),
+    ALLOW_IF_EQ(SYS_close),
+    ALLOW_IF_EQ(SYS_arch_prctl),
+    ALLOW_IF_EQ(SYS_munmap),
+    ALLOW_IF_EQ(SYS_set_tid_address),
+    ALLOW_IF_EQ(SYS_set_robust_list),
+    ALLOW_IF_EQ(SYS_rt_sigaction),
+    ALLOW_IF_EQ(SYS_rt_sigprocmask),
+    ALLOW_IF_EQ(SYS_stat),
+    ALLOW_IF_EQ(SYS_getrlimit),
+    ALLOW_IF_EQ(SYS_readlink),
+    ALLOW_IF_EQ(SYS_sysinfo),
+    ALLOW_IF_EQ(SYS_geteuid),
+    ALLOW_IF_EQ(SYS_getegid),
+    ALLOW_IF_EQ(SYS_getuid),
+    ALLOW_IF_EQ(SYS_getgid),
+    ALLOW_IF_EQ(SYS_lstat),
+    ALLOW_IF_EQ(SYS_getdents),
+    ALLOW_IF_EQ(SYS_lseek),
+    ALLOW_IF_EQ(SYS_dup),
+    ALLOW_IF_EQ(SYS_getcwd),
+    ALLOW_IF_EQ(SYS_exit_group),
+    ALLOW_IF_EQ(SYS_connect),
+    ALLOW_IF_EQ(SYS_futex),
+    ALLOW_IF_EQ(SYS_getrandom),
+    ALLOW_IF_EQ(SYS_sigaltstack),
+    ALLOW_IF_EQ(SYS_select),
+    ALLOW_IF_EQ(SYS_mremap),
 
-  // Allow execve so this process can run the python environment.
-  // I have been unsuccesful in filtering this further, so I have to just
-  // whitelist the syscall, but since PR_NO_NEW_PRIVS is set to 1 in order to
-  // enter seccomp filter mode, this is probably okay.
-  ALLOW_IF_EQ(SYS_execve),
+    // Allow execve so this process can run the python environment.
+    // I have been unsuccesful in filtering this further, so I have to just
+    // whitelist the syscall, but since PR_NO_NEW_PRIVS is set to 1 in order to
+    // enter seccomp filter mode, this is probably okay.
+    ALLOW_IF_EQ(SYS_execve),
 
-  // These syscalls also occur during python startup, but we are filtering
-  // beyond just the syscall number for these.
-  // Filtering below influenced by: http://khamidou.com/sandboxing/
-  ALLOW_CALL_IF_ARG_MATCH(SYS_ioctl, 1, TCGETS),   // get term struct.
-  ALLOW_CALL_IF_ARG_MATCH(SYS_ioctl, 1, FIOCLEX),  // set close on exec.
-  // Only allow creation of RDONLY file descriptors.
-  ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY | O_CLOEXEC),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY | O_CLOEXEC |
-                                       O_NONBLOCK | O_DIRECTORY),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY | O_CLOEXEC),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY | O_CLOEXEC |
+    // These syscalls also occur during python startup, but we are filtering
+    // beyond just the syscall number for these.
+    // Filtering below influenced by: http://khamidou.com/sandboxing/
+    ALLOW_CALL_IF_ARG_MATCH(SYS_ioctl, 1, TCGETS),   // get term struct.
+    ALLOW_CALL_IF_ARG_MATCH(SYS_ioctl, 1, FIOCLEX),  // set close on exec.
+    // Only allow creation of RDONLY file descriptors.
+    ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY | O_CLOEXEC),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_open, 1, O_RDONLY | O_CLOEXEC |
                                          O_NONBLOCK | O_DIRECTORY),
-  // Only allow creation of local sockets.
-  ALLOW_CALL_IF_ARG_MATCH(SYS_socket, 0, AF_LOCAL),
-  // Only allow writes to known file descriptors.
-  ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 0),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 1),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 2),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY | O_CLOEXEC),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_openat, 2, O_RDONLY | O_CLOEXEC |
+                                           O_NONBLOCK | O_DIRECTORY),
+    // Only allow creation of local sockets.
+    ALLOW_CALL_IF_ARG_MATCH(SYS_socket, 0, AF_LOCAL),
+    // Only allow writes to known file descriptors.
+    ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 0),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 1),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_write, 0, 2),
 
-  // Only allow a couple fcntl operations.
-  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD_CLOEXEC),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFD),
-  ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFL),
-  ALLOW_CALL_IF_ARGS_MATCH2(SYS_fcntl, 1, F_SETFD, 2, FD_CLOEXEC),
+    // Only allow a couple fcntl operations.
+    ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_DUPFD_CLOEXEC),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFD),
+    ALLOW_CALL_IF_ARG_MATCH(SYS_fcntl, 1, F_GETFL),
+    ALLOW_CALL_IF_ARGS_MATCH2(SYS_fcntl, 1, F_SETFD, 2, FD_CLOEXEC),
 
 #ifdef SANDBOX_TRACE_MODE
-  // If no filters above matched, send signal to tracer.
-  BPF_STMT(RET_CONST, SECCOMP_RET_TRACE)
+    // If no filters above matched, send signal to tracer.
+    BPF_STMT(RET_CONST, SECCOMP_RET_TRACE)
 #else
-  // If no filters above matched, kill the process.
-  BPF_STMT(RET_CONST, SECCOMP_RET_KILL)
+    // If no filters above matched, kill the process.
+    BPF_STMT(RET_CONST, SECCOMP_RET_KILL)
 #endif  // SANDBOX_TRACE_UNMATCHED
   };
   static struct sock_fprog seccomp_filterprog = {
@@ -583,6 +583,6 @@ int main(int argc, char **argv) {
   } else {
     // We are the child, and we at some point failed to execve the sandboxee.
     // Significant error messages have already been printed at this point.
-    return -child_pid;  // Error codes from fork_child.
+    return -child_pid;  // Error codes from fork_sandboxee.
   }
 }
