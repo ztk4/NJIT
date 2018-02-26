@@ -1,0 +1,7 @@
+/home/zach/kernel/cs680/mm/page_alloc.c[4558:4563]
+  4558	static inline void show_node(struct zone *zone)
+  4559	{
+  4560		if (IS_ENABLED(CONFIG_NUMA))
+  4561			printk("Zachary Kaplan: Node %d ", zone_to_nid(zone));
+  4562	}
+  4563	

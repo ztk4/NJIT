@@ -1,0 +1,18 @@
+/home/zach/kernel/cs680/mm/swap_state.c[98:114]
+    98	void show_swap_cache_info(void)
+    99	{
+   100	  /*
+   101	   * CUSTOM EDIT FOR CS680
+   102	   * Prefix all printk's with my name.
+   103	   */
+   104	  
+   105		printk("Zachary Kaplan: %lu pages in swap cache\n", total_swapcache_pages());
+   106		printk("Zachary Kaplan: Swap cache stats: add %lu, delete %lu,"
+   107	    " find %lu/%lu\n",
+   108			swap_cache_info.add_total, swap_cache_info.del_total,
+   109			swap_cache_info.find_success, swap_cache_info.find_total);
+   110		printk("Zachary Kaplan: Free swap  = %ldkB\n",
+   111			get_nr_swap_pages() << (PAGE_SHIFT - 10));
+   112		printk("Zachary Kaplan: Total swap = %lukB\n",
+   113	    total_swap_pages << (PAGE_SHIFT - 10));
+   114	}

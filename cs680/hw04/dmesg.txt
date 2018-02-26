@@ -1,0 +1,31 @@
+[    0.004000] Zachary Kaplan: Mem-Info:
+[    0.004000] Zachary Kaplan: active_anon:0 inactive_anon:0 isolated_anon:0
+                active_file:0 inactive_file:0 isolated_file:0
+                unevictable:0 dirty:0 writeback:0 unstable:0
+                slab_reclaimable:17 slab_unreclaimable:128
+                mapped:0 shmem:0 pagetables:0 bounce:0
+                free:1931695 free_pcp:63 free_cma:0
+[    0.004000] Zachary Kaplan: Node 0 active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB shmem_thp: 0kB shmem_pmdmapped: 0kB anon_thp: 0kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
+[    0.004000] Zachary Kaplan: Node 0 DMA free:15908kB min:0kB low:0kB high:0kB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB managed:15908kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[    0.004000] Zachary Kaplan: lowmem_reserve[]: 0 0 0 0 0
+[    0.004000] Zachary Kaplan: Node 0 DMA32 free:2644620kB min:0kB low:0kB high:0kB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:3129212kB managed:2644620kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
+[    0.004000] Zachary Kaplan: lowmem_reserve[]: 0 0 0 0 0
+[    0.004000] Zachary Kaplan: Node 0 Normal free:5066252kB min:0kB low:0kB high:0kB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:5242880kB managed:5080612kB mlocked:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:252kB local_pcp:252kB free_cma:0kB
+[    0.004000] Zachary Kaplan: lowmem_reserve[]: 0 0 0 0 0
+[    0.004000] Zachary Kaplan: Node 0 DMA: 1*4kB (U) 0*8kB 0*16kB 1*32kB (U) 2*64kB (U) 1*128kB (U) 1*256kB (U) 0*512kB 1*1024kB (U) 1*2048kB (M) 3*4096kB (M) = 15908kB
+[    0.004000] Zachary Kaplan: Node 0 DMA32: 1*4kB (M) 1*8kB (M) 2*16kB (M) 1*32kB (M) 1*64kB (M) 0*128kB 2*256kB (M) 2*512kB (M) 3*1024kB (M) 1*2048kB (M) 644*4096kB (M) = 2644620kB
+[    0.004000] Zachary Kaplan: Node 0 Normal: 7*4kB (ME) 8*8kB (UM) 3*16kB (M) 2*32kB (M) 9*64kB (UME) 4*128kB (UM) 9*256kB (ME) 4*512kB (ME) 4*1024kB (ME) 5*2048kB (UME) 1232*4096kB (M) = 5066252kB
+[    0.004000] Zachary Kaplan: 0 total pagecache pages
+[    0.004000] Zachary Kaplan: 0 pages in swap cache
+[    0.004000] Zachary Kaplan: Swap cache stats: add 0, delete 0, find 0/0
+[    0.004000] Zachary Kaplan: Free swap  = 0kB
+[    0.004000] Zachary Kaplan: Total swap = 0kB
+[    0.004000] Zachary Kaplan: 2097021 pages RAM
+[    0.004000] Zachary Kaplan: 0 pages HighMem/MovableOnly
+[    0.004000] Zachary Kaplan: 161736 pages reserved
+[    0.004000] Zachary Kaplan: 0 pages cma reserved
+[    0.004000] Zachary Kaplan: 0 pages hwpoisoned
+[    0.004000] Zachary Kaplan: Custom BuddyInfo
+[    0.004000] Zachary Kaplan: Node 0, zone      DMA      1      0      0      1      2      1      1      0      1      1      3
+[    0.004000] Zachary Kaplan: Node 0, zone    DMA32      1      1      2      1      1      0      2      2      3      1    644
+[    0.004000] Zachary Kaplan: Node 0, zone   Normal      7      8      3      2      9      4      9      4      4      5   1232

@@ -1,0 +1,16 @@
+/home/zach/kernel/cs680/init/main.c[391:405]
+   391	static noinline void __ref rest_init(void)
+   392	{
+   393		struct task_struct *tsk;
+   394		int pid;
+   395	
+   396	  /*
+   397	   * CUSTOM EDIT FOR CS680
+   398	   * Show memory stats after start_kernel but before rest_init.
+   399	   */
+   400	  show_mem(0, NULL);
+   401	
+   402		rcu_scheduler_starting();
+   403		/*
+   404		 * We need to spawn init first so that it obtains pid 1, however
+   405		 * the init task will end up wanting to create kthreads, which, if

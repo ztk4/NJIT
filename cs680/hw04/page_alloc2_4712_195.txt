@@ -1,0 +1,196 @@
+/home/zach/kernel/cs680/mm/page_alloc.c[4712:4906]
+  4712	void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+  4713	{
+  4714		unsigned long free_pcp = 0;
+  4715		int cpu;
+  4716		struct zone *zone;
+  4717		pg_data_t *pgdat;
+  4718	
+  4719	  /*
+  4720	   * CUSTOM EDIT FOR CS680
+  4721	   * Prefixt all printk's with my name.
+  4722	   */
+  4723	
+  4724		for_each_populated_zone(zone) {
+  4725			if (show_mem_node_skip(filter, zone_to_nid(zone), nodemask))
+  4726				continue;
+  4727	
+  4728			for_each_online_cpu(cpu)
+  4729				free_pcp += per_cpu_ptr(zone->pageset, cpu)->pcp.count;
+  4730		}
+  4731	
+  4732		printk("Zachary Kaplan: active_anon:%lu inactive_anon:%lu isolated_anon:%lu\n"
+  4733			" active_file:%lu inactive_file:%lu isolated_file:%lu\n"
+  4734			" unevictable:%lu dirty:%lu writeback:%lu unstable:%lu\n"
+  4735			" slab_reclaimable:%lu slab_unreclaimable:%lu\n"
+  4736			" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
+  4737			" free:%lu free_pcp:%lu free_cma:%lu\n",
+  4738			global_node_page_state(NR_ACTIVE_ANON),
+  4739			global_node_page_state(NR_INACTIVE_ANON),
+  4740			global_node_page_state(NR_ISOLATED_ANON),
+  4741			global_node_page_state(NR_ACTIVE_FILE),
+  4742			global_node_page_state(NR_INACTIVE_FILE),
+  4743			global_node_page_state(NR_ISOLATED_FILE),
+  4744			global_node_page_state(NR_UNEVICTABLE),
+  4745			global_node_page_state(NR_FILE_DIRTY),
+  4746			global_node_page_state(NR_WRITEBACK),
+  4747			global_node_page_state(NR_UNSTABLE_NFS),
+  4748			global_node_page_state(NR_SLAB_RECLAIMABLE),
+  4749			global_node_page_state(NR_SLAB_UNRECLAIMABLE),
+  4750			global_node_page_state(NR_FILE_MAPPED),
+  4751			global_node_page_state(NR_SHMEM),
+  4752			global_zone_page_state(NR_PAGETABLE),
+  4753			global_zone_page_state(NR_BOUNCE),
+  4754			global_zone_page_state(NR_FREE_PAGES),
+  4755			free_pcp,
+  4756			global_zone_page_state(NR_FREE_CMA_PAGES));
+  4757	
+  4758		for_each_online_pgdat(pgdat) {
+  4759			if (show_mem_node_skip(filter, pgdat->node_id, nodemask))
+  4760				continue;
+  4761	
+  4762			printk("Zachary Kaplan: Node %d"
+  4763				" active_anon:%lukB"
+  4764				" inactive_anon:%lukB"
+  4765				" active_file:%lukB"
+  4766				" inactive_file:%lukB"
+  4767				" unevictable:%lukB"
+  4768				" isolated(anon):%lukB"
+  4769				" isolated(file):%lukB"
+  4770				" mapped:%lukB"
+  4771				" dirty:%lukB"
+  4772				" writeback:%lukB"
+  4773				" shmem:%lukB"
+  4774	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+  4775				" shmem_thp: %lukB"
+  4776				" shmem_pmdmapped: %lukB"
+  4777				" anon_thp: %lukB"
+  4778	#endif
+  4779				" writeback_tmp:%lukB"
+  4780				" unstable:%lukB"
+  4781				" all_unreclaimable? %s"
+  4782				"\n",
+  4783				pgdat->node_id,
+  4784				K(node_page_state(pgdat, NR_ACTIVE_ANON)),
+  4785				K(node_page_state(pgdat, NR_INACTIVE_ANON)),
+  4786				K(node_page_state(pgdat, NR_ACTIVE_FILE)),
+  4787				K(node_page_state(pgdat, NR_INACTIVE_FILE)),
+  4788				K(node_page_state(pgdat, NR_UNEVICTABLE)),
+  4789				K(node_page_state(pgdat, NR_ISOLATED_ANON)),
+  4790				K(node_page_state(pgdat, NR_ISOLATED_FILE)),
+  4791				K(node_page_state(pgdat, NR_FILE_MAPPED)),
+  4792				K(node_page_state(pgdat, NR_FILE_DIRTY)),
+  4793				K(node_page_state(pgdat, NR_WRITEBACK)),
+  4794				K(node_page_state(pgdat, NR_SHMEM)),
+  4795	#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+  4796				K(node_page_state(pgdat, NR_SHMEM_THPS) * HPAGE_PMD_NR),
+  4797				K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
+  4798						* HPAGE_PMD_NR),
+  4799				K(node_page_state(pgdat, NR_ANON_THPS) * HPAGE_PMD_NR),
+  4800	#endif
+  4801				K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
+  4802				K(node_page_state(pgdat, NR_UNSTABLE_NFS)),
+  4803				pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
+  4804					"yes" : "no");
+  4805		}
+  4806	
+  4807		for_each_populated_zone(zone) {
+  4808			int i;
+  4809	
+  4810			if (show_mem_node_skip(filter, zone_to_nid(zone), nodemask))
+  4811				continue;
+  4812	
+  4813			free_pcp = 0;
+  4814			for_each_online_cpu(cpu)
+  4815				free_pcp += per_cpu_ptr(zone->pageset, cpu)->pcp.count;
+  4816	
+  4817			show_node(zone);
+  4818			printk(KERN_CONT
+  4819				"%s"
+  4820				" free:%lukB"
+  4821				" min:%lukB"
+  4822				" low:%lukB"
+  4823				" high:%lukB"
+  4824				" active_anon:%lukB"
+  4825				" inactive_anon:%lukB"
+  4826				" active_file:%lukB"
+  4827				" inactive_file:%lukB"
+  4828				" unevictable:%lukB"
+  4829				" writepending:%lukB"
+  4830				" present:%lukB"
+  4831				" managed:%lukB"
+  4832				" mlocked:%lukB"
+  4833				" kernel_stack:%lukB"
+  4834				" pagetables:%lukB"
+  4835				" bounce:%lukB"
+  4836				" free_pcp:%lukB"
+  4837				" local_pcp:%ukB"
+  4838				" free_cma:%lukB"
+  4839				"\n",
+  4840				zone->name,
+  4841				K(zone_page_state(zone, NR_FREE_PAGES)),
+  4842				K(min_wmark_pages(zone)),
+  4843				K(low_wmark_pages(zone)),
+  4844				K(high_wmark_pages(zone)),
+  4845				K(zone_page_state(zone, NR_ZONE_ACTIVE_ANON)),
+  4846				K(zone_page_state(zone, NR_ZONE_INACTIVE_ANON)),
+  4847				K(zone_page_state(zone, NR_ZONE_ACTIVE_FILE)),
+  4848				K(zone_page_state(zone, NR_ZONE_INACTIVE_FILE)),
+  4849				K(zone_page_state(zone, NR_ZONE_UNEVICTABLE)),
+  4850				K(zone_page_state(zone, NR_ZONE_WRITE_PENDING)),
+  4851				K(zone->present_pages),
+  4852				K(zone->managed_pages),
+  4853				K(zone_page_state(zone, NR_MLOCK)),
+  4854				zone_page_state(zone, NR_KERNEL_STACK_KB),
+  4855				K(zone_page_state(zone, NR_PAGETABLE)),
+  4856				K(zone_page_state(zone, NR_BOUNCE)),
+  4857				K(free_pcp),
+  4858				K(this_cpu_read(zone->pageset->pcp.count)),
+  4859				K(zone_page_state(zone, NR_FREE_CMA_PAGES)));
+  4860			printk("Zachary Kaplan: lowmem_reserve[]:");
+  4861			for (i = 0; i < MAX_NR_ZONES; i++)
+  4862				printk(KERN_CONT " %ld", zone->lowmem_reserve[i]);
+  4863			printk(KERN_CONT "\n");
+  4864		}
+  4865	
+  4866		for_each_populated_zone(zone) {
+  4867			unsigned int order;
+  4868			unsigned long nr[MAX_ORDER], flags, total = 0;
+  4869			unsigned char types[MAX_ORDER];
+  4870	
+  4871			if (show_mem_node_skip(filter, zone_to_nid(zone), nodemask))
+  4872				continue;
+  4873			show_node(zone);
+  4874			printk(KERN_CONT "%s: ", zone->name);
+  4875	
+  4876			spin_lock_irqsave(&zone->lock, flags);
+  4877			for (order = 0; order < MAX_ORDER; order++) {
+  4878				struct free_area *area = &zone->free_area[order];
+  4879				int type;
+  4880	
+  4881				nr[order] = area->nr_free;
+  4882				total += nr[order] << order;
+  4883	
+  4884				types[order] = 0;
+  4885				for (type = 0; type < MIGRATE_TYPES; type++) {
+  4886					if (!list_empty(&area->free_list[type]))
+  4887						types[order] |= 1 << type;
+  4888				}
+  4889			}
+  4890			spin_unlock_irqrestore(&zone->lock, flags);
+  4891			for (order = 0; order < MAX_ORDER; order++) {
+  4892				printk(KERN_CONT "%lu*%lukB ",
+  4893				       nr[order], K(1UL) << order);
+  4894				if (nr[order])
+  4895					show_migration_types(types[order]);
+  4896			}
+  4897			printk(KERN_CONT "= %lukB\n", K(total));
+  4898		}
+  4899	
+  4900		hugetlb_show_meminfo();
+  4901	
+  4902		printk("Zachary Kaplan: %ld total pagecache pages\n",
+  4903	    global_node_page_state(NR_FILE_PAGES));
+  4904	
+  4905		show_swap_cache_info();
+  4906	}

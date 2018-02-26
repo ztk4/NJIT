@@ -1,0 +1,77 @@
+/home/zach/kernel/cs680/lib/show_mem.c[12:87]
+    12	/*
+    13	 * CUSTOM EDIT FOR CS680
+    14	 * Add custom function for displaying /proc/buddyinfo.
+    15	 */
+    16	static void show_buddyinfo(void) {
+    17	  struct zone *zone;
+    18	  printk("Zachary Kaplan: Custom BuddyInfo\n");
+    19	
+    20	  for_each_populated_zone(zone) {
+    21	    unsigned int order;
+    22	    unsigned long nr[MAX_ORDER], flags;
+    23	
+    24	    spin_lock_irqsave(&zone->lock, flags);
+    25	    for (order = 0; order < MAX_ORDER; ++order) {
+    26	      nr[order] = zone->free_area[order].nr_free;
+    27	    }
+    28	    spin_unlock_irqrestore(&zone->lock, flags);
+    29	
+    30	    printk("Zachary Kaplan: Node %d, zone %8s", zone_to_nid(zone), zone->name);
+    31	    for (order = 0; order < MAX_ORDER; ++order) {
+    32	      printk(KERN_CONT "%7lu", nr[order]);
+    33	    }
+    34	    printk(KERN_CONT "\n");
+    35	  }
+    36	}
+    37	
+    38	void show_mem(unsigned int filter, nodemask_t *nodemask)
+    39	{
+    40		pg_data_t *pgdat;
+    41		unsigned long total = 0, reserved = 0, highmem = 0;
+    42	  
+    43	  /*
+    44	   * CUSTOM EDIT FOR CS680
+    45	   * Prefix all printk's with my name.
+    46	   * Add call to custom method above.
+    47	   */
+    48	
+    49		printk("Zachary Kaplan: Mem-Info:\n");
+    50		show_free_areas(filter, nodemask);
+    51	
+    52		for_each_online_pgdat(pgdat) {
+    53			unsigned long flags;
+    54			int zoneid;
+    55	
+    56			pgdat_resize_lock(pgdat, &flags);
+    57			for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
+    58				struct zone *zone = &pgdat->node_zones[zoneid];
+    59				if (!populated_zone(zone))
+    60					continue;
+    61	
+    62				total += zone->present_pages;
+    63				reserved += zone->present_pages - zone->managed_pages;
+    64	
+    65				if (is_highmem_idx(zoneid))
+    66					highmem += zone->present_pages;
+    67			}
+    68			pgdat_resize_unlock(pgdat, &flags);
+    69		}
+    70	
+    71		printk("Zachary Kaplan: %lu pages RAM\n", total);
+    72		printk("Zachary Kaplan: %lu pages HighMem/MovableOnly\n", highmem);
+    73		printk("Zachary Kaplan: %lu pages reserved\n", reserved);
+    74	#ifdef CONFIG_CMA
+    75		printk("Zachary Kaplan: %lu pages cma reserved\n", totalcma_pages);
+    76	#endif
+    77	#ifdef CONFIG_QUICKLIST
+    78		printk("Zachary Kaplan: %lu pages in pagetable cache\n",
+    79			quicklist_total_size());
+    80	#endif
+    81	#ifdef CONFIG_MEMORY_FAILURE
+    82		printk("Zachary Kaplan: %lu pages hwpoisoned\n",
+    83	    atomic_long_read(&num_poisoned_pages));
+    84	#endif
+    85	
+    86	  show_buddyinfo();
+    87	}
