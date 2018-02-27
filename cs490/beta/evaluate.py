@@ -17,11 +17,11 @@ def fix_syntax_err(code, err):
   # TODO: Come up with some rules for fixing syntax errors.
   return None
 
-def output_json(points, deductions)
+def output_json(points, deductions):
   # Write out the proper json output to stdout.
-  score = points - sum(d.points for d in deductions)
+  score = points - sum(d['points'] for d in deductions)
   if score < 0: score = 0
-  print(json.dumps({score: score, deductions: deductions}))
+  print(json.dumps({'score': score, 'deductions': deductions}))
 
 ## OUTPUT FORMAT
 # The output of this script will be written to stdout, and will take the form:
@@ -51,6 +51,7 @@ def main():
 
   # Process input arguments.
   args = parser.parse_args()
+  code = args.code
 
   # Bookkeeping for score.
   deductions = []
@@ -60,14 +61,14 @@ def main():
   while not tree:
     try:
       tree = ast.parse(code)
-    except SynatxError as se:
+    except SyntaxError as se:
       fixed = fix_syntax_err(code, se)
       if not fixed:
-        deductions.append({points: args.points, reason: 'syntax error'})
+        deductions.append({'points': args.points, 'reason': 'syntax error'})
         break  # Couldn't fix error.
       code = fixed
     except:
-      deductions.append({points: args.points, reason: 'failed to compile'})
+      deductions.append({'points': args.points, 'reason': 'failed to compile'})
       break    # Unknown exception.
 
   if not tree:
@@ -78,21 +79,23 @@ def main():
   valid = False
   if type(tree) == ast.Module and len(tree.body) == 1:
     fdef = tree.body[0]
-    if type(fdec) in [ast.FunctionDef, ast.AsyncFunctionDef]:
-      if fdec.name != args.name:
-        fdec.name = args.name
+    if type(fdef) in [ast.FunctionDef, ast.AsyncFunctionDef]:
+      if fdef.name != args.name:
+        fdef.name = args.name
         # TODO: Solidify point values.
-        deductions.append({points: 1, reason: 'misnamed function'})
+        deductions.append({'points': 1, 'reason': 'misnamed function'})
       # TODO: Consider checking number of arguments and stuff.
       valid = True
 
   if not valid:
-    deductions.append({points: args.points,
-                       reason: 'not just a single function definition')
+    deductions.append({'points': args.points,
+                       'reason': 'not just a single function definition'})
 
   # TODO: Consider doing more work on the AST to help catch common errors.
 
   # TODO: grade
+
+  output_json(args.points, deductions)
 
 if __name__ == '__main__':
   main()
