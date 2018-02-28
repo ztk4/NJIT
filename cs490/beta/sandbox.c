@@ -390,7 +390,9 @@ static struct argp argp = { cmd_options, parse_opt, args_doc, doc };
 // Return codes.
 enum return_code {
   RET_OK = 0,
+  // 1 and -1 are used in functions that otherwise return values from this list.
   RET_DO_NOT_USE_RESERVED = 1,
+
   RET_UNABLE_TO_SECCOMP,  // Unable to enter seccomp filter mode.
   RET_UNABLE_TO_EXECVE,   // Unable to execve the sandboxee.
   RET_UNABLE_TO_TIME,     // Couldn't start real timer.
@@ -402,6 +404,10 @@ enum return_code {
   RET_CHILD_BAD_STATE,    // Child responded to wait with unknown wait status.
   RET_UNABLE_TO_FORK,     // Unable to fork a child process.
   RET_UNABLE_TO_RLIMIT,   // Unable to limit child process's resources.
+
+  // Failures of the sandboxee are reported as status + 128, therefore no return
+  // values may exceed (or include) 128.
+  RET_DO_NOT_USE_MAX_VALUE = 128,
 };
 
 // Forks the process, then the child process enter seccomp filter mode and
@@ -556,10 +562,12 @@ int main(int argc, char **argv) {
     if (WIFEXITED(wstatus)) {
       // Child exited by it's own volition (exit, _exit, etc).
       int status = WEXITSTATUS(wstatus);
-      if (status)
+      if (status) {
         fprintf(stderr, "Sandboxee execution failed\n");
+        return status | 0x80;  // Report child exit code with offset of 128.
+      }
 
-      return status;
+      return RET_OK;
     } else if (WIFSIGNALED(wstatus)) {
       // Some signal terminated the child (SIGKILL, SIGSYS, etc).
       fprintf(stderr, "Sandboxee was terminated by signal %s\n",
@@ -572,7 +580,7 @@ int main(int argc, char **argv) {
       }
     } else {
       // Not sure what's going on, kill the child to be safe and then exit.
-      kill(child_pid, SIGKILL);
+      kill(child_pid, SIGKILL);  // Would only fail if child is already dead.
       fprintf(stderr, "Sandboxee entered unspecified state, killed\n");
       return RET_CHILD_BAD_STATE;
     }
