@@ -211,6 +211,9 @@ def grade(code_obj, name, points, test_case_objs):
   }
   instr_locals = {}
 
+  # TODO: instrument stdin, stdout, and stderr for these testcases.
+  # TODO: if output is captured from stdout, consider comparing it against desired result
+
   # Run the function declaration from the student.
   try:
     exec(code_obj, instr_globals, instr_locals)
