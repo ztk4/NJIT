@@ -190,7 +190,7 @@ def fix_syntax_err(code, err):
   # TODO: Come up with some rules for fixing syntax errors.
   return None
 
-def grade(code_obj, name, points, test_case_objs):
+def grade(code_obj, name, points, test_case_objs, vlevel = 0):
   # Grades the given implementation of name, code_obj, with a maximum score
   # of points on each test_case_obj. Returns a list of deductions.
   deductions = []  # Reasons we took off points.
@@ -218,6 +218,7 @@ def grade(code_obj, name, points, test_case_objs):
   try:
     exec(code_obj, instr_globals, instr_locals)
   except BaseException as e:
+    if vlevel >= 1: print(repr(e), file=sys.stderr)
     # We'll consider any exception while defining the function to be a 0.
     dock_points(deductions, points, 'unable to execute function')
     return deductions
@@ -228,6 +229,7 @@ def grade(code_obj, name, points, test_case_objs):
       if not result:
         dock_points(deductions, points_per_case, 'failed test case %d' % i)
     except BaseException as e:
+      if vlevel >= 1: print(repr(e), file=sys.stderr)
       # We'll consider any exception while executing a test case to be wrong.
       dock_points(deductions, points_per_case, 'exception during test case %d' % i)
 
@@ -253,9 +255,15 @@ def main():
                "must take the form of of a function call without the function "
                "name followed by a comparison to a return value. For example "
                "``(1, 2) == 3'' or ``(1, 2, (3, 4), *[5, 6], last=8) == None''")
+  parser.add_argument('-v', '--verbose',  action='count', default=0,
+          help="Specifies verbositiy level. Each time this flag is specified, "
+               "the count goes up by one. Level 1 or greater outputs additional "
+               "information about exceptions that occur")
+
 
   # Process input arguments.
   args = parser.parse_args()
+  vlevel = args.verbose
 
   # Ensure that name is a valid identifier (not a keyword).
   name = args.name
@@ -271,7 +279,8 @@ def main():
     # Try parsing this into a single expression ast.
     try:
       expr = ast.parse(test_case, mode='eval')
-    except:
+    except BaseException as e:
+      if vlevel >= 1: print(repr(e), file=sys.stderr)
       expr = None
 
     if not expr:
@@ -315,7 +324,8 @@ def main():
     # Finally, we just have to try compiling the test case.
     try:
       obj = compile(expr, '<unknown>', 'eval')
-    except:
+    except BaseException as e:
+      if vlevel >= 1: print(repr(e), file=sys.stderr)
       obj = None
 
     if not obj:
@@ -342,10 +352,12 @@ def main():
     except SyntaxError as se:
       fixed = fix_syntax_err(code, se)
       if not fixed:
+        if vlevel >= 1: print(repr(se), file=sys.stderr)
         dock_points(deductions, args.points, 'syntax error')
         break  # Couldn't fix error.
       code = fixed
-    except:
+    except BaseException as e:
+      if vlevel >= 1: print(repr(e), file=sys.stderr)
       dock_points(deductions, args.points, 'failed to parse code')
       break    # Unknown exception.
 
@@ -376,7 +388,8 @@ def main():
   # Attempt to compile current code tree.
   try:
     code_obj = compile(tree, '<unknown>', 'exec')
-  except:
+  except BaseException as e:
+    if vlevel >= 1: print(repr(e), file=sys.stderr)
     code_obj = None
 
   # Currently no way to recover from failed compile if tree parsed okay.
@@ -387,7 +400,7 @@ def main():
     return
 
   # Actually grade the students submission!
-  deductions += grade(code_obj, name, args.points, test_case_objs)
+  deductions += grade(code_obj, name, args.points, test_case_objs, vlevel)
   output_json(args.points, deductions)
 
 if __name__ == '__main__':
