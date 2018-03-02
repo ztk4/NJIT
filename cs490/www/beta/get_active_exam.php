@@ -33,7 +33,7 @@
 //   }
 // }
 
-require 'prelude.inc'
+require 'prelude.inc';
 
 // Response object.
 $data = array();
@@ -54,7 +54,7 @@ try {
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.
   http_response_code(400);
-  $data['err'] = $e->message;
+  $data['err'] = $e->getMessage();
 }
 
 echo json_encode($data);

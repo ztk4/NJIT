@@ -13,7 +13,8 @@ const kBaseDir = '/afs/cad/u/z/t/ztk4/njit/cs490/beta/';
 const kDbUri = 'https://web.njit.edu/~poa5/';  // TODO: Check path.
 // Comand for running evaluate (without arguments to evaluate).
 // NOTE: flags passed to sandbox before -- control restrictions.
-const kEvalCmd = kBaseDir . 'sandbox -- `which python3` -S ' .
+const kEvalCmd = kBaseDir . 'sandbox -- ' .
+                 '/afs/cad/linux/anaconda3/anaconda/bin/python3 -S ' .
                  kBaseDir . 'evaluate.py';
 
 // FUNCTIONS
@@ -27,13 +28,13 @@ function cat_file($file) {
 
   $fp = fopen($path, 'r');
   if (!$fp)
-    throw new RuntimeException('failed to open file');
+    throw new \RuntimeException('failed to open file');
 
   $contents = fread($fp, filesize($path));
   fclose($fp);
 
   if (!$contents)
-    throw new RuntimeException('failed to read file');
+    throw new \RuntimeException('failed to read file');
 
   return $contents;
 }
@@ -42,9 +43,9 @@ function cat_file($file) {
 // Throws OutOfBoundsException when $key is not in post.
 function expect_post_entry($key) {
   if (!isset($_POST[$key]))
-    throw new OutOfBoundsException($key . ' not in POST data');
+    throw new \OutOfBoundsException($key . ' not in POST data');
 
-  return $_POST[$key]
+  return $_POST[$key];
 }
 
 // Makes a request to a DB endpoint, returns result as a php object.
@@ -64,9 +65,9 @@ function make_db_request($endpoint, $data = array()) {
   // Execute the curl request.
   $resp = json_decode($curl_exec($cp));
   curl_close($cp);
-
+  
   if (is_null($resp))
-    throw new RuntimeException('unable to make curl request');
+    throw new \RuntimeException('unable to make curl request');
 
   return $resp;
 }
@@ -112,7 +113,7 @@ function grade_answer($points, $fname, $student_code, $testcases) {
   if ($rc === 0) {
     $tmp = json_decode($output);
     if (is_null($tmp))
-      throw new RuntimeException('unable to parse evaluation output');
+      throw new \RuntimeException('unable to parse evaluation output');
     return $tmp;
   }
 

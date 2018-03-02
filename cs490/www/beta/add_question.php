@@ -21,18 +21,18 @@
 //   }
 // }
 
-require 'prelude.inc'
+require 'prelude.inc';
 
 // Response object.
 $data = array();
 
 try {
   // Get info.
-  $difficulty = util\expect_post_data('difficulty');
-  $topic = util\expect_post_data('topic');
-  $prompt = util\expect_post_data('prompt');
-  $fname = util\expect_post_data('fname');
-  $testcases = util\expect_post_data('testcases');
+  $difficulty = util\expect_post_entry('difficulty');
+  $topic = util\expect_post_entry('topic');
+  $prompt = util\expect_post_entry('prompt');
+  $fname = util\expect_post_entry('fname');
+  $testcases = util\expect_post_entry('testcases');
 
   // Validate info.
   if (!util\validate_question($fname, $testcases))
@@ -52,7 +52,7 @@ try {
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.
   http_response_code(400);
-  $data['err'] = $e->message;
+  $data['err'] = $e->getMessage();
 }
 
 echo json_encode($data);
