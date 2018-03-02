@@ -1,0 +1,265 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-02-27"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>Math 340 Assignment 6 3/1/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Part 1</a></li><li><a href="#2">Part 2</a></li></ul></div><h2 id="1">Part 1</h2><pre class="codeinput">order = 3:12;
+f = @(x) 1./(1 + 10*x.^2);
+max_err = zeros(size(order));
+
+<span class="keyword">for</span> n = order
+    X = linspace(-1, 1, n + 1);
+    Y = f(X);
+
+    p = pfit(X, Y);
+
+    figure
+    hold <span class="string">on</span>
+    title(sprintf(<span class="string">'Order %d Interpolation'</span>, n));
+    scatter(X, Y);  <span class="comment">% The points.</span>
+    XN = linspace(-1, 1, 1e3);  <span class="comment">% Domain</span>
+    YP = p(XN);
+    YF = f(XN);
+    plot(XN, YP);   <span class="comment">% The interpolation</span>
+    plot(XN, YF);   <span class="comment">% The function.</span>
+    legend(<span class="string">'Sample Points'</span>, <span class="string">'Interpolation'</span>, <span class="string">'1/(1 + 10*x^2)'</span>)
+
+    max_err(n - order(1) + 1) = norm(YP - YF, Inf);
+    fprintf(<span class="string">'Max Error for Order %2d: %e\n'</span>, n, max_err(n - order(1) + 1));
+<span class="keyword">end</span>
+
+figure
+plot(order, max_err);
+title(<span class="string">'Error vs. Order'</span>);
+ylabel(<span class="string">'Maximum Error'</span>);
+xlabel(<span class="string">'Order of Interpolation'</span>);
+
+fprintf(<span class="string">'\nFunctions used:'</span>);
+dbtype <span class="string">pfit</span>
+</pre><pre class="codeoutput">Max Error for Order  3: 3.086579e+02
+Max Error for Order  4: 6.004295e+02
+Max Error for Order  5: 4.384108e+02
+Max Error for Order  6: 6.004269e+02
+Max Error for Order  7: 5.274267e+02
+Max Error for Order  8: 7.341927e+02
+Max Error for Order  9: 5.690260e+02
+Max Error for Order 10: 6.004241e+02
+Max Error for Order 11: 5.872031e+02
+Max Error for Order 12: 1.143222e+03
+
+Functions used:
+1     function Pn = pfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9     
+10    % Initialize memoization for dd (NxN mat).
+11    mem = NaN(length(X));
+12             
+13        function y = pn(x)
+14            y = 0;
+15            for i = 1:length(X)
+16                [diff, mem] = dd(1, i, X, Y, mem);
+17                % The i'th column of y is Ni evaluated on each input x,
+18                % multiplied by [y_1, ..., y_i]
+19                y = y + diff*newton(x, i, X);
+20            end
+21        end
+22    
+23    Pn = @pn;
+24    end
+25    
+26    function ni = newton(x, i, X)
+27    % newton returns the ith Newton function from the length(X) - 1 order 
+28    %        Newton basis as defined by vector X evaluated at x
+29    %        NB: X must be a row vector.
+30    %        returns y as a column vector.
+31    
+32    % Force x to be a col vec.
+33    x = reshape(x, length(x), 1);
+34    
+35    % \Pi_{j = 1}^{i-1} (x - X_j)
+36    ni = prod(x - X(1:i-1), 2);  % Product along column dimension
+37    end
+38    
+39    function [diff, mem] = dd(i, j, X, Y, mem)
+40    % dd returns the divided difference [Y_i, ..., Y_j] with points (X_i, Y_i)
+41    
+42    % Handle error case
+43    if i &gt; j
+44        error('i may not exceed j');
+45    end
+46    
+47    % Check memoization
+48    if not(isnan(mem(i, j)))
+49        diff = mem(i, j);
+50        return
+51    end
+52    
+53    % Compute unknown value
+54    if i == j
+55        diff = Y(i);
+56    else
+57        [ld, mem] = dd(i+1, j, X, Y, mem);
+58        [rd, mem] = dd(i, j-1, X, Y, mem);
+59        diff = (ld - rd) / (X(j) - X(i));
+60    end
+61    mem(i, j) = diff;
+62    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <img vspace="5" hspace="5" src="main_05.png" alt=""> <img vspace="5" hspace="5" src="main_06.png" alt=""> <img vspace="5" hspace="5" src="main_07.png" alt=""> <img vspace="5" hspace="5" src="main_08.png" alt=""> <img vspace="5" hspace="5" src="main_09.png" alt=""> <img vspace="5" hspace="5" src="main_10.png" alt=""> <img vspace="5" hspace="5" src="main_11.png" alt=""> <h2 id="2">Part 2</h2><pre class="codeinput">n = 50;
+f = @(x) 1./(1 + 10*x.^2);
+
+X = linspace(-1, 1, n);
+Y = f(X);
+
+pp = spline(X, Y);
+
+figure
+hold <span class="string">on</span>
+title(sprintf(<span class="string">'Spline with %d points'</span>, n));
+scatter(X, Y);  <span class="comment">% The points.</span>
+XN = linspace(-1, 1, 1e3);  <span class="comment">% Domain</span>
+YP = ppval(pp, XN);
+YF = f(XN);
+plot(XN, YP);   <span class="comment">% The spline.</span>
+plot(XN, YF);   <span class="comment">% The function.</span>
+legend(<span class="string">'Sample Points'</span>, <span class="string">'Spline'</span>, <span class="string">'1/(1 + 10*x^2)'</span>)
+
+max_err = norm(YP - YF, Inf);
+fprintf(<span class="string">'Max Error for Spline with %d points: %e\n'</span>, n, max_err);
+</pre><pre class="codeoutput">Max Error for Spline with 50 points: 1.959778e-05
+</pre><img vspace="5" hspace="5" src="main_12.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % Math 340
+ % Assignment 6
+ % 3/1/18
+ 
+%% Part 1
+
+order = 3:12;
+f = @(x) 1./(1 + 10*x.^2);
+max_err = zeros(size(order));
+
+for n = order
+    X = linspace(-1, 1, n + 1);
+    Y = f(X);
+    
+    p = pfit(X, Y);
+    
+    figure
+    hold on
+    title(sprintf('Order %d Interpolation', n));
+    scatter(X, Y);  % The points.
+    XN = linspace(-1, 1, 1e3);  % Domain
+    YP = p(XN);
+    YF = f(XN);
+    plot(XN, YP);   % The interpolation
+    plot(XN, YF);   % The function.
+    legend('Sample Points', 'Interpolation', '1/(1 + 10*x^2)')
+    
+    max_err(n - order(1) + 1) = norm(YP - YF, Inf);
+    fprintf('Max Error for Order %2d: %e\n', n, max_err(n - order(1) + 1));
+end
+
+figure
+plot(order, max_err);
+title('Error vs. Order');
+ylabel('Maximum Error');
+xlabel('Order of Interpolation');
+
+fprintf('\nFunctions used:');
+dbtype pfit
+
+%% Part 2
+
+n = 50;
+f = @(x) 1./(1 + 10*x.^2);
+
+X = linspace(-1, 1, n);
+Y = f(X);
+
+pp = spline(X, Y);
+
+figure
+hold on
+title(sprintf('Spline with %d points', n));
+scatter(X, Y);  % The points.
+XN = linspace(-1, 1, 1e3);  % Domain
+YP = ppval(pp, XN);
+YF = f(XN);
+plot(XN, YP);   % The spline.
+plot(XN, YF);   % The function.
+legend('Sample Points', 'Spline', '1/(1 + 10*x^2)')
+
+max_err = norm(YP - YF, Inf);
+fprintf('Max Error for Spline with %d points: %e\n', n, max_err);
+##### SOURCE END #####
+--></body></html>

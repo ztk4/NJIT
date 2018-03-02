@@ -1,0 +1,272 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-02"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340 Assignment 7 3/2/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput">f = @(x) 1./(1 + 10*x.^2);
+degs = 0:40;
+a = -1;
+b = 1;
+X = linspace(a, b, 1e3);
+
+<span class="keyword">for</span> type = {<span class="string">'newton'</span>, <span class="string">'lagrange'</span>}
+    max_err = zeros(size(degs));
+
+    <span class="keyword">for</span> n = degs
+        [p,points] = cheb(a, b, f, n, type{1});
+        YP = p(X);
+        YF = f(X);
+
+        max_err(n - degs(1) + 1) = norm(YF - YP, Inf);
+    <span class="keyword">end</span>
+
+    figure
+    hold <span class="string">on</span>;
+    plot(X, YF);  <span class="comment">% The function.</span>
+    plot(X, YP);  <span class="comment">% The interpolation.</span>
+    scatter(points(:,1), points(:,2));  <span class="comment">% Chebyshev points.</span>
+    title(sprintf(<span class="string">'%d degree %s interpolation'</span>, n, type{1}));
+    legend(<span class="string">'1/(1 + 10*x^2)'</span>, <span class="string">'Interpolation'</span>, <span class="string">'Chebyshev Points'</span>)
+
+    figure
+    scatter(degs, log(max_err));
+    title(sprintf(<span class="string">'max error vs. degree of %s interpolation'</span>, type{1}));
+    xlabel(<span class="string">'Degree of Interpolation'</span>);
+    ylabel(<span class="string">'Log(Max Error)'</span>);
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Functions Used:\n'</span>);
+
+dbtype <span class="string">cheb</span>;
+dbtype <span class="string">lpfit</span>;
+dbtype <span class="string">npfit</span>;
+</pre><pre class="codeoutput">Functions Used:
+
+1     function [p, points] = cheb(a, b, f, n, type)
+2     % cheb uses chebyshev nodes for interpolating f with a degree n polynomial.
+3     %      type has two valid values: 'newton' and 'lagrange'.
+4     
+5     X = (a + b)/2 + (a - b)/2 * cos((2*(1:n+1) - 1)./(2*n + 2) * pi);
+6     Y = f(X);
+7     
+8     if strcmp(type, 'newton')
+9         p = npfit(X, Y);
+10    elseif strcmp(type, 'lagrange')
+11        p = lpfit(X, Y);
+12    else
+13        error(['invalid type ' type ]);
+14    end
+15    points = [X' Y'];
+16    end
+
+1     function Pn = lpfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9              
+10        function y = pn(x)
+11            y = 0;
+12            for i = 1:length(X)
+13                % The i'th column of y is Li evaluated on each input x.
+14                y = y + Y(i)*lagrange(x, i, X);
+15            end
+16            y = reshape(y, size(x));
+17        end
+18    
+19    Pn = @pn;
+20    end
+21    
+22    function y = lagrange(x, i, X)
+23    % lagrange returns the ith Lagrange function from the length(X) - 1 order 
+24    %          Lagrange basis as defined by vector X evaluated at x
+25    %          NB: X must be a row vector.
+26    %          returns y as a column vector.
+27    
+28    % Force x to be a col vec.
+29    x = reshape(x, length(x), 1);
+30    
+31    % \Pi_{j = 1, j \not= i}^{|X|} (x - X_j)/(X_i - X_j)
+32    skip = [X(1:i-1) X(i+1:end)];  % skips X(i)
+33    % The below uses matlab R2017's ability to automatically repmat matrix
+34    % arguments to binary matrix operators. MAY NOT WORK IN R2016.
+35    y = prod((x - skip)./(X(i) - skip), 2);  % Product along column dimension
+36    end
+
+1     function Pn = npfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9     
+10    % Initialize memoization for dd (NxN mat).
+11    mem = NaN(length(X));
+12             
+13        function y = pn(x)
+14            y = 0;
+15            for i = 1:length(X)
+16                [diff, mem] = dd(1, i, X, Y, mem);
+17                % The i'th column of y is Ni evaluated on each input x,
+18                % multiplied by [y_1, ..., y_i]
+19                y = y + diff*newton(x, i, X);
+20            end
+21            y = reshape(y, size(x));
+22        end
+23    
+24    Pn = @pn;
+25    end
+26    
+27    function ni = newton(x, i, X)
+28    % newton returns the ith Newton function from the length(X) - 1 order 
+29    %        Newton basis as defined by vector X evaluated at x
+30    %        NB: X must be a row vector.
+31    %        returns y as a column vector.
+32    
+33    % Force x to be a col vec.
+34    x = reshape(x, length(x), 1);
+35    
+36    % \Pi_{j = 1}^{i-1} (x - X_j)
+37    ni = prod(x - X(1:i-1), 2);  % Product along column dimension
+38    end
+39    
+40    function [diff, mem] = dd(i, j, X, Y, mem)
+41    % dd returns the divided difference [Y_i, ..., Y_j] with points (X_i, Y_i)
+42    
+43    % Handle error case
+44    if i &gt; j
+45        error('i may not exceed j');
+46    end
+47    
+48    % Check memoization
+49    if not(isnan(mem(i, j)))
+50        diff = mem(i, j);
+51        return
+52    end
+53    
+54    % Compute unknown value
+55    if i == j
+56        diff = Y(i);
+57    else
+58        [ld, mem] = dd(i+1, j, X, Y, mem);
+59        [rd, mem] = dd(i, j-1, X, Y, mem);
+60        diff = (ld - rd) / (X(j) - X(i));
+61    end
+62    mem(i, j) = diff;
+63    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340
+ % Assignment 7
+ % 3/2/18
+ 
+%% Problem 1
+
+f = @(x) 1./(1 + 10*x.^2);
+degs = 0:40;
+a = -1;
+b = 1;
+X = linspace(a, b, 1e3);
+
+for type = {'newton', 'lagrange'}
+    max_err = zeros(size(degs));
+    
+    for n = degs
+        [p,points] = cheb(a, b, f, n, type{1});
+        YP = p(X);
+        YF = f(X);
+        
+        max_err(n - degs(1) + 1) = norm(YF - YP, Inf);
+    end
+    
+    figure
+    hold on;
+    plot(X, YF);  % The function.
+    plot(X, YP);  % The interpolation.
+    scatter(points(:,1), points(:,2));  % Chebyshev points.
+    title(sprintf('%d degree %s interpolation', n, type{1}));
+    legend('1/(1 + 10*x^2)', 'Interpolation', 'Chebyshev Points')
+    
+    figure
+    scatter(degs, log(max_err));
+    title(sprintf('max error vs. degree of %s interpolation', type{1}));
+    xlabel('Degree of Interpolation');
+    ylabel('Log(Max Error)');
+end
+
+fprintf('Functions Used:\n');
+
+dbtype cheb;
+dbtype lpfit;
+dbtype npfit;
+##### SOURCE END #####
+--></body></html>

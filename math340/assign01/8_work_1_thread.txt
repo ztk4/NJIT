@@ -1,0 +1,55 @@
+VALIDATION REPORT
+Profile: local
+Scheduler Type: Local
+
+Stage: Cluster connection test (parcluster)
+Status: Passed
+Start Time: Sun Jan 21 18:20:21 EST 2018
+Finish Time: Sun Jan 21 18:20:22 EST 2018
+Running Duration: 0 min 0 sec
+Description: 
+Error Report: 
+Command Line Output: 
+Debug Log: 
+
+Stage: Job test (createJob)
+Status: Passed
+Start Time: Sun Jan 21 18:20:22 EST 2018
+Finish Time: Sun Jan 21 18:20:27 EST 2018
+Running Duration: 0 min 6 sec
+Description: 
+Error Report: 
+Command Line Output: 
+Debug Log: 
+
+Stage: SPMD job test (createCommunicatingJob)
+Status: Passed
+Start Time: Sun Jan 21 18:20:27 EST 2018
+Finish Time: Sun Jan 21 18:20:40 EST 2018
+Running Duration: 0 min 13 sec
+Description: Job ran with 8 workers.
+Error Report: 
+Command Line Output: 
+Debug Log: 
+
+Stage: Pool job test (createCommunicatingJob)
+Status: Passed
+Start Time: Sun Jan 21 18:20:40 EST 2018
+Finish Time: Sun Jan 21 18:20:57 EST 2018
+Running Duration: 0 min 17 sec
+Description: Job ran with 8 workers.
+Error Report: 
+Command Line Output: 
+Debug Log: 
+
+Stage: Parallel pool test (parpool)
+Status: Passed
+Start Time: Sun Jan 21 18:20:57 EST 2018
+Finish Time: Sun Jan 21 18:21:17 EST 2018
+Running Duration: 0 min 20 sec
+Description: Parallel pool ran with 8 workers.
+Error Report: 
+Command Line Output: Checking communicating job status.
+connected to 8 workers.
+Parallel pool using the 'local' profile is shutting down.
+Debug Log: 

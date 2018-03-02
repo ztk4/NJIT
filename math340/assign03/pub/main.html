@@ -1,0 +1,251 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-02-04"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340 Assignment 3 2/8/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2</a></li><li><a href="#3">Extra Credit</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput"><span class="comment">% Polynomial whose root is the golden ratio.</span>
+f1 = @(phi) phi.^2 - phi - 1;
+[estimate, err] = bisection(f1, 1, 2, 1e-16);
+
+fprintf([<span class="string">'Calculating the Golden Ratio:\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Approx: %.15f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Error : %e\n'</span>], estimate, err);
+
+fprintf( <span class="string">'  Function Used:\n'</span>);
+dbtype <span class="string">bisection</span>
+</pre><pre class="codeoutput">Calculating the Golden Ratio:
+  Approx: 1.618033988749895
+  Error : 1.776357e-15
+  Function Used:
+
+1     function [estimate, err] = bisection(f, a, b, tol)
+2     
+3     if f(a) &lt; 0 &amp;&amp; f(b) &gt; 0
+4       neg = a;
+5       pos = b;
+6     elseif f(a) &gt; 0 &amp;&amp; f(b) &lt; 0
+7       neg = b;
+8       pos = a;
+9     else
+10      error('The endpoints must differ in sign!');
+11    end
+12    n = 1;
+13    while abs(pos - neg)/2 &gt; tol
+14      mid = (pos + neg) / 2;
+15      v = f(mid);
+16      if v &lt; 0
+17        neg = mid;
+18      elseif v &gt; 0
+19        pos = mid;
+20      else
+21        break;  % We actually guessed it perfectly (within machine percision).
+22      end
+23      
+24      n = n + 1;
+25    end
+26    
+27    estimate = (pos + neg) / 2;
+28    err = abs(pos - neg) / 2;
+29    end
+</pre><h2 id="2">Problem 2</h2><pre class="codeinput"><span class="comment">% Polynomial we are working with.</span>
+f2 = @(x) 816*x.^3 - 3835*x.^2 + 6000*x - 3125;
+
+x0 = linspace(1.4, 1.7, 100);
+alpha = arrayfun(@(x0) newtons(f2, x0, 1e-10), x0);
+
+figure
+scatter(x0, alpha, 10);
+yticks([25/17 25/16 5/3]);
+yticklabels({<span class="string">'25/17'</span>, <span class="string">'25/16'</span>, <span class="string">'5/3'</span>});
+xlabel(<span class="string">'Intial Value x0'</span>);
+ylabel(<span class="string">'Root alpha'</span>);
+
+fprintf(<span class="string">'Function Used:\n'</span>);
+dbtype <span class="string">newtons</span>
+</pre><pre class="codeoutput">Function Used:
+
+1     function [estimate, err, order] = newtons(f, x0, tol)
+2     
+3     syms x;
+4     try
+5       df = diff(symfun(f(x), x));
+6     catch e
+7       % We could handle the error of a non-differentiable f here, but it's not
+8       % clear what we could do, so we throw the error up.
+9       error(e);
+10    end
+11    
+12    prev1_err = inf;
+13    prev2_err = inf;
+14    
+15    estimate = x0;
+16    err = f(estimate)/double(df(estimate));
+17    
+18    while abs(err) &gt; tol
+19      estimate = estimate - err;
+20      prev2_err = prev1_err;
+21      prev1_err = err;
+22      err = f(estimate)/double(df(estimate));
+23    end
+24    
+25    % Easily derived from the relation e_n = C|e_n-1|^p and
+26    %                                e_n-1 = C|e_n-2|^p.
+27    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+28    
+29    err = abs(err);
+30    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="3">Extra Credit</h2><pre class="codeinput">[r, err, order] = newtons(f1, 1, 1e-10);
+
+fprintf([<span class="string">'When calculating the Golden Ratio using Newtons Method:\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Approx: %f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Order : %d\n'</span>], r, round(order));
+fprintf( <span class="string">'  Function Used:\n'</span>);
+dbtype <span class="string">newtons</span>
+</pre><pre class="codeoutput">When calculating the Golden Ratio using Newtons Method:
+  Approx: 1.618034
+  Order : 2
+  Function Used:
+
+1     function [estimate, err, order] = newtons(f, x0, tol)
+2     
+3     syms x;
+4     try
+5       df = diff(symfun(f(x), x));
+6     catch e
+7       % We could handle the error of a non-differentiable f here, but it's not
+8       % clear what we could do, so we throw the error up.
+9       error(e);
+10    end
+11    
+12    prev1_err = inf;
+13    prev2_err = inf;
+14    
+15    estimate = x0;
+16    err = f(estimate)/double(df(estimate));
+17    
+18    while abs(err) &gt; tol
+19      estimate = estimate - err;
+20      prev2_err = prev1_err;
+21      prev1_err = err;
+22      err = f(estimate)/double(df(estimate));
+23    end
+24    
+25    % Easily derived from the relation e_n = C|e_n-1|^p and
+26    %                                e_n-1 = C|e_n-2|^p.
+27    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+28    
+29    err = abs(err);
+30    end
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340
+ % Assignment 3
+ % 2/8/18
+ 
+%% Problem 1
+
+% Polynomial whose root is the golden ratio.
+f1 = @(phi) phi.^2 - phi - 1;
+[estimate, err] = bisection(f1, 1, 2, 1e-16);
+
+fprintf(['Calculating the Golden Ratio:\n' ...
+         '  Approx: %.15f\n' ...
+         '  Error : %e\n'], estimate, err);
+     
+fprintf( '  Function Used:\n');
+dbtype bisection
+     
+%% Problem 2
+
+% Polynomial we are working with.
+f2 = @(x) 816*x.^3 - 3835*x.^2 + 6000*x - 3125;
+
+x0 = linspace(1.4, 1.7, 100);
+alpha = arrayfun(@(x0) newtons(f2, x0, 1e-10), x0);
+
+figure
+scatter(x0, alpha, 10);
+yticks([25/17 25/16 5/3]);
+yticklabels({'25/17', '25/16', '5/3'});
+xlabel('Intial Value x0');
+ylabel('Root alpha');
+
+fprintf('Function Used:\n');
+dbtype newtons
+
+%% Extra Credit
+
+[r, err, order] = newtons(f1, 1, 1e-10);
+
+fprintf(['When calculating the Golden Ratio using Newtons Method:\n' ...
+         '  Approx: %f\n' ...
+         '  Order : %d\n'], r, round(order));
+fprintf( '  Function Used:\n');
+dbtype newtons
+
+##### SOURCE END #####
+--></body></html>

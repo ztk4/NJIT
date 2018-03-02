@@ -1,0 +1,286 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-02-02"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340-006 Assignment 2 2/1/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Part 1</a></li><li><a href="#2">Part 2</a></li><li><a href="#3">Part 3</a></li><li><a href="#4">Extra Credit</a></li></ul></div><h2 id="1">Part 1</h2><pre class="codeinput">meters = 17;
+res = to_planck_len(meters);
+fprintf(<span class="string">"%d meters in planck lengths: %e\n"</span>, meters, res);
+
+fprintf(<span class="string">"The function used:\n"</span>);
+dbtype <span class="string">to_planck_len</span>;
+
+fprintf(<span class="string">"\nError when called with negative value: "</span>);
+err = <span class="string">"No Error"</span>;
+<span class="keyword">try</span>
+  to_planck_len(-2);
+<span class="keyword">catch</span> e
+  err = e.message;
+<span class="keyword">end</span>
+fprintf(<span class="string">"%s\n"</span>, err);
+</pre><pre class="codeoutput">17 meters in planck lengths: 1.051832e+36
+The function used:
+
+1     function pl = to_planck_len(meters)
+2     
+3     if meters &lt; 0
+4       error('Cannot have a negative length');
+5     end
+6     
+7     h = 6.62607004e-34;
+8     G = 6.67408e-11;
+9     c = physconst('LightSpeed');
+10    
+11    pl = sqrt(2 * pi * c^3 / (h * G)) * meters;
+12    end
+
+Error when called with negative value: Cannot have a negative length
+</pre><h2 id="2">Part 2</h2><pre class="codeinput">tol = 1e-5;
+res = ramanujan(tol);
+fprintf(<span class="string">"Pi with at least tolerance %e is: %.17f\n"</span>, tol, res);
+
+fprintf(<span class="string">"The function used:\n"</span>);
+dbtype <span class="string">ramanujan</span>;
+
+fprintf(<span class="string">"\nError when called with a negative tolerance: "</span>);
+err = <span class="string">"No Error"</span>;
+<span class="keyword">try</span>
+  ramanujan(-1e-5);
+<span class="keyword">catch</span> e
+  err = e.message;
+<span class="keyword">end</span>
+fprintf(<span class="string">"%s\n"</span>, err);
+</pre><pre class="codeoutput">Pi with at least tolerance 1.000000e-05 is: 3.14159273001330552
+The function used:
+
+1     function [approx_pi, n] = ramanujan(tol)
+2     if tol &lt; 0
+3       error("Can't have a negative tolerance");
+4     end
+5     
+6     approx_1bypi = 0;
+7     n = 0;
+8     
+9     % Some precomputed values.
+10    coef = 2*sqrt(2)/99^2;
+11    while abs(pi - 1/approx_1bypi) &gt; tol
+12        approx_1bypi = approx_1bypi + coef*factorial(4*n)/factorial(n)^4 * ...
+13                                      (26390*n + 1103)/396^(4*n);
+14        n = n + 1;
+15    end
+16    
+17    approx_pi = 1/approx_1bypi;
+18    end
+
+Error when called with a negative tolerance: Can't have a negative tolerance
+</pre><h2 id="3">Part 3</h2><pre class="codeinput">tol = 1e-12;
+real = @(x) x ./ (1 - x - x.^2);
+approx = taylors_expand(real, 0, -1/4, 1/4, tol);
+
+X = -1/4:1e-4:1/4;
+figure
+hold <span class="string">on</span>
+plot(X, real(X));
+plot(X, approx(X));
+legend(<span class="string">'x/(1-x-x^2)'</span>, <span class="string">'approx'</span>)
+
+fprintf(<span class="string">"The function used to generate the approximation:\n"</span>);
+dbtype <span class="string">taylors_expand</span>;
+</pre><pre class="codeoutput">The function used to generate the approximation:
+
+1     function [approx, n] = taylors_expand(f, a, lo, hi, tol)
+2     num_points = 1e6;
+3     X = linspace(lo, hi, num_points);  % Our support.
+4     
+5     % Assume max of 100 terms.
+6     coeffs = zeros(1, 100);
+7     coeffs(end) = f(a);  % First coeff.
+8     n = 1;
+9     
+10    % Storage for symbolic derivatives.
+11    sym_f = sym(f);
+12    % Storage for factorial
+13    fact = 1;
+14    
+15    while norm(abs(f(X) - polyval(coeffs, X - a)), inf) &gt; tol
+16      syms x df;
+17      sym_df = diff(sym_f, x);
+18      fact = fact * n;
+19      x = a;
+20      coeffs(end - n) = double(subs(sym_df)) / fact;
+21      
+22      sym_f = sym_df;
+23      n = n + 1;
+24    end
+25        
+26    approx = @(x) polyval(coeffs, x - a);
+27    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="4">Extra Credit</h2><pre class="codeinput"><span class="comment">% NOTE: Assuming rand has roughly uniform coverage of (0, 1), and that</span>
+<span class="comment">%       equal ganularity across (0, 1) will converge fast enough.</span>
+
+f = @(x) sqrt(1 - x.^2);
+real = int(sym(f), 0, 1);
+
+<span class="comment">% Number of samples to approximate with.</span>
+N = 1e8;
+X = rand(1, N);
+Y = f(X);
+
+figure
+scatter(X, Y);
+title(<span class="string">'Points used to approximate integral'</span>);
+
+estimate = sum(Y ./ N);  <span class="comment">% Integral estimate.</span>
+fprintf([<span class="string">'Real Value : %f\n'</span>, <span class="keyword">...</span>
+         <span class="string">'Approx     : %f\n'</span>, <span class="keyword">...</span>
+         <span class="string">'Error      : %e\n'</span>], <span class="keyword">...</span>
+         real, estimate, abs(real - estimate));
+</pre><pre class="codeoutput">Real Value : 0.785398
+Approx     : 0.785452
+Error      : 5.419107e-05
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340-006
+ % Assignment 2
+ % 2/1/18
+ 
+%% Part 1
+
+meters = 17;
+res = to_planck_len(meters);
+fprintf("%d meters in planck lengths: %e\n", meters, res);
+
+fprintf("The function used:\n");
+dbtype to_planck_len;
+
+fprintf("\nError when called with negative value: ");
+err = "No Error";
+try
+  to_planck_len(-2);
+catch e
+  err = e.message;
+end
+fprintf("%s\n", err);
+
+%% Part 2
+
+tol = 1e-5;
+res = ramanujan(tol);
+fprintf("Pi with at least tolerance %e is: %.17f\n", tol, res);
+
+fprintf("The function used:\n");
+dbtype ramanujan;
+
+fprintf("\nError when called with a negative tolerance: ");
+err = "No Error";
+try
+  ramanujan(-1e-5);
+catch e
+  err = e.message;
+end
+fprintf("%s\n", err);
+
+%% Part 3
+
+tol = 1e-12;
+real = @(x) x ./ (1 - x - x.^2);
+approx = taylors_expand(real, 0, -1/4, 1/4, tol);
+
+X = -1/4:1e-4:1/4;
+figure
+hold on
+plot(X, real(X));
+plot(X, approx(X));
+legend('x/(1-x-x^2)', 'approx')
+
+fprintf("The function used to generate the approximation:\n");
+dbtype taylors_expand;
+
+%% Extra Credit
+
+% NOTE: Assuming rand has roughly uniform coverage of (0, 1), and that
+%       equal ganularity across (0, 1) will converge fast enough.
+
+f = @(x) sqrt(1 - x.^2);
+real = int(sym(f), 0, 1);
+
+% Number of samples to approximate with.
+N = 1e8;
+X = rand(1, N);
+Y = f(X);
+
+figure
+scatter(X, Y);
+title('Points used to approximate integral');
+
+estimate = sum(Y ./ N);  % Integral estimate.
+fprintf(['Real Value : %f\n', ...
+         'Approx     : %f\n', ...
+         'Error      : %e\n'], ...
+         real, estimate, abs(real - estimate));
+##### SOURCE END #####
+--></body></html>

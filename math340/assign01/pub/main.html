@@ -1,0 +1,296 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-01-21"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>Math 340-006 Assignment 1 1/19/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Part 1</a></li><li><a href="#2">Part 2</a></li><li><a href="#3">Extra Credit</a></li></ul></div><h2 id="1">Part 1</h2><pre class="codeinput"><span class="comment">% We first note that pi = 4\sum_{n=0}^\infty (-1)^n/(2n + 1).</span>
+tolerance = 1e-9;
+approx_pi = 0;
+n = 0;  <span class="comment">% Number of terms used.</span>
+<span class="comment">% Using a while loop beause we don't know the number of terms we'll need.</span>
+<span class="keyword">while</span> abs(pi - approx_pi) &gt; tolerance
+    approx_pi = approx_pi + 4 * (-1)^n / (2*n + 1);
+    n = n + 1;
+<span class="keyword">end</span>
+
+fprintf([<span class="string">'Taylor Approximation:\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Approx: %.8f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Real  : %.8f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Error : %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Terms : %d\n\n'</span>], approx_pi, pi, abs(pi - approx_pi), n);
+
+<span class="comment">% We then take the Ramanujan approximation:</span>
+<span class="comment">% 1/pi = 2sqrt(2)/99^2\sum_{n=0}^\infty (4n)!/(n!)^4 (23690n+1103)/396^{4n}</span>
+tolerance = 1e-17;
+approx_1bypi = 0;
+n = 0;  <span class="comment">% Number of terms used.</span>
+<span class="comment">% Some precomputed values.</span>
+coef = 2*sqrt(2)/99^2;
+<span class="comment">% Second condition is just to avoid issues with NaN (1/0).</span>
+<span class="keyword">while</span> abs(pi - 1/approx_1bypi) &gt; tolerance
+    approx_1bypi = approx_1bypi + coef*factorial(4*n)/factorial(n)^4 * <span class="keyword">...</span>
+                                  (26390*n + 1103)/396^(4*n);
+    n = n + 1;
+<span class="keyword">end</span>
+
+fprintf([<span class="string">'Ramanujan Approximation:\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Approx: %.16f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Real  : %.16f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Error : %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Terms : %d\n\n'</span>], <span class="keyword">...</span>
+         1/approx_1bypi, pi, abs(pi - 1/approx_1bypi), n);
+</pre><pre class="codeoutput">Taylor Approximation:
+  Approx: 3.14159265
+  Real  : 3.14159265
+  Error : 9.999996e-10
+  Terms : 998280591
+
+Ramanujan Approximation:
+  Approx: 3.1415926535897931
+  Real  : 3.1415926535897931
+  Error : 0.000000e+00
+  Terms : 3
+
+</pre><h2 id="2">Part 2</h2><pre class="codeinput"><span class="comment">% We take the Taylor's approximation for e^{-x^2} about x = 0:</span>
+<span class="comment">% \sum_{n=0}^\infty (-1)^n x^(2n)/(n!).</span>
+tolerance = 1e-12;
+x_step = 1e-4;
+X = -1:x_step:1;                  <span class="comment">% The support of our approximation.</span>
+max_nonzero_terms = 20;           <span class="comment">% Assume less than 20 nonzero terms.</span>
+coeffs = zeros(1, 2*max_nonzero_terms);
+coeffs(2*max_nonzero_terms) = 1;  <span class="comment">% coeff of x^0 is 1.</span>
+n = 1;                            <span class="comment">% Number of nonzero terms.</span>
+
+<span class="keyword">while</span> norm(abs(exp(-X.^2) - polyval(coeffs, X)), inf) &gt; tolerance
+    <span class="comment">% 2*. because every other term (odd) is 0.</span>
+    coeffs(2*(max_nonzero_terms - n)) = (-1)^n / factorial(n);
+    n = n + 1;
+<span class="keyword">end</span>
+
+fprintf([<span class="string">'Taylor Approximation of e^{-x^2}\n'</span><span class="keyword">...</span>
+         <span class="string">'  Max Error on [-1, 1]: %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Nonzero Terms       : %d\n\n'</span>], <span class="keyword">...</span>
+         norm(abs(exp(-X.^2) - polyval(coeffs, X)), inf), n);
+
+<span class="comment">% Plot both the real and approximated functions.</span>
+figure
+hold <span class="string">on</span>
+plot(X, exp(-X.^2));
+plot(X, polyval(coeffs, X));
+title(<span class="string">'Approximating e^{-x^2} using Taylor''s expansion'</span>);
+legend(<span class="string">'e^{-x^2}'</span>, <span class="string">'approx'</span>)
+</pre><pre class="codeoutput">Taylor Approximation of e^{-x^2}
+  Max Error on [-1, 1]: 7.196466e-13
+  Nonzero Terms       : 15
+
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="3">Extra Credit</h2><pre class="codeinput">times = 10 ^ 4;       <span class="comment">% Number of iterations.</span>
+N = zeros(1, times);  <span class="comment">% Number of shifts per iteration.</span>
+
+<span class="comment">% Using parfor b/c each run is independent and if you've got a parallel</span>
+<span class="comment">% pool you might as well use it ;)</span>
+<span class="keyword">parfor</span> i = 1:times
+    grid = zeros(101);
+    grid(ceil(end/2), ceil(end/2)) = 1;
+
+    <span class="keyword">while</span> not(any(grid(:,1)) || any(grid(:,end)) || <span class="keyword">...</span>
+              any(grid(1,:)) || any(grid(end,:)))
+        <span class="comment">% Technically this isn't perfect because the first interval has one</span>
+        <span class="comment">% less floating point representation that can be returned from rand</span>
+        <span class="comment">% than the rest, but this is mostly insignificant.</span>
+        r = rand;
+        <span class="keyword">if</span> r &lt; 0.25
+            shift = [ 1 0 ];   <span class="comment">% Down</span>
+        <span class="keyword">elseif</span> r &lt; 0.5
+            shift = [ -1 0 ];  <span class="comment">% Up</span>
+        <span class="keyword">elseif</span> r &lt; 0.75
+            shift = [ 0 1 ];   <span class="comment">% Right</span>
+        <span class="keyword">else</span>
+            shift = [ 0 -1 ];  <span class="comment">% Left</span>
+        <span class="keyword">end</span>
+
+        grid = circshift(grid, shift);
+        N(i) = N(i) + 1;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+fprintf([<span class="string">'Extra Credit Simulation:\n'</span><span class="keyword">...</span>
+         <span class="string">'  Average Number of Movements: %.4f\n'</span>], mean(N));
+</pre><pre class="codeoutput">Extra Credit Simulation:
+  Average Number of Movements: 2947.9855
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % Math 340-006
+ % Assignment 1
+ % 1/19/18
+ 
+%% Part 1
+
+% We first note that pi = 4\sum_{n=0}^\infty (-1)^n/(2n + 1).
+tolerance = 1e-9;
+approx_pi = 0;
+n = 0;  % Number of terms used.
+% Using a while loop beause we don't know the number of terms we'll need.
+while abs(pi - approx_pi) > tolerance
+    approx_pi = approx_pi + 4 * (-1)^n / (2*n + 1);
+    n = n + 1;
+end
+
+fprintf(['Taylor Approximation:\n' ...
+         '  Approx: %.8f\n' ...
+         '  Real  : %.8f\n' ...
+         '  Error : %e\n' ...
+         '  Terms : %d\n\n'], approx_pi, pi, abs(pi - approx_pi), n);
+
+% We then take the Ramanujan approximation:
+% 1/pi = 2sqrt(2)/99^2\sum_{n=0}^\infty (4n)!/(n!)^4 (23690n+1103)/396^{4n}
+tolerance = 1e-17;
+approx_1bypi = 0;
+n = 0;  % Number of terms used.
+% Some precomputed values.
+coef = 2*sqrt(2)/99^2;
+% Second condition is just to avoid issues with NaN (1/0).
+while abs(pi - 1/approx_1bypi) > tolerance
+    approx_1bypi = approx_1bypi + coef*factorial(4*n)/factorial(n)^4 * ...
+                                  (26390*n + 1103)/396^(4*n);
+    n = n + 1;
+end
+
+fprintf(['Ramanujan Approximation:\n' ...
+         '  Approx: %.16f\n' ...
+         '  Real  : %.16f\n' ...
+         '  Error : %e\n' ...
+         '  Terms : %d\n\n'], ...
+         1/approx_1bypi, pi, abs(pi - 1/approx_1bypi), n);
+
+%% Part 2
+
+% We take the Taylor's approximation for e^{-x^2} about x = 0:
+% \sum_{n=0}^\infty (-1)^n x^(2n)/(n!).
+tolerance = 1e-12;
+x_step = 1e-4;
+X = -1:x_step:1;                  % The support of our approximation.
+max_nonzero_terms = 20;           % Assume less than 20 nonzero terms.
+coeffs = zeros(1, 2*max_nonzero_terms);
+coeffs(2*max_nonzero_terms) = 1;  % coeff of x^0 is 1.
+n = 1;                            % Number of nonzero terms.
+
+while norm(abs(exp(-X.^2) - polyval(coeffs, X)), inf) > tolerance
+    % 2*. because every other term (odd) is 0.
+    coeffs(2*(max_nonzero_terms - n)) = (-1)^n / factorial(n);
+    n = n + 1;
+end
+
+fprintf(['Taylor Approximation of e^{-x^2}\n'...
+         '  Max Error on [-1, 1]: %e\n' ...
+         '  Nonzero Terms       : %d\n\n'], ...
+         norm(abs(exp(-X.^2) - polyval(coeffs, X)), inf), n);
+     
+% Plot both the real and approximated functions.
+figure
+hold on
+plot(X, exp(-X.^2));
+plot(X, polyval(coeffs, X));
+title('Approximating e^{-x^2} using Taylor''s expansion');
+legend('e^{-x^2}', 'approx')
+
+%% Extra Credit
+
+times = 10 ^ 4;       % Number of iterations.
+N = zeros(1, times);  % Number of shifts per iteration.
+
+% Using parfor b/c each run is independent and if you've got a parallel
+% pool you might as well use it ;)
+parfor i = 1:times
+    grid = zeros(101);
+    grid(ceil(end/2), ceil(end/2)) = 1;
+
+    while not(any(grid(:,1)) || any(grid(:,end)) || ...
+              any(grid(1,:)) || any(grid(end,:)))
+        % Technically this isn't perfect because the first interval has one
+        % less floating point representation that can be returned from rand
+        % than the rest, but this is mostly insignificant.
+        r = rand;
+        if r < 0.25
+            shift = [ 1 0 ];   % Down
+        elseif r < 0.5
+            shift = [ -1 0 ];  % Up
+        elseif r < 0.75
+            shift = [ 0 1 ];   % Right
+        else
+            shift = [ 0 -1 ];  % Left
+        end
+
+        grid = circshift(grid, shift);
+        N(i) = N(i) + 1;
+    end
+end
+
+fprintf(['Extra Credit Simulation:\n'...
+         '  Average Number of Movements: %.4f\n'], mean(N));
+
+##### SOURCE END #####
+--></body></html>

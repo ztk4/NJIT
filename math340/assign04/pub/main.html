@@ -1,0 +1,199 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-02-09"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340 Assignment 4 2/15/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput">f  = @(x)   x.^6 +   x.^3 - 1;
+df = @(x) 6*x.^5 + 3*x.^2;
+tol = 1e-6;
+
+n = 100;
+A = zeros(2*n + 1, 2*n + 1);
+X = linspace(-1, 1, 2*n + 1);  <span class="comment">% Real parts</span>
+Y = linspace(-1, 1, 2*n + 1);  <span class="comment">% Complex parts</span>
+<span class="keyword">for</span> a = 1:0.2:1.8  <span class="comment">% My computer catches at a = 2...</span>
+  <span class="keyword">for</span> j = 1:2*n + 1
+    <span class="keyword">for</span> k = 1:2*n + 1
+      z0 = X(j) + Y(k)*1i;
+      A(j, k) = complex_newtons(f, df, z0, a, tol);
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+  dcolor(X, Y, A);
+  pause(0.1);
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'The function used:\n'</span>);
+dbtype <span class="string">complex_newtons</span>;
+</pre><pre class="codeoutput">The function used:
+
+1     function [estimate, err, order] = complex_newtons(f, df, z0, a, tol)
+2     
+3     prev1_err = inf;
+4     prev2_err = inf;
+5     
+6     % These are complex now.
+7     estimate = z0;
+8     err = a*f(estimate)/double(df(estimate));
+9     
+10    % NOTE: abs(err) gets the modulus of err.
+11    while abs(err) &gt; tol
+12      estimate = estimate - err;
+13      prev2_err = prev1_err;
+14      prev1_err = err;
+15      err = a*f(estimate)/double(df(estimate));
+16    end
+17    
+18    % Easily derived from the relation e_n = C|e_n-1|^p and
+19    %                                e_n-1 = C|e_n-2|^p.
+20    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+21    
+22    err = abs(err);
+23    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <h2 id="2">Problem 2</h2><pre class="codeinput">f = @(x) exp(x)-1;
+tol = 1e-7;
+[root, err, order] = secant(f, -1, 1, tol);
+
+fprintf([<span class="string">'Secant method for approximating the root of e^x - 1:\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Approx : %.8f\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Error  : %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'  Order  : %f\n'</span>], root, err, order);
+
+fprintf(<span class="string">'The function used:\n'</span>);
+dbtype <span class="string">secant</span>;
+</pre><pre class="codeoutput">Secant method for approximating the root of e^x - 1:
+  Approx : -0.00000000
+  Error  : -2.759836e-11
+  Order  : 1.617446
+The function used:
+
+1     function [estimate, err, order] = secant(f, x0, x1, tol)
+2     a = x0;
+3     b = x1;
+4     err = f(b)*(b - a)/(f(b) - f(a));
+5     
+6     prev1_err = inf;
+7     prev2_err = inf;
+8     
+9     while abs(err) &gt; tol
+10      a = b;
+11      b = b - err;
+12      prev2_err = prev1_err;
+13      prev1_err = err;
+14      err = f(b)*(b - a)/(f(b) - f(a));
+15    end
+16    
+17    % Easily derived from the relation e_n = C|e_{n-1}|^p and
+18    %                              e_{n-1} = C|e_{n-2}|^p.
+19    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+20    
+21    estimate = b;
+22    end
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340
+ % Assignment 4
+ % 2/15/18
+ 
+%% Problem 1
+
+f  = @(x)   x.^6 +   x.^3 - 1;
+df = @(x) 6*x.^5 + 3*x.^2;
+tol = 1e-6;
+
+n = 100;
+A = zeros(2*n + 1, 2*n + 1);
+X = linspace(-1, 1, 2*n + 1);  % Real parts
+Y = linspace(-1, 1, 2*n + 1);  % Complex parts
+for a = 1:0.2:1.8  % My computer catches at a = 2...
+  for j = 1:2*n + 1
+    for k = 1:2*n + 1
+      z0 = X(j) + Y(k)*1i;
+      A(j, k) = complex_newtons(f, df, z0, a, tol);
+    end
+  end
+  dcolor(X, Y, A);
+  pause(0.1);
+end
+
+fprintf('The function used:\n');
+dbtype complex_newtons;
+
+%% Problem 2
+
+f = @(x) exp(x)-1;
+tol = 1e-7;
+[root, err, order] = secant(f, -1, 1, tol);
+
+fprintf(['Secant method for approximating the root of e^x - 1:\n' ...
+         '  Approx : %.8f\n' ...
+         '  Error  : %e\n' ...
+         '  Order  : %f\n'], root, err, order);
+     
+fprintf('The function used:\n');
+dbtype secant;
+##### SOURCE END #####
+--></body></html>

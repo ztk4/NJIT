@@ -1,0 +1,225 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-02-22"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340 Assignment 5 2/22/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Part 1</a></li><li><a href="#2">Part 2</a></li></ul></div><h2 id="1">Part 1</h2><pre class="codeinput">orders = 3:12;
+f = @(x) 1./(1 + 10*x.^2);
+max_err = zeros(size(orders));
+
+<span class="keyword">for</span> n = orders
+    X = linspace(-1, 1, n + 1);
+    Y = f(X);
+
+    p = pfit(X, Y);
+
+    figure
+    hold <span class="string">on</span>
+    title(sprintf(<span class="string">'Order %d Interpolation'</span>, n));
+    scatter(X, Y);  <span class="comment">% The points.</span>
+    XN = linspace(-1, 1, 1e3);
+    YP = p(XN);
+    YF = f(XN);
+    plot(XN, YP);   <span class="comment">% The interpolation</span>
+    plot(XN, YF);   <span class="comment">% The function.</span>
+    legend(<span class="string">'Sample Points'</span>, <span class="string">'Interpolation'</span>, <span class="string">'1/(1 + 10*x^2)'</span>)
+
+    max_err(n - orders(1) + 1) = norm(YP - YF, Inf);
+    fprintf(<span class="string">'Error for Order %2d: %e\n'</span>, n, max_err(n - orders(1) + 1));
+<span class="keyword">end</span>
+
+figure
+plot(orders, max_err);
+title(<span class="string">'Error vs. Order'</span>);
+ylabel(<span class="string">'Maximum Error'</span>);
+xlabel(<span class="string">'Order of Interpolation'</span>);
+
+fprintf([<span class="string">'\n'</span><span class="keyword">...</span>
+         <span class="string">'Looks like the error would increase dramatically \n'</span><span class="keyword">...</span>
+         <span class="string">'as n increases. It also appears that the error is \n'</span><span class="keyword">...</span>
+         <span class="string">'significantly worse on even-powered terms\n\n'</span>]);
+
+fprintf(<span class="string">'Functions Used:\n'</span>)
+dbtype <span class="string">pfit</span>
+</pre><pre class="codeoutput">Error for Order  3: 3.086579e+02
+Error for Order  4: 6.004295e+02
+Error for Order  5: 4.384108e+02
+Error for Order  6: 6.004269e+02
+Error for Order  7: 5.274267e+02
+Error for Order  8: 7.341927e+02
+Error for Order  9: 5.690260e+02
+Error for Order 10: 6.004241e+02
+Error for Order 11: 5.872031e+02
+Error for Order 12: 1.143222e+03
+
+Looks like the error would increase dramatically 
+as n increases. It also appears that the error is 
+significantly worse on even-powered terms
+
+Functions Used:
+
+1     function Pn = pfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9              
+10        function y = pn(x)
+11            y = 0;
+12            for i = 1:length(X)
+13                % The i'th column of y is Li evaluated on each input x.
+14                y = y + Y(i)*lagrange(x, i, X);
+15            end
+16        end
+17    
+18    Pn = @pn;
+19    end
+20    
+21    function y = lagrange(x, i, X)
+22    % lagrange returns the ith Lagrange function from the length(X) - 1 order 
+23    %          Lagrange basis as defined by vector X evaluated at x
+24    %          NB: X must be a row vector.
+25    %          returns y as a column vector.
+26    
+27    % Force x to be a col vec.
+28    x = reshape(x, length(x), 1);
+29    
+30    % \Pi_{j = 1, j \not= i}^{|X|} (x - X_j)/(X_i - X_j)
+31    skip = [X(1:i-1) X(i+1:end)];  % skips X(i)
+32    % The below uses matlab R2017's ability to automatically repmat matrix
+33    % arguments to binary matrix operators. MAY NOT WORK IN R2016.
+34    y = prod((x - skip)./(X(i) - skip), 2);  % Product along column dimension
+35    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <img vspace="5" hspace="5" src="main_04.png" alt=""> <img vspace="5" hspace="5" src="main_05.png" alt=""> <img vspace="5" hspace="5" src="main_06.png" alt=""> <img vspace="5" hspace="5" src="main_07.png" alt=""> <img vspace="5" hspace="5" src="main_08.png" alt=""> <img vspace="5" hspace="5" src="main_09.png" alt=""> <img vspace="5" hspace="5" src="main_10.png" alt=""> <img vspace="5" hspace="5" src="main_11.png" alt=""> <h2 id="2">Part 2</h2><pre class="codeinput">load(<span class="string">'DataA'</span>)
+load(<span class="string">'DataB'</span>)
+load(<span class="string">'DataC'</span>)
+points = vertcat(A, B, C);
+
+p = pfit(points(:, 1), points(:, 2));
+fprintf(<span class="string">'The secret: %f\n'</span>, p(0));
+</pre><pre class="codeoutput">The secret: 41.999023
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340
+ % Assignment 5
+ % 2/22/18
+
+ 
+%% Part 1
+
+orders = 3:12;
+f = @(x) 1./(1 + 10*x.^2);
+max_err = zeros(size(orders));
+
+for n = orders
+    X = linspace(-1, 1, n + 1);
+    Y = f(X);
+    
+    p = pfit(X, Y);
+    
+    figure
+    hold on
+    title(sprintf('Order %d Interpolation', n));
+    scatter(X, Y);  % The points.
+    XN = linspace(-1, 1, 1e3);
+    YP = p(XN);
+    YF = f(XN);
+    plot(XN, YP);   % The interpolation
+    plot(XN, YF);   % The function.
+    legend('Sample Points', 'Interpolation', '1/(1 + 10*x^2)')
+    
+    max_err(n - orders(1) + 1) = norm(YP - YF, Inf);
+    fprintf('Error for Order %2d: %e\n', n, max_err(n - orders(1) + 1));
+end
+
+figure
+plot(orders, max_err);
+title('Error vs. Order');
+ylabel('Maximum Error');
+xlabel('Order of Interpolation');
+
+fprintf(['\n'...
+         'Looks like the error would increase dramatically \n'...
+         'as n increases. It also appears that the error is \n'...
+         'significantly worse on even-powered terms\n\n']);
+
+fprintf('Functions Used:\n')
+dbtype pfit
+
+%% Part 2
+load('DataA')
+load('DataB')
+load('DataC')
+points = vertcat(A, B, C);
+
+p = pfit(points(:, 1), points(:, 2));
+fprintf('The secret: %f\n', p(0));
+##### SOURCE END #####
+--></body></html>
