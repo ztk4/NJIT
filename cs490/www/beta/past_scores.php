@@ -47,6 +47,7 @@
 //   }
 // }
 
+set_include_path(require 'get_include_path.php');
 require 'prelude.inc';
 
 // Response object.
