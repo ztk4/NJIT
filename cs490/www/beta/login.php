@@ -33,10 +33,10 @@ try {
     'user' => $user,
     'pass' => $pass
   );
-  $resp = util\make_db_request('login_handler', $post_data);
+  $resp = util\make_db_request('login', $post_data);
 
   if ($data['success'] = ($resp->status === 'success')) {
-    $data['instructor'] = $resp->instructor === 'instructor';
+    $data['instructor'] = $resp->instructor === '1';
   }
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.

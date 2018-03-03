@@ -3,7 +3,6 @@
 // This file takes post data and responds with a JSON document.
 //
 // The request should contain the following POST entries:
-// user: username in plaintext
 // token: secret in plaintext
 //
 // This JSON response will take the following format:
@@ -40,17 +39,22 @@ require 'prelude.inc';
 $data = array();
 
 try {
-  // Get info.
-  $user = util\expect_post_entry('user');
-
   // Ask db for active exam.
-  $post_data = array(
-    'user' => $user,
-  );
-  $resp = util\make_db_request('get_active_exam', $post_data);
+  $resp = util\make_db_request('get_active_exam');
 
-  if ($data['success'] = ($resp->status === 'success')) {
-    $data['exam'] = $resp->exam;  // TODO: Check if this is okay.
+  if ($data['success'] = ($resp->success === 'success')) {
+    $data['exam'] = array(
+      'eid' => $resp->exam[0]->EId,
+      'questions' => array()
+    );
+    foreach ($resp->exam as $question) {
+      array_push($data['exam']['questions'], array(
+        'qid' => $question->QId,
+        'prompt' => $question->Question,
+        'fname' => $question->FName,
+        'points' => $question->Points,
+      ));
+    }
   }
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.

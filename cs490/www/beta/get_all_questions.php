@@ -39,11 +39,19 @@ require 'prelude.inc';
 $data = array();
 
 try {
-  // Ask db for all questions.
   $resp = util\make_db_request('get_all_questions');
 
-  if ($data['success'] = ($resp->status === 'success')) {
-    $data['questions'] = $resp->questions;  // TODO: Check if this is okay.
+  if ($data['success'] = ($resp->success === 'success')) {
+    $data['questions'] = array();
+    foreach ($resp->questions as $question) {
+      array_push($data['questions'], array(
+        'qid' => $question->QId,
+        'difficulty' => $question->Difficulty,
+        'topic' => $question->Topic,
+        'fname' => $question->FName,
+        'testcases' => explode("\n", $question->testcases)
+      ));
+    }
   }
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.

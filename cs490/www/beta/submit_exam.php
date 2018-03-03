@@ -34,18 +34,22 @@ try {
   foreach ($answers as $answer) {
     // Fetch question from db.
     $post_data = array(
-      'qid' => $answer->qid,
+      'qid' => $answer['qid'],
     );
     $question = util\make_db_request('get_active_question', $post_data);
 
     // Attempt to grade the question.
-    $grade = util\grade_answer($question->points, $question->fname,
-                               $answer->code, $question->testcases);
+    $grade = util\make_eval_request(array(
+      'points' => $question->Points,
+      'fname' => $question->FName,
+      'code' => $answer['code'],
+      'testcases' => explode("\n", $question->testcases)
+    ));
 
     // TODO: Check format.
     array_push($graded_answers, array(
-      'qid' => $answer->qid,
-      'code' => $answer->code,
+      'qid' => $answer['qid'],
+      'code' => $answer['code'],
       'score' => $grade->score,
       'deductions' => json_encode($grade->deductions)
     ));
@@ -54,7 +58,7 @@ try {
   // Attempt to submit exam to db.
   $post_data = array(
     'user' => $user,
-    'graded_answers' => $graded_answers,  // TODO: Check format.
+    'graded_answers' => $graded_answers,
   );
   $resp = util\make_db_request('submit_exam', $post_data);
 

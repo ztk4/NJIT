@@ -17,7 +17,7 @@
 //   "description": "indicates if question addition worked",
 //   "properties": {
 //     "err": { "type": "string" },
-//     "success": { "type": "boolean" },
+//     "success": { "type": "boolean" }
 //   }
 // }
 
@@ -36,18 +36,19 @@ try {
   $testcases = util\expect_post_entry('testcases');
 
   // Validate info.
-  if (!util\validate_question($fname, $testcases))
+  $eval_data = array('fname' => $fname, 'testcases' => $testcases);
+  if (!util\make_eval_request($eval_data)->success)
     throw new RuntimeException('invalid fname or testcases');
 
   // Publish question to db.
   $post_data = array(
     'difficulty' => $difficulty,
     'topic' => $topic,
-    'prompt' => $prompt,
+    'question' => $prompt,
     'fname' => $fname,
     'testcases' => $testcases
   );
-  $resp = util\make_db_request('add_question', $post_data);
+  $resp = util\make_db_request('add_questions', $post_data);
 
   $data['success'] = ($resp->status === 'success');
 } catch(Exception $e) {
