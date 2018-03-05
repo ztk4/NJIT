@@ -9,7 +9,6 @@ require 'util.inc';
 header('Content-Type: application/json');
 
 // Validate incoming connection.
-/*
 try {
   if (trim(util\cat_file('.incoming.tok')) !==
       trim(util\expect_post_entry('token')))
@@ -18,6 +17,5 @@ try {
   echo json_encode(array('err' => $e->getMessage()));
   exit;
 }
- */
 
 ?>
