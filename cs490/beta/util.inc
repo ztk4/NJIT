@@ -93,6 +93,9 @@ function make_db_request($endpoint, $data = array()) {
 // More details can be found in evaluate.php
 // Throws a RuntimeException on failure.
 function make_eval_request($data) {
+  // Validate as own incoming connection.
+  $data['token'] = trim(cat_file('.incoming.tok'));
+
   // Make request.
   return make_curl_request(kEvalUri, $data);
 }

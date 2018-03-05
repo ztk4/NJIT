@@ -3,9 +3,9 @@
 // This file takes post data and responds with a JSON document.
 //
 // The request should contain the following POST entries:
-// difficulty: string indiciating difficulty
+// diff: string indiciating difficulty
 // topic: string indicating topic
-// prompt: string listing the prompt
+// question: string listing the prompt
 // fname: string (the name of the function)
 // testcases: array(
 //   string representing a test case (see evaluate.py for format)
