@@ -25,8 +25,8 @@ $data = array();
 
 try {
   // Get login info.
-  $user = util\expect_post_entry('user');
-  $pass = util\expect_post_entry('pass');
+  $user = util\expect_post_entry('username');
+  $pass = util\expect_post_entry('password');
 
   // Attempt login.
   $post_data = array(
@@ -36,7 +36,7 @@ try {
   $resp = util\make_db_request('login', $post_data);
 
   if ($data['success'] = ($resp->status === 'success')) {
-    $data['instructor'] = $resp->instructor === '1';
+    $data['instructor'] = $resp->instructor;
   }
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.

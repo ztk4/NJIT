@@ -46,7 +46,6 @@ try {
       'testcases' => explode("\n", $question->testcases)
     ));
 
-    // TODO: Check format.
     array_push($graded_answers, array(
       'qid' => $answer['qid'],
       'code' => $answer['code'],

@@ -83,7 +83,7 @@ function make_curl_request($uri, $data) {
 // Makes a request to a DB endpoint, returns result as a php object.
 // Throws a RuntimeException on failure.
 function make_db_request($endpoint, $data = array()) {
-  // TODO: secret token.
+  $data['token'] = trim(cat_file('.outgoing.tok'));
 
   // Make request.
   return make_curl_request(kDbUri . $endpoint . '.php', $data);

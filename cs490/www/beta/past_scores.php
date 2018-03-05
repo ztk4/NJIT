@@ -14,33 +14,34 @@
 //     "success": { "type": "boolean" },
 //     "exams": {
 //
-//       "type": "array",
-//       "items": {
-//         "properties": {
-//           "eid": { "type": "integer", "description": "exam id" },
-//           "questions": {
+//       "properties": {
+//         "EXAM_ID": {
 //
-//             "type": "array",
-//             "items": { 
-//               "properties": {
-//                 "qid": { "type": "integer", "description": "question id" },
-//                 "points": { "type": "integer" },
-//                 "deductions": {
+//           "properties": {
+//             "questions": {
 //
-//                   "type": array",
-//                   "items": {
-//                     "properties": {
-//                       "points": { "type": "integer" },
-//                       "reason": { "type": "string" },
+//               "QUESTION_ID": { 
+//                 "properties": {
+//                   "points": { "type": "integer" },
+//                   "score": { "type": "integer" },
+//                   "deductions": {
+//
+//                     "type": array",
+//                     "items": {
+//                       "properties": {
+//                         "points": { "type": "integer" },
+//                         "reason": { "type": "string" },
+//                       }
 //                     }
-//                   }
 //
+//                   }
 //                 }
 //               }
-//             }
 //
+//             }
 //           }
 //         }
+//         /* Other exam ids */
 //       }
 //
 //     }
@@ -61,10 +62,23 @@ try {
   $post_data = array(
     'user' => $user,
   );
-  $resp = util\make_db_request('past_scores', $post_data);
+  $resp = util\make_db_request('view_past_scores', $post_data);
 
   if ($data['success'] = ($resp->status === 'success')) {
-    $data['exams'] = $resp->exams;  // TODO: Check if this is okay.
+    $data['exams'] = array();
+    foreach ($resp->exams as $examrow) {
+      if (!isset($data['exams'][$examrow->EId])) {
+        $data['exams'][$examrow->EId]['questions'] = array();
+      }
+      if (!isset($data['exams'][$examrow->EId]['questions'][$examrow->QId])) {
+        $data['exams'][$examrow->EId]['questions'][$examrow->QId] = array();
+      }
+      $data['exams'][$examrow->EId]['questions'][$examrow->QId] = array(
+        'points' => $examrow->Points,
+        'score' => $examrow->Score,
+        'deductions' => json_decode($examrow->Deductions)
+      );
+    }
   }
 } catch(Exception $e) {
   // On error, set code to 400 and set err property.

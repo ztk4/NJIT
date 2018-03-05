@@ -29,11 +29,11 @@ $data = array();
 
 try {
   // Get info.
-  $difficulty = util\expect_post_entry('difficulty');
+  $difficulty = util\expect_post_entry('diff');
   $topic = util\expect_post_entry('topic');
-  $prompt = util\expect_post_entry('prompt');
+  $prompt = util\expect_post_entry('question');
   $fname = util\expect_post_entry('fname');
-  $testcases = util\expect_post_entry('testcases');
+  $testcases = util\expect_post_entry('cases');
 
   // Validate info.
   $eval_data = array('fname' => $fname, 'testcases' => $testcases);

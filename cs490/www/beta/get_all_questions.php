@@ -46,6 +46,7 @@ try {
     foreach ($resp->questions as $question) {
       array_push($data['questions'], array(
         'qid' => $question->QId,
+        'prompt' => $question->Question,
         'difficulty' => $question->Difficulty,
         'topic' => $question->Topic,
         'fname' => $question->FName,

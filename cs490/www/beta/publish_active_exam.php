@@ -21,7 +21,7 @@ require 'prelude.inc';
 $data = array();
 
 try {
-  $resp = util\make_db_request('publish_active_exam');
+  $resp = util\make_db_request('publish_exam');
 
   $data['success'] = ($resp->status === 'success');
 } catch(Exception $e) {

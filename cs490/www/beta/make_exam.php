@@ -26,6 +26,11 @@ $data = array();
 try {
   // Get info.
   $questions = util\expect_post_entry('questions');
+  foreach ($questions as $question) {
+    if (!is_numeric($question['points']) || $question['points'] < 0)
+      throw new OutOfBoundsException('invalid point value ' .
+                                     $question['points']);
+  }
 
   // Publish exam to db.
   $post_data = array(
