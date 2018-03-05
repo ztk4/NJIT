@@ -10,7 +10,7 @@
 # Of course, this is not foolproof as os.write(1, 'str') is hard to guard
 # against if the student code does manage to get access to __import__.
 
-import argparse, ast, json, sys, keyword, math
+import argparse, ast, json, sys, keyword, math, io
 
 # Constants.
 global_whitelist = ['__doc__', '__package__']
@@ -167,6 +167,34 @@ builtins_whitelist = [
   'zip',
 ]
 
+# ContextManager Class for redirecting standard streams.
+class RedirectIO(object):
+  def __init__(self, stdin=''):
+    # stdin: desired contents of stdin.
+    self.stdin_mock  = io.StringIO(stdin)
+    self.stdout_mock = io.StringIO()
+    self.stderr_mock = io.StringIO()
+
+    self.sys_stdin, self.sys_stdout, self.sys_stderr = (None,)*3
+
+  def __enter__(self):
+    # Save current objects, while replacing with the mocks
+    self.sys_stdin,  sys.stdin  = sys.stdin,  self.stdin_mock
+    self.sys_stdout, sys.stdout = sys.stdout, self.stdout_mock
+    self.sys_stderr, sys.stderr = sys.stderr, self.stderr_mock
+
+  def __exit__(self, exc_type, exc_value, traceback):
+    # Return to original state
+    sys.stdin  = self.sys_stdin
+    sys.stdout = self.sys_stdout
+    sys.stderr = self.sys_stderr
+
+    return False  # Do not suppress exceptions
+
+  def get_output(self):
+    # Returns the contents of both mocked output streams.
+    return (self.stdout_mock.getvalue(), self.stderr_mock.getvalue())
+
 ## OUTPUT FORMAT
 # The output of this script will be written to stdout, and will take the form:
 # {
@@ -196,6 +224,12 @@ def grade(code_obj, name, points, test_case_objs, vlevel = 0):
   deductions = []  # Reasons we took off points.
   points_per_case = points // len(test_case_objs)
 
+  # For capturing output written to sys.std* file objects.
+  # NOTE: If the target code manages to get a hold of os.write or an equivalent,
+  #       this will not be able to intercept direct calls using a file
+  #       descriptor. i.e. os.write(1, 'haha, gotcha!');
+  capture_io = RedirectIO();
+
   # Instrument globals and locals. This is not leak-proof by anymeans, but
   # helps to limit the attack surface.
   instr_globals = {
@@ -211,12 +245,10 @@ def grade(code_obj, name, points, test_case_objs, vlevel = 0):
   }
   instr_locals = {}
 
-  # TODO: instrument stdin, stdout, and stderr for these testcases.
-  # TODO: if output is captured from stdout, consider comparing it against desired result
-
   # Run the function declaration from the student.
   try:
-    exec(code_obj, instr_globals, instr_locals)
+    with capture_io:
+      exec(code_obj, instr_globals, instr_locals)
   except BaseException as e:
     if vlevel >= 1: print(repr(e), file=sys.stderr)
     # We'll consider any exception while defining the function to be a 0.
@@ -225,13 +257,19 @@ def grade(code_obj, name, points, test_case_objs, vlevel = 0):
 
   for i, test_case_obj in enumerate(test_case_objs):
     try:
-      result = eval(test_case_obj, instr_globals, instr_locals)
+      with capture_io:
+        result = eval(test_case_obj, instr_globals, instr_locals)
       if not result:
         dock_points(deductions, points_per_case, 'failed test case %d' % i)
+        # TODO: Consider checking if the function evaluated to None, in which
+        #       case, checking capture_io.get_output() may reveal a student
+        #       incorrectly printed the result instead of returning it, in which
+        #       case they may be given partial credit.
     except BaseException as e:
       if vlevel >= 1: print(repr(e), file=sys.stderr)
       # We'll consider any exception while executing a test case to be wrong.
-      dock_points(deductions, points_per_case, 'exception during test case %d' % i)
+      dock_points(deductions, points_per_case,
+                  'exception during test case %d' % i)
 
   return deductions
 
