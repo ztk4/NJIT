@@ -1,0 +1,21 @@
+/home/zach/kernel/cs680/include/linux/slab.h[135:154]
+   135	void __init kmem_cache_init(void);
+   136	bool slab_is_available(void);
+   137	
+   138	struct kmem_cache *kmem_cache_create(const char *, size_t, size_t,
+   139				slab_flags_t,
+   140				void (*)(void *));
+   141	void kmem_cache_destroy(struct kmem_cache *);
+   142	int kmem_cache_shrink(struct kmem_cache *);
+   143	
+   144	void memcg_create_kmem_cache(struct mem_cgroup *, struct kmem_cache *);
+   145	void memcg_deactivate_kmem_caches(struct mem_cgroup *);
+   146	void memcg_destroy_kmem_caches(struct mem_cgroup *);
+   147	
+   148	/*
+   149	 * CUSTOM EDIT FOR CS680
+   150	 * Prints info similar to /proc/slabinfo
+   151	 */
+   152	void print_slabinfo(void);
+   153	
+   154	/*

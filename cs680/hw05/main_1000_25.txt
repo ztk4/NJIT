@@ -1,0 +1,26 @@
+/home/zach/kernel/cs680/init/main.c[1000:1024]
+  1000	
+  1001	static int __ref kernel_init(void *unused)
+  1002	{
+  1003		int ret;
+  1004	
+  1005		kernel_init_freeable();
+  1006		/* need to finish all async __init code before freeing the memory */
+  1007		async_synchronize_full();
+  1008		ftrace_free_init_mem();
+  1009		free_initmem();
+  1010		mark_readonly();
+  1011		system_state = SYSTEM_RUNNING;
+  1012		numa_default_policy();
+  1013	
+  1014		rcu_end_inkernel_boot();
+  1015	
+  1016	  /*
+  1017	   * CUSTOM EDIT FOR CS680
+  1018	   * Print info somewhat like /proc/slabinfo
+  1019	   */
+  1020	  print_slabinfo();
+  1021	
+  1022		if (ramdisk_execute_command) {
+  1023			ret = run_init_process(ramdisk_execute_command);
+  1024			if (!ret)

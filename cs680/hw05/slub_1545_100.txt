@@ -1,0 +1,101 @@
+/home/zach/kernel/cs680/mm/slub.c[1545:1644]
+  1545	}
+  1546	#else
+  1547	static inline int init_cache_random_seq(struct kmem_cache *s)
+  1548	{
+  1549		return 0;
+  1550	}
+  1551	static inline void init_freelist_randomization(void) { }
+  1552	static inline bool shuffle_freelist(struct kmem_cache *s, struct page *page)
+  1553	{
+  1554		return false;
+  1555	}
+  1556	#endif /* CONFIG_SLAB_FREELIST_RANDOM */
+  1557	
+  1558	/*
+  1559	 * CUSTOM EDIT FOR CS680
+  1560	 * Helper for printing one slabinfo row. (NO SMP).
+  1561	 * NOTE: Not printing tunables because SLUB doesn't support them.
+  1562	 */
+  1563	static void print_cache_slabinfo(struct kmem_cache *s) {
+  1564	  int node;
+  1565	  struct kmem_cache_node *n;
+  1566	  struct page *page;
+  1567	  unsigned long flags;
+  1568	
+  1569	  /* Stats */
+  1570	  const char *cache_name = s->name;
+  1571	  unsigned long nr_active_obj = 0;
+  1572	  unsigned long nr_obj = 0;
+  1573	  unsigned long obj_size = s->object_size;
+  1574	  unsigned long nr_obj_per_slab = oo_objects(s->oo);
+  1575	  unsigned long nr_pg_per_slab = 1 << oo_order(s->oo);
+  1576	  /* In SLUB, active_slab == num_slab, so we only track one */
+  1577	  unsigned long nr_slab = 0;
+  1578	  /* This one is not documented, so it will just stay 0... */
+  1579	  unsigned long nr_shared_avail = 0;
+  1580	  /* Take sums accross all nodes */
+  1581	  for_each_kmem_cache_node(s, node, n) {
+  1582	    nr_slab += n->nr_partial;
+  1583	
+  1584	    /* Visit each slab on this node */
+  1585	    spin_lock_irqsave(&n->list_lock, flags);
+  1586	    list_for_each_entry(page, &n->partial, lru) {
+  1587	      nr_active_obj += page->inuse;
+  1588	      nr_obj += page->objects;
+  1589	    }
+  1590	    spin_unlock_irqrestore(&n->list_lock, flags);
+  1591	  }
+  1592	
+  1593	  printk(KERN_INFO "Zachary Kaplan: %-30s %6lu %6lu %6lu %6lu %6lu "
+  1594	                   ": slabdata %6lu %6lu %6lu\n",
+  1595	                   cache_name, nr_active_obj, nr_obj, obj_size,
+  1596	                   nr_obj_per_slab, nr_pg_per_slab,
+  1597	                   nr_slab, nr_slab, nr_shared_avail);
+  1598	}
+  1599	
+  1600	/*
+  1601	 * CUSTOM EDIT FOR CS680
+  1602	 * Implementation of print_slabinfo. (NO SMP).
+  1603	 * NOTE: Not printing tunables because SLUB doesn't support them.
+  1604	 */
+  1605	void print_slabinfo(void) {
+  1606	  /* Specially handle kmalloc caches, making sure to put them in order */
+  1607	  static int kmalloc_idx[] = { 3, 4, 5, 6, 1, 7, 2, 8, 9, 10, 11, 12, 13, 14,
+  1608	                               15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
+  1609	  int i;
+  1610	  struct kmem_cache *s;
+  1611	
+  1612	  printk(KERN_INFO "Zachary Kaplan: #name <active_obj> <num_obj> <objsize> "
+  1613	                   "<objperslab> <pagesperslab> : slabdata <active_slabs> "
+  1614	                   "<nums_slabs> <sharedavail>\n");
+  1615	
+  1616	  /* Generic Caches */
+  1617	  list_for_each_entry(s, &slab_caches, list) {
+  1618	      print_cache_slabinfo(s);
+  1619	  }
+  1620	
+  1621	  printk(KERN_INFO "Zachary Kaplan: kmalloc-* using kmalloc-caches:\n");
+  1622	
+  1623	  /* Kmalloc Caches (Repeated in order to use kmalloc_caches) */
+  1624	  for (i = 0; i < sizeof(kmalloc_idx)/sizeof(int); ++i) {
+  1625	    /* 
+  1626	     * Although there is support for indexes up to 26, there may be less kmalloc
+  1627	     * caches in reality
+  1628	     */
+  1629	    if (kmalloc_idx[i] > KMALLOC_SHIFT_HIGH)
+  1630	      break;
+  1631	    print_cache_slabinfo(kmalloc_caches[kmalloc_idx[i]]);
+  1632	  }
+  1633	}
+  1634	
+  1635	static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+  1636	{
+  1637		struct page *page;
+  1638		struct kmem_cache_order_objects oo = s->oo;
+  1639		gfp_t alloc_gfp;
+  1640		void *start, *p;
+  1641		int idx, order;
+  1642		bool shuffle;
+  1643	
+  1644		flags &= gfp_allowed_mask;
