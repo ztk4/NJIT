@@ -1,0 +1,202 @@
+[    0.004000] smpboot: CPU0: Intel Core Processor (Haswell, no TSX) (family: 0x6, model: 0x3c, stepping: 0x1)
+[    0.004000] Zachary Kaplan: hotplugd is up on CPU 0.
+[    0.004000] Performance Events: unsupported p6 CPU model 60 no PMU driver, software events only.
+[    0.004000] Hierarchical SRCU implementation.
+[    0.004000] NMI watchdog: Perf event create on CPU 0 failed with -2
+[    0.004000] NMI watchdog: Perf NMI watchdog permanently disabled
+[    0.004000] smp: Bringing up secondary CPUs ...
+[    0.004000] Zachary Kaplan: hotplugd is up on CPU 1.
+[    0.004000] x86: Booting SMP configuration:
+[    0.004000] .... node  #0, CPUs:      #1
+[    0.004000] kvm-clock: cpu 1, msr 2:3ff51041, secondary cpu clock
+[    0.004024] Zachary Kaplan: hotplugd is running on CPU 0.
+[    0.004016] Zachary Kaplan: hotplugd is running on CPU 1.
+[    0.004026] KVM setup async PF for cpu 1
+[    0.004026] kvm-stealtime: cpu 1, msr 23fc56180
+[    0.004029] Zachary Kaplan: hotplugd is up on CPU 2.
+[    0.004054]  #2
+[    0.004000] kvm-clock: cpu 2, msr 2:3ff51081, secondary cpu clock
+[    0.008015] KVM setup async PF for cpu 2
+[    0.008017] kvm-stealtime: cpu 2, msr 23fc96180
+[    0.008027] Zachary Kaplan: hotplugd is running on CPU 2.
+[    0.008037] Zachary Kaplan: hotplugd is up on CPU 3.
+[    0.008060]  #3
+[    0.004000] kvm-clock: cpu 3, msr 2:3ff510c1, secondary cpu clock
+[    0.012016] KVM setup async PF for cpu 3
+[    0.012018] kvm-stealtime: cpu 3, msr 23fcd6180
+[    0.012031] Zachary Kaplan: hotplugd is running on CPU 3.
+[    0.012021] smp: Brought up 1 node, 4 CPUs
+[    0.012021] smpboot: Max logical packages: 6
+[    0.012021] smpboot: Total of 4 processors activated (20751.93 BogoMIPS)
+...
+[    4.849372] Zachary Kaplan: UID        PID  PPID  C STIME TTY          TIME CMD
+[    4.849374] Zachary Kaplan: root         1     0  0 05:37 ?        00:00:04 [swapper/0]
+[    4.849375] Zachary Kaplan: root         2     0  0 05:37 ?        00:00:00 [kthreadd]
+[    4.849377] Zachary Kaplan: root         3     2  0 05:37 ?        00:00:00 [kworker/0:0]
+[    4.849378] Zachary Kaplan: root         4     2  0 05:37 ?        00:00:00 [kworker/0:0H]
+[    4.849379] Zachary Kaplan: root         5     2  0 05:37 ?        00:00:00 [kworker/u12:0]
+[    4.849380] Zachary Kaplan: root         6     2  0 05:37 ?        00:00:00 [mm_percpu_wq]
+[    4.849381] Zachary Kaplan: root         7     2  0 05:37 ?        00:00:00 [ZK: hotplugd/0]
+[    4.849382] Zachary Kaplan: root         8     2  0 05:37 ?        00:00:00 [ksoftirqd/0]
+[    4.849383] Zachary Kaplan: root         9     2  0 05:37 ?        00:00:00 [rcu_sched]
+[    4.849384] Zachary Kaplan: root        10     2  0 05:37 ?        00:00:00 [rcu_bh]
+[    4.849385] Zachary Kaplan: root        11     2  0 05:37 ?        00:00:00 [migration/0]
+[    4.849386] Zachary Kaplan: root        12     2  0 05:37 ?        00:00:00 [watchdog/0]
+[    4.849387] Zachary Kaplan: root        13     2  0 05:37 ?        00:00:00 [cpuhp/0]
+[    4.849388] Zachary Kaplan: root        14     2  0 05:37 ?        00:00:00 [cpuhp/1]
+[    4.849390] Zachary Kaplan: root        15     2  0 05:37 ?        00:00:00 [watchdog/1]
+[    4.849391] Zachary Kaplan: root        16     2  0 05:37 ?        00:00:00 [migration/1]
+[    4.849392] Zachary Kaplan: root        17     2  0 05:37 ?        00:00:00 [ksoftirqd/1]
+[    4.849393] Zachary Kaplan: root        18     2  0 05:37 ?        00:00:00 [ZK: hotplugd/1]
+[    4.849394] Zachary Kaplan: root        19     2  0 05:37 ?        00:00:00 [kworker/1:0]
+[    4.849395] Zachary Kaplan: root        20     2  0 05:37 ?        00:00:00 [kworker/1:0H]
+[    4.849396] Zachary Kaplan: root        21     2  0 05:37 ?        00:00:00 [cpuhp/2]
+[    4.849397] Zachary Kaplan: root        22     2  0 05:37 ?        00:00:00 [watchdog/2]
+[    4.849399] Zachary Kaplan: root        23     2  0 05:37 ?        00:00:00 [migration/2]
+[    4.849400] Zachary Kaplan: root        24     2  0 05:37 ?        00:00:00 [ksoftirqd/2]
+[    4.849401] Zachary Kaplan: root        25     2  0 05:37 ?        00:00:00 [ZK: hotplugd/2]
+[    4.849402] Zachary Kaplan: root        26     2  0 05:37 ?        00:00:00 [kworker/2:0]
+[    4.849403] Zachary Kaplan: root        27     2  0 05:37 ?        00:00:00 [kworker/2:0H]
+[    4.849404] Zachary Kaplan: root        28     2  0 05:37 ?        00:00:00 [cpuhp/3]
+[    4.849405] Zachary Kaplan: root        29     2  0 05:37 ?        00:00:00 [watchdog/3]
+[    4.849406] Zachary Kaplan: root        30     2  0 05:37 ?        00:00:00 [migration/3]
+[    4.849407] Zachary Kaplan: root        31     2  0 05:37 ?        00:00:00 [ksoftirqd/3]
+[    4.849408] Zachary Kaplan: root        32     2  0 05:37 ?        00:00:00 [ZK: hotplugd/3]
+[    4.849409] Zachary Kaplan: root        33     2  0 05:37 ?        00:00:00 [kworker/3:0]
+[    4.849410] Zachary Kaplan: root        34     2  0 05:37 ?        00:00:00 [kworker/3:0H]
+[    4.849411] Zachary Kaplan: root        35     2  0 05:37 ?        00:00:00 [kdevtmpfs]
+[    4.849412] Zachary Kaplan: root        36     2  0 05:37 ?        00:00:00 [netns]
+[    4.849413] Zachary Kaplan: root        37     2  0 05:37 ?        00:00:00 [rcu_tasks_kthre]
+[    4.849414] Zachary Kaplan: root        38     2  0 05:37 ?        00:00:00 [kauditd]
+[    4.849416] Zachary Kaplan: root        39     2  0 05:37 ?        00:00:00 [kworker/0:1]
+[    4.849417] Zachary Kaplan: root        40     2  0 05:37 ?        00:00:00 [khungtaskd]
+[    4.849418] Zachary Kaplan: root        41     2  0 05:37 ?        00:00:00 [oom_reaper]
+[    4.849419] Zachary Kaplan: root        42     2  0 05:37 ?        00:00:00 [writeback]
+[    4.849420] Zachary Kaplan: root        43     2  0 05:37 ?        00:00:00 [kcompactd0]
+[    4.849421] Zachary Kaplan: root        44     2  0 05:37 ?        00:00:00 [ksmd]
+[    4.849422] Zachary Kaplan: root        45     2  0 05:37 ?        00:00:00 [khugepaged]
+[    4.849423] Zachary Kaplan: root        46     2  0 05:37 ?        00:00:00 [crypto]
+[    4.849424] Zachary Kaplan: root        47     2  0 05:37 ?        00:00:00 [kintegrityd]
+[    4.849426] Zachary Kaplan: root        48     2  0 05:37 ?        00:00:00 [kblockd]
+[    4.849427] Zachary Kaplan: root        49     2  0 05:37 ?        00:00:00 [ata_sff]
+[    4.849428] Zachary Kaplan: root        50     2  0 05:37 ?        00:00:00 [md]
+[    4.849429] Zachary Kaplan: root        51     2  0 05:37 ?        00:00:00 [edac-poller]
+[    4.849430] Zachary Kaplan: root        52     2  0 05:37 ?        00:00:00 [devfreq_wq]
+[    4.849431] Zachary Kaplan: root        53     2  0 05:37 ?        00:00:00 [watchdogd]
+[    4.849432] Zachary Kaplan: root        54     2  0 05:37 ?        00:00:00 [kworker/u12:1]
+[    4.849433] Zachary Kaplan: root        55     2  0 05:37 ?        00:00:00 [kworker/1:1]
+[    4.849434] Zachary Kaplan: root        56     2  0 05:37 ?        00:00:00 [kworker/2:1]
+[    4.849435] Zachary Kaplan: root        57     2  0 05:37 ?        00:00:00 [kworker/3:1]
+[    4.849436] Zachary Kaplan: root        59     2  0 05:37 ?        00:00:00 [kswapd0]
+[    4.849437] Zachary Kaplan: root        60     2  0 05:37 ?        00:00:00 [ecryptfs-kthrea]
+[    4.849438] Zachary Kaplan: root       102     2  0 05:37 ?        00:00:00 [kthrotld]
+[    4.849440] Zachary Kaplan: root       103     2  0 05:37 ?        00:00:00 [acpi_thermal_pm]
+[    4.849441] Zachary Kaplan: root       104     2  0 05:37 ?        00:00:00 [nvme-wq]
+[    4.849442] Zachary Kaplan: root       105     2  0 05:37 ?        00:00:00 [scsi_eh_0]
+[    4.849443] Zachary Kaplan: root       106     2  0 05:37 ?        00:00:00 [scsi_tmf_0]
+[    4.849444] Zachary Kaplan: root       107     2  0 05:37 ?        00:00:00 [scsi_eh_1]
+[    4.849445] Zachary Kaplan: root       108     2  0 05:37 ?        00:00:00 [scsi_tmf_1]
+[    4.849446] Zachary Kaplan: root       109     2  0 05:37 ?        00:00:00 [kworker/u12:2]
+[    4.849447] Zachary Kaplan: root       110     2  0 05:37 ?        00:00:00 [kworker/u12:3]
+[    4.849448] Zachary Kaplan: root       114     2  0 05:37 ?        00:00:00 [ipv6_addrconf]
+[    4.849450] Zachary Kaplan: root       139     2  0 05:37 ?        00:00:00 [charger_manager]
+[    4.849450] Zachary Kaplan: my_kthread_do* are about to be created.
+[    4.849450] Zachary Kaplan: Calling kthread(my_kthread_do_task_1)
+[    4.849468] Zachary Kaplan: my_kthread_do_task_1 pid = 140
+[    4.849468] Zachary Kaplan: Calling kthread(my_kthread_do_task_2)
+[    4.849477] Zachary Kaplan: task_1 is about to schedule.
+[    4.849478] Zachary Kaplan: task_1 has been scheduled.
+[    4.849478] Zachary Kaplan: my_kthread_do_task_2 pid = 141
+[    4.849479] Zachary Kaplan: my_kthread_do* have been created.
+[    4.849480] Zachary Kaplan: UID        PID  PPID  C STIME TTY          TIME CMD
+[    4.849491] Zachary Kaplan: root         1     0  0 05:37 ?        00:00:04 [swapper/0]
+[    4.849492] Zachary Kaplan: root         2     0  0 05:37 ?        00:00:00 [kthreadd]
+[    4.849493] Zachary Kaplan: root         3     2  0 05:37 ?        00:00:00 [kworker/0:0]
+[    4.849495] Zachary Kaplan: root         4     2  0 05:37 ?        00:00:00 [kworker/0:0H]
+[    4.849496] Zachary Kaplan: root         5     2  0 05:37 ?        00:00:00 [kworker/u12:0]
+[    4.849497] Zachary Kaplan: root         6     2  0 05:37 ?        00:00:00 [mm_percpu_wq]
+[    4.849498] Zachary Kaplan: root         7     2  0 05:37 ?        00:00:00 [ZK: hotplugd/0]
+[    4.849499] Zachary Kaplan: root         8     2  0 05:37 ?        00:00:00 [ksoftirqd/0]
+[    4.849500] Zachary Kaplan: root         9     2  0 05:37 ?        00:00:00 [rcu_sched]
+[    4.849502] Zachary Kaplan: root        10     2  0 05:37 ?        00:00:00 [rcu_bh]
+[    4.849503] Zachary Kaplan: root        11     2  0 05:37 ?        00:00:00 [migration/0]
+[    4.849504] Zachary Kaplan: root        12     2  0 05:37 ?        00:00:00 [watchdog/0]
+[    4.849506] Zachary Kaplan: root        13     2  0 05:37 ?        00:00:00 [cpuhp/0]
+[    4.849507] Zachary Kaplan: root        14     2  0 05:37 ?        00:00:00 [cpuhp/1]
+[    4.849508] Zachary Kaplan: root        15     2  0 05:37 ?        00:00:00 [watchdog/1]
+[    4.849509] Zachary Kaplan: task_2 is about to schedule.
+[    4.849510] Zachary Kaplan: root        16     2  0 05:37 ?        00:00:00 [migration/1]
+[    4.849510] Zachary Kaplan: task_2 has been scheduled.
+[    4.849512] Zachary Kaplan: root        17     2  0 05:37 ?        00:00:00 [ksoftirqd/1]
+[    4.849513] Zachary Kaplan: root        18     2  0 05:37 ?        00:00:00 [ZK: hotplugd/1]
+[    4.849514] Zachary Kaplan: root        19     2  0 05:37 ?        00:00:00 [kworker/1:0]
+[    4.849515] Zachary Kaplan: root        20     2  0 05:37 ?        00:00:00 [kworker/1:0H]
+[    4.849516] Zachary Kaplan: root        21     2  0 05:37 ?        00:00:00 [cpuhp/2]
+[    4.849516] Zachary Kaplan: root        22     2  0 05:37 ?        00:00:00 [watchdog/2]
+[    4.849517] Zachary Kaplan: root        23     2  0 05:37 ?        00:00:00 [migration/2]
+[    4.849518] Zachary Kaplan: root        24     2  0 05:37 ?        00:00:00 [ksoftirqd/2]
+[    4.849519] Zachary Kaplan: root        25     2  0 05:37 ?        00:00:00 [ZK: hotplugd/2]
+[    4.849519] Zachary Kaplan: root        26     2  0 05:37 ?        00:00:00 [kworker/2:0]
+[    4.849520] Zachary Kaplan: root        27     2  0 05:37 ?        00:00:00 [kworker/2:0H]
+[    4.849521] Zachary Kaplan: root        28     2  0 05:37 ?        00:00:00 [cpuhp/3]
+[    4.849522] Zachary Kaplan: root        29     2  0 05:37 ?        00:00:00 [watchdog/3]
+[    4.849522] Zachary Kaplan: root        30     2  0 05:37 ?        00:00:00 [migration/3]
+[    4.849523] Zachary Kaplan: root        31     2  0 05:37 ?        00:00:00 [ksoftirqd/3]
+[    4.849524] Zachary Kaplan: root        32     2  0 05:37 ?        00:00:00 [ZK: hotplugd/3]
+[    4.849525] Zachary Kaplan: root        33     2  0 05:37 ?        00:00:00 [kworker/3:0]
+[    4.849525] Zachary Kaplan: root        34     2  0 05:37 ?        00:00:00 [kworker/3:0H]
+[    4.849526] Zachary Kaplan: root        35     2  0 05:37 ?        00:00:00 [kdevtmpfs]
+[    4.849527] Zachary Kaplan: root        36     2  0 05:37 ?        00:00:00 [netns]
+[    4.849528] Zachary Kaplan: root        37     2  0 05:37 ?        00:00:00 [rcu_tasks_kthre]
+[    4.849529] Zachary Kaplan: root        38     2  0 05:37 ?        00:00:00 [kauditd]
+[    4.849529] Zachary Kaplan: root        39     2  0 05:37 ?        00:00:00 [kworker/0:1]
+[    4.849530] Zachary Kaplan: root        40     2  0 05:37 ?        00:00:00 [khungtaskd]
+[    4.849531] Zachary Kaplan: root        41     2  0 05:37 ?        00:00:00 [oom_reaper]
+[    4.849532] Zachary Kaplan: root        42     2  0 05:37 ?        00:00:00 [writeback]
+[    4.849532] Zachary Kaplan: root        43     2  0 05:37 ?        00:00:00 [kcompactd0]
+[    4.849533] Zachary Kaplan: root        44     2  0 05:37 ?        00:00:00 [ksmd]
+[    4.849534] Zachary Kaplan: root        45     2  0 05:37 ?        00:00:00 [khugepaged]
+[    4.849535] Zachary Kaplan: root        46     2  0 05:37 ?        00:00:00 [crypto]
+[    4.849535] Zachary Kaplan: root        47     2  0 05:37 ?        00:00:00 [kintegrityd]
+[    4.849546] Zachary Kaplan: root        48     2  0 05:37 ?        00:00:00 [kblockd]
+[    4.849546] Zachary Kaplan: root        49     2  0 05:37 ?        00:00:00 [ata_sff]
+[    4.849547] Zachary Kaplan: root        50     2  0 05:37 ?        00:00:00 [md]
+[    4.849548] Zachary Kaplan: root        51     2  0 05:37 ?        00:00:00 [edac-poller]
+[    4.849549] Zachary Kaplan: root        52     2  0 05:37 ?        00:00:00 [devfreq_wq]
+[    4.849549] Zachary Kaplan: root        53     2  0 05:37 ?        00:00:00 [watchdogd]
+[    4.849550] Zachary Kaplan: root        54     2  0 05:37 ?        00:00:00 [kworker/u12:1]
+[    4.849551] Zachary Kaplan: root        55     2  0 05:37 ?        00:00:00 [kworker/1:1]
+[    4.849552] Zachary Kaplan: root        56     2  0 05:37 ?        00:00:00 [kworker/2:1]
+[    4.849552] Zachary Kaplan: root        57     2  0 05:37 ?        00:00:00 [kworker/3:1]
+[    4.849553] Zachary Kaplan: root        59     2  0 05:37 ?        00:00:00 [kswapd0]
+[    4.849554] Zachary Kaplan: root        60     2  0 05:37 ?        00:00:00 [ecryptfs-kthrea]
+[    4.849555] Zachary Kaplan: root       102     2  0 05:37 ?        00:00:00 [kthrotld]
+[    4.849555] Zachary Kaplan: root       103     2  0 05:37 ?        00:00:00 [acpi_thermal_pm]
+[    4.849556] Zachary Kaplan: root       104     2  0 05:37 ?        00:00:00 [nvme-wq]
+[    4.849557] Zachary Kaplan: root       105     2  0 05:37 ?        00:00:00 [scsi_eh_0]
+[    4.849558] Zachary Kaplan: root       106     2  0 05:37 ?        00:00:00 [scsi_tmf_0]
+[    4.849558] Zachary Kaplan: root       107     2  0 05:37 ?        00:00:00 [scsi_eh_1]
+[    4.849559] Zachary Kaplan: root       108     2  0 05:37 ?        00:00:00 [scsi_tmf_1]
+[    4.849560] Zachary Kaplan: root       109     2  0 05:37 ?        00:00:00 [kworker/u12:2]
+[    4.849561] Zachary Kaplan: root       110     2  0 05:37 ?        00:00:00 [kworker/u12:3]
+[    4.849561] Zachary Kaplan: root       114     2  0 05:37 ?        00:00:00 [ipv6_addrconf]
+[    4.849562] Zachary Kaplan: root       139     2  0 05:37 ?        00:00:00 [charger_manager]
+[    4.849563] Zachary Kaplan: root       140     1  0 05:37 ?        00:00:00 [ZK: task_1]
+[    4.849564] Zachary Kaplan: root       141     1  0 05:37 ?        00:00:00 [ZK: task_2]
+...
+[  105.698801] Zachary Kaplan: hotplugd is running on CPU 0.
+[  105.698802] Zachary Kaplan: hotplugd is running on CPU 1.
+[  105.698803] Zachary Kaplan: hotplugd is running on CPU 3.
+[  105.698805] Zachary Kaplan: hotplugd is running on CPU 2.
+[  120.803340] Zachary Kaplan: hotplugd is running on CPU 3.
+[  120.803341] Zachary Kaplan: hotplugd is running on CPU 1.
+[  120.803342] Zachary Kaplan: hotplugd is running on CPU 2.
+[  120.803344] Zachary Kaplan: hotplugd is running on CPU 0.
+[  135.907857] Zachary Kaplan: hotplugd is running on CPU 0.
+[  135.907857] Zachary Kaplan: hotplugd is running on CPU 2.
+[  135.907859] Zachary Kaplan: hotplugd is running on CPU 1.
+[  135.907861] Zachary Kaplan: hotplugd is running on CPU 3.
+[  151.012195] Zachary Kaplan: hotplugd is running on CPU 3.
+[  151.012195] Zachary Kaplan: hotplugd is running on CPU 0.
+[  151.012216] Zachary Kaplan: hotplugd is running on CPU 2.
+[  151.016237] Zachary Kaplan: hotplugd is running on CPU 1.

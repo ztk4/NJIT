@@ -1,0 +1,201 @@
+/home/zach/kernel/cs680/init/main.c[995:1194]
+   995	}
+   996	#else
+   997	static inline void mark_readonly(void)
+   998	{
+   999		pr_warn("This architecture does not have kernel memory protection.\n");
+  1000	}
+  1001	#endif
+  1002	
+  1003	/*
+  1004	 * CUSTOM EDIT FOR CS680
+  1005	 * Prints all tasks in a format similar to `ps -ef`.
+  1006	 */
+  1007	static void print_threadinfo(void) {
+  1008	  static const int kUidLen = 10, kTtyLen = 8;
+  1009	
+  1010	  struct task_struct *tsk;
+  1011	  char uid[kUidLen + 1];
+  1012	  pid_t pid, ppid;
+  1013	  u64 runtime;
+  1014	  u64 cpu;
+  1015	  ktime_t real_stime;
+  1016	  struct timespec64 ts64;
+  1017	  struct tm tm;
+  1018	  unsigned stime_hr, stime_min;
+  1019	  char tty[kTtyLen + 1];
+  1020	  unsigned time_hr, time_min, time_sec;
+  1021	  char comm[TASK_COMM_LEN];
+  1022	  
+  1023	  /* Print header */
+  1024	  printk(KERN_INFO "Zachary Kaplan: %-*s %3s %5s %2s %-5s %-*s %8s %s\n",
+  1025	         kUidLen, "UID", "PID", "PPID", "C", "STIME",
+  1026	         kTtyLen, "TTY", "TIME", "CMD");
+  1027	
+  1028	  for_each_process(tsk) {
+  1029	    if (uid_eq(tsk->cred->uid, GLOBAL_ROOT_UID)) {
+  1030	      /* We know root's username. */
+  1031	      strncpy(uid, "root", kUidLen);
+  1032	    } else {
+  1033	      /* Don't know any other usersnames in kernel space, just print uid. */
+  1034	      snprintf(uid, kUidLen, "%u", from_kuid(&init_user_ns, tsk->cred->uid));
+  1035	    }
+  1036	    uid[kUidLen] = '\0';  /* Guarentee uid is null terminated. */
+  1037	
+  1038	    pid = tsk->pid;
+  1039	    ppid = tsk->real_parent->pid;
+  1040	
+  1041	    runtime = tsk->utime + tsk->stime;
+  1042	    /* Calculated as total cpu time over time since start 
+  1043	       (time since boot - boottime start time). */
+  1044	    cpu = runtime / (ktime_get_boot_ns() - tsk->real_start_time);
+  1045	
+  1046	    real_stime = ktime_mono_to_real(ns_to_ktime(tsk->start_time));
+  1047	    ts64 = ktime_to_timespec64(real_stime);
+  1048	    /* NOTE: Ideally we would offset by -(sys_tz.minuteswest * 60), but at this
+  1049	             point in boot, sys_tz is not set. Therefore, output is in UTC */
+  1050	    time64_to_tm(ts64.tv_sec, 0, &tm);
+  1051	    stime_hr = tm.tm_hour;
+  1052	    stime_min = tm.tm_min;
+  1053	
+  1054	    time_hr  = runtime / (NSEC_PER_SEC * 3600);
+  1055	    time_min = runtime / (NSEC_PER_SEC * 60) % 60;
+  1056	    time_sec = runtime / NSEC_PER_SEC % 60;
+  1057	
+  1058	    /* NOTE: This may cut off the tty name */
+  1059	    if (tsk->signal->tty) {
+  1060	      strncpy(tty, tsk->signal->tty->name, kTtyLen);
+  1061	      tty[kTtyLen] = '\0';
+  1062	    } else {
+  1063	      tty[0] = '?';
+  1064	      tty[1] = '\0';
+  1065	    }
+  1066	
+  1067	    get_task_comm(comm, tsk);
+  1068	
+  1069	    printk(KERN_INFO "Zachary Kaplan: "
+  1070	           "%-*s %3d %5d %2llu %02u:%02u %-*s %02u:%02u:%02u [%s]\n",
+  1071	           kUidLen, uid, pid, ppid, cpu, stime_hr, stime_min, kTtyLen, tty,
+  1072	           time_hr, time_min, time_sec, comm);
+  1073	  }
+  1074	}
+  1075	
+  1076	/*
+  1077	 * CUSTOM EDIT FOR CS680
+  1078	 * Macro helper for creating some dummy threads.
+  1079	 */
+  1080	#define my_kthread_create(function, data, clone) ({                       \
+  1081	    pid_t mypid;                                                          \
+  1082	    printk(KERN_INFO "Zachary Kaplan: Calling kthread(" #function ")\n"); \
+  1083	    mypid = kernel_thread((function), data, clone);                       \
+  1084	    printk(KERN_INFO "Zachary Kaplan: " #function " pid = %d\n", mypid);  \
+  1085	    mypid;                                                                \
+  1086	})
+  1087	/*
+  1088	 * CUSTOM EDIT FOR CS680
+  1089	 * Macros helper for constructing a dummy workload for dummy threads.
+  1090	 */
+  1091	#define declare_my_kthread_do(task_name)                                  \
+  1092	  static int my_kthread_do_##task_name(void *unused) {                    \
+  1093	    set_task_comm(current, "ZK: " #task_name);                            \
+  1094	    set_current_state(TASK_RUNNING);                                      \
+  1095	    printk(KERN_INFO "Zachary Kaplan: " #task_name " is about to "        \
+  1096	                     "schedule.\n");                                      \
+  1097	    schedule();                                                           \
+  1098	    printk(KERN_INFO "Zachary Kaplan: " #task_name " has been "           \
+  1099	                     "scheduled.\n");                                     \
+  1100	    do_exit(0);                                                           \
+  1101	    return 0;                                                             \
+  1102	  }
+  1103	
+  1104	/* Instances of the above macro */
+  1105	declare_my_kthread_do(task_1);
+  1106	declare_my_kthread_do(task_2);
+  1107	
+  1108	/*
+  1109	 * CUSTOM EDIT FOR CS680
+  1110	 * Dummy hotplugd tasks with dummy workloads.
+  1111	 */
+  1112	DEFINE_PER_CPU(struct task_struct *, my_hotplugd);
+  1113	static int should_my_hotplugd_run(unsigned cpu) { return 1; }
+  1114	static void my_hotplugd_create(unsigned cpu) {
+  1115	  printk(KERN_INFO "Zachary Kaplan: hotplugd is up on CPU %u.\n", cpu);
+  1116	}
+  1117	static void run_my_hotplugd(unsigned cpu) {
+  1118	  printk(KERN_INFO "Zachary Kaplan: hotplugd is running on CPU %u.\n", cpu);
+  1119	
+  1120	  /* Go to sleep as to not spam with the above message too much */
+  1121	  /* NOTE: We must sleep or call schedule otherwise the calling while-loop
+  1122	           would effectively busy wait and hog a cpu */
+  1123	  ssleep(15);
+  1124	}
+  1125	static struct smp_hotplug_thread my_hotplug_threads = {
+  1126	  .store              = &my_hotplugd,
+  1127	  .create             = my_hotplugd_create,
+  1128	  .thread_should_run  = should_my_hotplugd_run,
+  1129	  .thread_fn          = run_my_hotplugd,
+  1130	  .thread_comm        = "ZK: hotplugd/%u",
+  1131	};
+  1132	static int __init spawn_my_hotplugd(void) {
+  1133	  BUG_ON(smpboot_register_percpu_thread(&my_hotplug_threads));
+  1134	  return 0;
+  1135	}
+  1136	early_initcall(spawn_my_hotplugd);
+  1137	
+  1138	static int __ref kernel_init(void *unused)
+  1139	{
+  1140		int ret;
+  1141	
+  1142		kernel_init_freeable();
+  1143		/* need to finish all async __init code before freeing the memory */
+  1144		async_synchronize_full();
+  1145		ftrace_free_init_mem();
+  1146		free_initmem();
+  1147		mark_readonly();
+  1148		system_state = SYSTEM_RUNNING;
+  1149		numa_default_policy();
+  1150	
+  1151		rcu_end_inkernel_boot();
+  1152	
+  1153	  /*
+  1154	   * CUSTOM EDIT FOR CS680
+  1155	   * Print info somewhat like /proc/slabinfo
+  1156	   */
+  1157	  print_slabinfo();
+  1158	
+  1159	  /*
+  1160	   * CUSTOM EDIT FOR CS680
+  1161	   * Print threadinfo somewhat like `ps -ef`
+  1162	   * Then try adding threads in various ways
+  1163	   * Then print threadinfo again
+  1164	   */
+  1165	  print_threadinfo();
+  1166	
+  1167	  printk(KERN_INFO "Zachary Kaplan: my_kthread_do* are about to be created.\n");
+  1168	  my_kthread_create(my_kthread_do_task_1, NULL, CLONE_FS);
+  1169	  my_kthread_create(my_kthread_do_task_2, NULL, CLONE_FS);
+  1170	  printk(KERN_INFO "Zachary Kaplan: my_kthread_do* have been created.\n");
+  1171	
+  1172	  print_threadinfo();
+  1173	
+  1174		if (ramdisk_execute_command) {
+  1175			ret = run_init_process(ramdisk_execute_command);
+  1176			if (!ret)
+  1177				return 0;
+  1178			pr_err("Failed to execute %s (error %d)\n",
+  1179			       ramdisk_execute_command, ret);
+  1180		}
+  1181	
+  1182		/*
+  1183		 * We try each of these until one succeeds.
+  1184		 *
+  1185		 * The Bourne shell can be used instead of init if we are
+  1186		 * trying to recover a really broken machine.
+  1187		 */
+  1188		if (execute_command) {
+  1189			ret = run_init_process(execute_command);
+  1190			if (!ret)
+  1191				return 0;
+  1192			panic("Requested init %s failed (error %d).",
+  1193			      execute_command, ret);
+  1194		}
