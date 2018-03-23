@@ -1,7 +1,7 @@
 %% Zachary Kaplan
  % MATH 340
  % Assignment 8
- % 3/15/18
+ % 3/22/18
  
 %% Problem 1
 
@@ -57,5 +57,84 @@ fprintf('\nFunctions used:\n');
 dbtype cheb
 dbtype lpfit
 
-%% Problem 3
+%% Extra Credit
 
+% Get X and Y values from data file.
+load data.mat
+[X, Y] = deal(data(1, :), data(2, :));
+[a, b] = deal(-7, 7);
+delta = (b - a) * 1e-2;  % Default delta deviating from true value of root.
+tol = 1e-12;  % Tolerance for numerical root finding.
+
+% Calculate the spline piecewise polynomial
+pp = spline(X, Y);
+
+% Finds all roots of the spline (in sorted order).
+r = pproots(pp);
+dr = diff(r);
+% Require that delta is smaller than the minimum distance between roots.
+if not(isempty(dr))
+    if delta > min(dr)
+        delta = min(dr) / 2;
+    end
+end
+
+% Allocate storage for convergence of numerical methods.
+% Secent method using [r - delta, r + delta].
+secent_order = zeros(size(r));
+% Newtons method starting at r - delta.
+newton_order_neg = zeros(size(r));
+% Newtons method starting at r + delta.
+newton_order_pos = zeros(size(r));
+
+% Approximate each root with secant and newtons method.
+for i = 1:length(r)
+    root = r(i);
+    
+    % SECANT METHOD:
+    x0 = max(a, root - delta);
+    x1 = min(b, root + delta);
+    [est, err, secent_order(i)] = secant(@(x) ppval(pp, x), x0, x1, tol);
+    if abs(est - root) > err
+        error('Secent method failed to converge to root %f\n', root);
+    end
+    
+    % NEWTON METHOD:
+    % Exact derivative of spline.
+    dpp = fnder(pp);
+    % From Below.
+    [est, err, newton_order_neg(i)] = ...
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x0, tol);
+    if abs(est - root) > err
+        error(['Newton''s method failed to converge to root %f' ...
+               'from below\n'], root);
+    end
+    % From Above.
+    [est, err, newton_order_pos(i)] = ...
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x1, tol);
+    if abs(est - root) > err
+        error(['Newton''s method failed to converge to root %f' ...
+               'from above\n'], root);
+    end
+end
+
+figure
+hold on
+scatter(r, secent_order);
+scatter(r, newton_order_neg);
+scatter(r, newton_order_pos);
+xlabel('Root of the Spline');
+ylabel('Rate of Convergence');
+legend('Secant Method', 'Newton''s Method From Below', ...
+       'Newton''s Method From Above', 'Location', 'eastoutside');
+   
+fprintf(['By inspection of the above, Newton''s method from the ' ...
+         'positive side of -2 converges at a rate of ~1,\nwhich is ' ...
+         'unusual compared to the expected Newton rate of convergence ' ...
+         'of 2.\n']);
+     
+fprintf('\nFunctions Used:\n');
+
+dbtype pproots
+dbtype secant
+dbtype newtons

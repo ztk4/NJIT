@@ -1,0 +1,526 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Zachary Kaplan</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-03-22"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Zachary Kaplan</h1><!--introduction--><p>MATH 340 Assignment 8 3/22/18</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2</a></li><li><a href="#3">Extra Credit</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput">f = @(x) exp(-x) .* cos(x);
+df = @(x) -exp(-x) .* (cos(x) + sin(x));
+a = -4;
+b = 5;
+
+<span class="comment">% Approximate f</span>
+chebf = cheb(a, b, f, 200);
+
+<span class="comment">% Evaluate on interval, take numerical derivative</span>
+X = linspace(a, b, 1e5);
+Y = chebf(X);
+dfdx = gradient(Y) ./ gradient(X);
+DF = df(X);
+
+fprintf([<span class="string">'Relative L^{inf} norm : %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'Relative L^2 norm     : %e\n'</span>], <span class="keyword">...</span>
+         norm(DF - dfdx, Inf)/norm(DF, Inf), <span class="keyword">...</span>
+         norm(DF - dfdx, 2) / norm(DF, 2));
+
+fprintf(<span class="string">'\nFunctions used:\n'</span>);
+dbtype <span class="string">cheb</span>
+dbtype <span class="string">lpfit</span>
+</pre><pre class="codeoutput">Relative L^{inf} norm : 1.606966e-04
+Relative L^2 norm     : 1.389368e-06
+
+Functions used:
+
+1     function [p, points] = cheb(a, b, f, n)
+2     % cheb uses chebyshev nodes for interpolating f with a degree n polynomial.
+3     
+4     X = (a + b)/2 + (a - b)/2 * cos((2*(1:n+1) - 1)./(2*n + 2) * pi);
+5     Y = f(X);
+6     
+7     % Always using Lagrange Basis Functions now.
+8     p = lpfit(X, Y);
+9     
+10    points = [X' Y'];
+11    end
+
+1     function Pn = lpfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9              
+10        function y = pn(x)
+11            y = 0;
+12            for i = 1:length(X)
+13                % The i'th column of y is Li evaluated on each input x.
+14                y = y + Y(i)*lagrange(x, i, X);
+15            end
+16            y = reshape(y, size(x));
+17        end
+18    
+19    Pn = @pn;
+20    end
+21    
+22    function y = lagrange(x, i, X)
+23    % lagrange returns the ith Lagrange function from the length(X) - 1 order 
+24    %          Lagrange basis as defined by vector X evaluated at x
+25    %          NB: X must be a row vector.
+26    %          returns y as a column vector.
+27    
+28    % Force x to be a col vec.
+29    x = reshape(x, length(x), 1);
+30    
+31    % \Pi_{j = 1, j \not= i}^{|X|} (x - X_j)/(X_i - X_j)
+32    skip = [X(1:i-1) X(i+1:end)];  % skips X(i)
+33    % The below uses matlab R2017's ability to automatically repmat matrix
+34    % arguments to binary matrix operators. MAY NOT WORK IN R2016.
+35    y = prod((x - skip)./(X(i) - skip), 2);  % Product along column dimension
+36    end
+</pre><h2 id="2">Problem 2</h2><pre class="codeinput">f = @(x) exp(-x) .* cos(x);
+<span class="comment">% NOTE: The additional 1/2 was chosen so that the integral was based at 0,</span>
+<span class="comment">%       since e^{-x}(sin(x) - cos(x)) is -1/2 at a.</span>
+F = @(x) (exp(-x) .* (sin(x) - cos(x)) + 1) ./ 2;
+a = 0;
+b = 12*pi;
+
+<span class="comment">% Approximate f</span>
+chebf = cheb(a, b, f, 200);
+
+<span class="comment">% Evaluate on interval, take numerical integral.</span>
+X = linspace(a, b, 1e5);
+Y = chebf(X);
+FN = cumtrapz(X, Y);
+FA = F(X);
+
+fprintf([<span class="string">'Relative L^{inf} norm : %e\n'</span> <span class="keyword">...</span>
+         <span class="string">'Relative L^2 norm     : %e\n'</span>], <span class="keyword">...</span>
+         norm(FN - FA, Inf)/norm(FA, Inf), <span class="keyword">...</span>
+         norm(FN - FA, 2) / norm(FA, 2));
+
+fprintf(<span class="string">'\nAbsolute error at b = 12pi: %e\n'</span>, abs(FN(end) - FA(end)));
+
+fprintf(<span class="string">'\nFunctions used:\n'</span>);
+dbtype <span class="string">cheb</span>
+dbtype <span class="string">lpfit</span>
+</pre><pre class="codeoutput">Relative L^{inf} norm : 2.045830e-08
+Relative L^2 norm     : 2.321465e-08
+
+Absolute error at b = 12pi: 1.184371e-08
+
+Functions used:
+
+1     function [p, points] = cheb(a, b, f, n)
+2     % cheb uses chebyshev nodes for interpolating f with a degree n polynomial.
+3     
+4     X = (a + b)/2 + (a - b)/2 * cos((2*(1:n+1) - 1)./(2*n + 2) * pi);
+5     Y = f(X);
+6     
+7     % Always using Lagrange Basis Functions now.
+8     p = lpfit(X, Y);
+9     
+10    points = [X' Y'];
+11    end
+
+1     function Pn = lpfit(X, Y)
+2     % pfit finds the polynomial fitting points defined by the cocentric vectors
+3     %      X and Y. NB: X and Y must have the same length.
+4     
+5     % Force X to be a row vec.
+6     X = reshape(X, 1, length(X));
+7     % Force Y to be a row vec.
+8     Y = reshape(Y, 1, length(Y));
+9              
+10        function y = pn(x)
+11            y = 0;
+12            for i = 1:length(X)
+13                % The i'th column of y is Li evaluated on each input x.
+14                y = y + Y(i)*lagrange(x, i, X);
+15            end
+16            y = reshape(y, size(x));
+17        end
+18    
+19    Pn = @pn;
+20    end
+21    
+22    function y = lagrange(x, i, X)
+23    % lagrange returns the ith Lagrange function from the length(X) - 1 order 
+24    %          Lagrange basis as defined by vector X evaluated at x
+25    %          NB: X must be a row vector.
+26    %          returns y as a column vector.
+27    
+28    % Force x to be a col vec.
+29    x = reshape(x, length(x), 1);
+30    
+31    % \Pi_{j = 1, j \not= i}^{|X|} (x - X_j)/(X_i - X_j)
+32    skip = [X(1:i-1) X(i+1:end)];  % skips X(i)
+33    % The below uses matlab R2017's ability to automatically repmat matrix
+34    % arguments to binary matrix operators. MAY NOT WORK IN R2016.
+35    y = prod((x - skip)./(X(i) - skip), 2);  % Product along column dimension
+36    end
+</pre><h2 id="3">Extra Credit</h2><pre class="codeinput"><span class="comment">% Get X and Y values from data file.</span>
+load <span class="string">data.mat</span>
+[X, Y] = deal(data(1, :), data(2, :));
+[a, b] = deal(-7, 7);
+delta = (b - a) * 1e-2;  <span class="comment">% Default delta deviating from true value of root.</span>
+tol = 1e-12;  <span class="comment">% Tolerance for numerical root finding.</span>
+
+<span class="comment">% Calculate the spline piecewise polynomial</span>
+pp = spline(X, Y);
+
+<span class="comment">% Finds all roots of the spline (in sorted order).</span>
+r = pproots(pp);
+dr = diff(r);
+<span class="comment">% Require that delta is smaller than the minimum distance between roots.</span>
+<span class="keyword">if</span> not(isempty(dr))
+    <span class="keyword">if</span> delta &gt; min(dr)
+        delta = min(dr) / 2;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Allocate storage for convergence of numerical methods.</span>
+<span class="comment">% Secent method using [r - delta, r + delta].</span>
+secent_order = zeros(size(r));
+<span class="comment">% Newtons method starting at r - delta.</span>
+newton_order_neg = zeros(size(r));
+<span class="comment">% Newtons method starting at r + delta.</span>
+newton_order_pos = zeros(size(r));
+
+<span class="comment">% Approximate each root with secant and newtons method.</span>
+<span class="keyword">for</span> i = 1:length(r)
+    root = r(i);
+
+    <span class="comment">% SECANT METHOD:</span>
+    x0 = max(a, root - delta);
+    x1 = min(b, root + delta);
+    [est, err, secent_order(i)] = secant(@(x) ppval(pp, x), x0, x1, tol);
+    <span class="keyword">if</span> abs(est - root) &gt; err
+        error(<span class="string">'Secent method failed to converge to root %f\n'</span>, root);
+    <span class="keyword">end</span>
+
+    <span class="comment">% NEWTON METHOD:</span>
+    <span class="comment">% Exact derivative of spline.</span>
+    dpp = fnder(pp);
+    <span class="comment">% From Below.</span>
+    [est, err, newton_order_neg(i)] = <span class="keyword">...</span>
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x0, tol);
+    <span class="keyword">if</span> abs(est - root) &gt; err
+        error([<span class="string">'Newton''s method failed to converge to root %f'</span> <span class="keyword">...</span>
+               <span class="string">'from below\n'</span>], root);
+    <span class="keyword">end</span>
+    <span class="comment">% From Above.</span>
+    [est, err, newton_order_pos(i)] = <span class="keyword">...</span>
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x1, tol);
+    <span class="keyword">if</span> abs(est - root) &gt; err
+        error([<span class="string">'Newton''s method failed to converge to root %f'</span> <span class="keyword">...</span>
+               <span class="string">'from above\n'</span>], root);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+figure
+hold <span class="string">on</span>
+scatter(r, secent_order);
+scatter(r, newton_order_neg);
+scatter(r, newton_order_pos);
+xlabel(<span class="string">'Root of the Spline'</span>);
+ylabel(<span class="string">'Rate of Convergence'</span>);
+legend(<span class="string">'Secant Method'</span>, <span class="string">'Newton''s Method From Below'</span>, <span class="keyword">...</span>
+       <span class="string">'Newton''s Method From Above'</span>, <span class="string">'Location'</span>, <span class="string">'eastoutside'</span>);
+
+fprintf([<span class="string">'By inspection of the above, Newton''s method from the '</span> <span class="keyword">...</span>
+         <span class="string">'positive side of -2 converges at a rate of ~1,\nwhich is '</span> <span class="keyword">...</span>
+         <span class="string">'unusual compared to the expected Newton rate of convergence '</span> <span class="keyword">...</span>
+         <span class="string">'of 2.\n'</span>]);
+
+fprintf(<span class="string">'\nFunctions Used:\n'</span>);
+
+dbtype <span class="string">pproots</span>
+dbtype <span class="string">secant</span>
+dbtype <span class="string">newtons</span>
+</pre><pre class="codeoutput">By inspection of the above, Newton's method from the positive side of -2 converges at a rate of ~1,
+which is unusual compared to the expected Newton rate of convergence of 2.
+
+Functions Used:
+
+1     function r = pproots(pp)
+2     
+3     % Unpack information about the pieces of pp.
+4     [breaks, coefs, L, k, ~] = unmkpp(pp);
+5     
+6     % Allocate space for roots. There can be at most `k - 1` roots per
+7     % subinterval, and there are `L` subintervals.
+8     r = nan((k - 1) * L, 1);
+9     ridx = 1;  % Current index into r.
+10    
+11    % For the ith subinterval, find all the roots and add them.
+12    for i = 1:L
+13        % Poly roots for a given piece of the spline, shifted by leftmost point
+14        % of subinterval.
+15        proots = roots(coefs(i, :)) + breaks(i);
+16        % Only add the roots that are real and in the interval.
+17        for proot = proots'
+18            if isreal(proot) &amp;&amp; proot &gt;= breaks(i) &amp;&amp; proot &lt;= breaks(i + 1)
+19                r(ridx) = proot;
+20                ridx = ridx + 1;
+21            end
+22        end
+23    end
+24    
+25    % Remove excess NaN values from r.
+26    r(ridx:end) = [];
+27    % Remove duplicates from r (also sorts r).
+28    r = unique(r);
+29    end
+
+1     function [estimate, err, order] = secant(f, x0, x1, tol)
+2     a = x0;
+3     b = x1;
+4     err = f(b)*(b - a)/(f(b) - f(a));
+5     
+6     prev1_err = inf;
+7     prev2_err = inf;
+8     
+9     while abs(err) &gt; tol
+10      a = b;
+11      b = b - err;
+12      prev2_err = prev1_err;
+13      prev1_err = err;
+14      err = f(b)*(b - a)/(f(b) - f(a));
+15    end
+16    
+17    % Easily derived from the relation e_n = C|e_{n-1}|^p and
+18    %                              e_{n-1} = C|e_{n-2}|^p.
+19    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+20    
+21    estimate = b;
+22    end
+
+1     function [estimate, err, order] = newtons(f, df, x0, tol)
+2     
+3     prev1_err = inf;
+4     prev2_err = inf;
+5     
+6     estimate = x0;
+7     err = f(estimate)/double(df(estimate));
+8     
+9     while abs(err) &gt; tol
+10      estimate = estimate - err;
+11      prev2_err = prev1_err;
+12      prev1_err = err;
+13      err = f(estimate)/double(df(estimate));
+14    end
+15    
+16    % Easily derived from the relation e_n = C|e_n-1|^p and
+17    %                                e_n-1 = C|e_n-2|^p.
+18    order = log(abs(err/prev1_err))/log(abs(prev1_err/prev2_err));
+19    
+20    err = abs(err);
+21    end
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Zachary Kaplan
+ % MATH 340
+ % Assignment 8
+ % 3/22/18
+ 
+%% Problem 1
+
+f = @(x) exp(-x) .* cos(x);
+df = @(x) -exp(-x) .* (cos(x) + sin(x));
+a = -4;
+b = 5;
+
+% Approximate f
+chebf = cheb(a, b, f, 200);
+
+% Evaluate on interval, take numerical derivative
+X = linspace(a, b, 1e5);
+Y = chebf(X);
+dfdx = gradient(Y) ./ gradient(X);
+DF = df(X);
+
+fprintf(['Relative L^{inf} norm : %e\n' ...
+         'Relative L^2 norm     : %e\n'], ...
+         norm(DF - dfdx, Inf)/norm(DF, Inf), ...
+         norm(DF - dfdx, 2) / norm(DF, 2));
+     
+fprintf('\nFunctions used:\n');
+dbtype cheb
+dbtype lpfit
+     
+%% Problem 2
+
+f = @(x) exp(-x) .* cos(x);
+% NOTE: The additional 1/2 was chosen so that the integral was based at 0,
+%       since e^{-x}(sin(x) - cos(x)) is -1/2 at a.
+F = @(x) (exp(-x) .* (sin(x) - cos(x)) + 1) ./ 2;
+a = 0;
+b = 12*pi;
+
+% Approximate f
+chebf = cheb(a, b, f, 200);
+
+% Evaluate on interval, take numerical integral.
+X = linspace(a, b, 1e5);
+Y = chebf(X);
+FN = cumtrapz(X, Y);
+FA = F(X);
+
+fprintf(['Relative L^{inf} norm : %e\n' ...
+         'Relative L^2 norm     : %e\n'], ...
+         norm(FN - FA, Inf)/norm(FA, Inf), ...
+         norm(FN - FA, 2) / norm(FA, 2));
+     
+fprintf('\nAbsolute error at b = 12pi: %e\n', abs(FN(end) - FA(end)));
+
+fprintf('\nFunctions used:\n');
+dbtype cheb
+dbtype lpfit
+
+%% Extra Credit
+
+% Get X and Y values from data file.
+load data.mat
+[X, Y] = deal(data(1, :), data(2, :));
+[a, b] = deal(-7, 7);
+delta = (b - a) * 1e-2;  % Default delta deviating from true value of root.
+tol = 1e-12;  % Tolerance for numerical root finding.
+
+% Calculate the spline piecewise polynomial
+pp = spline(X, Y);
+
+% Finds all roots of the spline (in sorted order).
+r = pproots(pp);
+dr = diff(r);
+% Require that delta is smaller than the minimum distance between roots.
+if not(isempty(dr))
+    if delta > min(dr)
+        delta = min(dr) / 2;
+    end
+end
+
+% Allocate storage for convergence of numerical methods.
+% Secent method using [r - delta, r + delta].
+secent_order = zeros(size(r));
+% Newtons method starting at r - delta.
+newton_order_neg = zeros(size(r));
+% Newtons method starting at r + delta.
+newton_order_pos = zeros(size(r));
+
+% Approximate each root with secant and newtons method.
+for i = 1:length(r)
+    root = r(i);
+    
+    % SECANT METHOD:
+    x0 = max(a, root - delta);
+    x1 = min(b, root + delta);
+    [est, err, secent_order(i)] = secant(@(x) ppval(pp, x), x0, x1, tol);
+    if abs(est - root) > err
+        error('Secent method failed to converge to root %f\n', root);
+    end
+    
+    % NEWTON METHOD:
+    % Exact derivative of spline.
+    dpp = fnder(pp);
+    % From Below.
+    [est, err, newton_order_neg(i)] = ...
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x0, tol);
+    if abs(est - root) > err
+        error(['Newton''s method failed to converge to root %f' ...
+               'from below\n'], root);
+    end
+    % From Above.
+    [est, err, newton_order_pos(i)] = ...
+        newtons(@(x) ppval(pp, x), @(x) ppval(dpp, x), x1, tol);
+    if abs(est - root) > err
+        error(['Newton''s method failed to converge to root %f' ...
+               'from above\n'], root);
+    end
+end
+
+figure
+hold on
+scatter(r, secent_order);
+scatter(r, newton_order_neg);
+scatter(r, newton_order_pos);
+xlabel('Root of the Spline');
+ylabel('Rate of Convergence');
+legend('Secant Method', 'Newton''s Method From Below', ...
+       'Newton''s Method From Above', 'Location', 'eastoutside');
+   
+fprintf(['By inspection of the above, Newton''s method from the ' ...
+         'positive side of -2 converges at a rate of ~1,\nwhich is ' ...
+         'unusual compared to the expected Newton rate of convergence ' ...
+         'of 2.\n']);
+     
+fprintf('\nFunctions Used:\n');
+
+dbtype pproots
+dbtype secant
+dbtype newtons
+##### SOURCE END #####
+--></body></html>
