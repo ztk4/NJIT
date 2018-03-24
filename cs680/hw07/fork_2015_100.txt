@@ -1,0 +1,101 @@
+/home/zach/kernel/cs680/kernel/fork.c[2015:2114]
+  2015	long _do_fork(unsigned long clone_flags,
+  2016		      unsigned long stack_start,
+  2017		      unsigned long stack_size,
+  2018		      int __user *parent_tidptr,
+  2019		      int __user *child_tidptr,
+  2020		      unsigned long tls)
+  2021	{
+  2022		struct task_struct *p;
+  2023		int trace = 0;
+  2024		long nr;
+  2025	
+  2026	  /*
+  2027	   * CUSTOM EDIT FOR CS680
+  2028	   * Print the first 100ish threads created.
+  2029	   */
+  2030	  static int count = 0;
+  2031	
+  2032		/*
+  2033		 * Determine whether and which event to report to ptracer.  When
+  2034		 * called from kernel_thread or CLONE_UNTRACED is explicitly
+  2035		 * requested, no event is reported; otherwise, report if the event
+  2036		 * for the type of forking is enabled.
+  2037		 */
+  2038		if (!(clone_flags & CLONE_UNTRACED)) {
+  2039			if (clone_flags & CLONE_VFORK)
+  2040				trace = PTRACE_EVENT_VFORK;
+  2041			else if ((clone_flags & CSIGNAL) != SIGCHLD)
+  2042				trace = PTRACE_EVENT_CLONE;
+  2043			else
+  2044				trace = PTRACE_EVENT_FORK;
+  2045	
+  2046			if (likely(!ptrace_event_enabled(current, trace)))
+  2047				trace = 0;
+  2048		}
+  2049	
+  2050	  /*
+  2051	   * CUSTOM EDIT FOR CS680
+  2052	   * Print before creation.
+  2053	   */
+  2054	  if (count < 100) {
+  2055	    printk(KERN_INFO "Zachary Kaplan: About to create thread\n");
+  2056	  }
+  2057	
+  2058		p = copy_process(clone_flags, stack_start, stack_size,
+  2059				 child_tidptr, NULL, trace, tls, NUMA_NO_NODE);
+  2060		add_latent_entropy();
+  2061		/*
+  2062		 * Do this prior waking up the new thread - the thread pointer
+  2063		 * might get invalid after that point, if the thread exits quickly.
+  2064		 */
+  2065		if (!IS_ERR(p)) {
+  2066			struct completion vfork;
+  2067			struct pid *pid;
+  2068	
+  2069			trace_sched_process_fork(current, p);
+  2070	
+  2071			pid = get_task_pid(p, PIDTYPE_PID);
+  2072			nr = pid_vnr(pid);
+  2073	
+  2074			if (clone_flags & CLONE_PARENT_SETTID)
+  2075				put_user(nr, parent_tidptr);
+  2076	
+  2077			if (clone_flags & CLONE_VFORK) {
+  2078				p->vfork_done = &vfork;
+  2079				init_completion(&vfork);
+  2080				get_task_struct(p);
+  2081			}
+  2082	
+  2083			wake_up_new_task(p);
+  2084	
+  2085	    /*
+  2086	     * CUSTOM EDIT FOR CS680
+  2087	     * Print after creation.
+  2088	     */
+  2089	    if (count < 100) {
+  2090	      ++count;
+  2091	      printk(KERN_INFO "Zachary Kaplan: Thread %d created by [%s]\n",
+  2092	             p->pid, p->comm);
+  2093	    }
+  2094	
+  2095			/* forking complete and child started to run, tell ptracer */
+  2096			if (unlikely(trace))
+  2097				ptrace_event_pid(trace, pid);
+  2098	
+  2099			if (clone_flags & CLONE_VFORK) {
+  2100				if (!wait_for_vfork_done(p, &vfork))
+  2101					ptrace_event_pid(PTRACE_EVENT_VFORK_DONE, pid);
+  2102			}
+  2103	
+  2104			put_pid(pid);
+  2105		} else {
+  2106			nr = PTR_ERR(p);
+  2107		}
+  2108		return nr;
+  2109	}
+  2110	
+  2111	#ifndef CONFIG_HAVE_COPY_THREAD_TLS
+  2112	/* For compatibility with architectures that call do_fork directly rather than
+  2113	 * using the syscall entry points below. */
+  2114	long do_fork(unsigned long clone_flags,

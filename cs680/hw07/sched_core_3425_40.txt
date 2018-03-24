@@ -1,0 +1,41 @@
+/home/zach/kernel/cs680/kernel/sched/core.c[3425:3464]
+  3425	}
+  3426	
+  3427	asmlinkage __visible void __sched schedule(void)
+  3428	{
+  3429		struct task_struct *tsk = current;
+  3430	  /*
+  3431	   * CUSTOM EDIT FOR CS680
+  3432	   * Print limiting for context switches.
+  3433	   */
+  3434	  static int count = 0;
+  3435	
+  3436	  /*
+  3437	   * CUSTOM EDIT FOR CS680
+  3438	   * Print before context switch.
+  3439	   */
+  3440	  if (count < 100)
+  3441	    printk(KERN_INFO
+  3442	           "Zachary Kaplan: About to context switch from %d[%s] on CPU %u\n",
+  3443	           tsk->pid, tsk->comm, task_cpu(tsk));
+  3444		sched_submit_work(tsk);
+  3445		do {
+  3446			preempt_disable();
+  3447			__schedule(false);
+  3448			sched_preempt_enable_no_resched();
+  3449		} while (need_resched());
+  3450	  /*
+  3451	   * CUSTOM EDIT FOR CS680
+  3452	   * Print after context switch.
+  3453	   */
+  3454	  if (count < 100) {
+  3455	    ++count;
+  3456	    printk(KERN_INFO "Zachary Kaplan: Context switched to %d[%s] on CPU %u\n",
+  3457	           tsk->pid, tsk->comm, task_cpu(tsk));
+  3458	  }
+  3459	}
+  3460	EXPORT_SYMBOL(schedule);
+  3461	
+  3462	/*
+  3463	 * synchronize_rcu_tasks() makes sure that no task is stuck in preempted
+  3464	 * state (have scheduled out non-voluntarily) by making sure that all
