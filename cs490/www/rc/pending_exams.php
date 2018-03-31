@@ -56,6 +56,14 @@ require 'prelude.inc';
 $data = array();
 
 try {
+  $questions = array();
+  // Ask db for question info.
+  $q_resp = util\make_db_request('get_all_questions');
+  if ($q_resp->success !== 'success') throw new Exception('No Questions');
+  for ($q_resp->questions as $question) {
+    $questions[$question->QId] = $question->Question;
+  }
+
   // Ask db for pending exams.
   $resp = util\make_db_request('get_pending_exams');
 
@@ -74,6 +82,7 @@ try {
         'points' => $examrow->Points,
         'score' => $examrow->Score,
         'answer' => $examrow->Answer,
+        'question' => $questions[$examrow->QId],
         'deductions' => json_decode($examrow->Deductions)
       );
     }
