@@ -10,7 +10,7 @@ namespace util;
 // Directory where non-webhosted files live.
 const kBaseDir = '/afs/cad/u/z/t/ztk4/njit/cs490/rc/';
 // Uri where DB enpoints are located.
-const kDbUri = 'https://web.njit.edu/~poa5/beta/';
+const kDbUri = 'https://web.njit.edu/~poa5/rc/';
 // Uri where evaluate endpoint is located.
 const kEvalUri = 'http://afsaccess1.njit.edu/~ztk4/cs490/rc/evaluate.php';
 // Comand for running evaluate (without arguments to evaluate).
