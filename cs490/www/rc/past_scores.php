@@ -24,6 +24,7 @@
 //                 "properties": {
 //                   "points": { "type": "integer" },
 //                   "score": { "type": "integer" },
+//                   "answer": { "type": "string" },
 //                   "deductions": {
 //
 //                     "type": array",
@@ -76,6 +77,7 @@ try {
       $data['exams'][$examrow->EId]['questions'][$examrow->QId] = array(
         'points' => $examrow->Points,
         'score' => $examrow->Score,
+        'answer' => $examrow->Answer,
         'deductions' => json_decode($examrow->Deductions)
       );
     }
