@@ -259,7 +259,7 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
   #   compiled Compare.comparators[0], should be Expression(body=...).
   # )
   deductions = []  # Reasons we took off points.
-  points_per_case = points // len(test_case_objs)
+  points_per_case = points // len(test_cases)
 
   # For capturing output written to sys.std* file objects.
   # NOTE: If the target code manages to get a hold of os.write or an equivalent,
