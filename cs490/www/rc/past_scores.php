@@ -63,7 +63,7 @@ try {
   // Ask db for question info.
   $q_resp = util\make_db_request('get_all_questions');
   if ($q_resp->success !== 'success') throw new Exception('No Questions');
-  for ($q_resp->questions as $question) {
+  foreach ($q_resp->questions as $question) {
     $questions[$question->QId] = $question->Question;
   }
 
