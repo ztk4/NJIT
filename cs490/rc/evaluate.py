@@ -191,6 +191,12 @@ class RedirectIO(object):
 
     return False  # Do not suppress exceptions
 
+  def reset_output(self):
+    self.stdout_mock.truncate(0)
+    self.stdout_mock.seek(0)
+    self.stderr_mock.truncate(0)
+    self.stderr_mock.seek(0)
+
   def get_output(self):
     # Returns the contents of both mocked output streams.
     return (self.stdout_mock.getvalue(), self.stderr_mock.getvalue())
@@ -289,6 +295,7 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
   for i, (test_case, (left_obj, cmpop, right_obj)) in enumerate(zip(test_cases, test_case_objs)):
     try:
       with capture_io:
+        capture_io.reset_output();
         # Evaluate each side of the comparison separately,
         # then determine if they compare correctly.
         left_val = eval(left_obj, instr_globals, instr_locals)
@@ -299,18 +306,18 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
         # Before docking points, test to see if student made the mistake of
         # printing the result instead of returning it.
         if left_val is None:
-          # If a student is directing output to stdout, they are doing it
-          # intentionally, so we look only at stdin here.
-          stdin, stdout = capture_io.get_output()
+          # If a student is directing output to stderr, they are doing it
+          # intentionally, so we look only at stdout here.
+          stdout, stderr = capture_io.get_output()
 
-          if len(stdin) > 0:
+          if len(stdout) > 0:
             # If our processing here fails, we don't want to tell the
             # student that their code threw an exception!
             try:
-              # Try to coerce the string in stdin to the expected type.
-              stdin_val = type(right_val)(stdin)
+              # Try to coerce the string in stdout to the expected type.
+              stdout_val = type(right_val)(stdout)
               # Redo the comparison with this new value (try it stripped too).
-              if compare(stdin_val, cmpop, right_val) or compare(stdin_val.strip(), cmpop, right_val):
+              if compare(stdout_val, cmpop, right_val) or compare(stdout_val.strip(), cmpop, right_val):
                 dock_points(deductions, 1, 'correct result was printed instead of returned '
                     'in test case {!s}: `{}{}`'.format(i, name, test_case))
                 continue
