@@ -218,9 +218,40 @@ def fix_syntax_err(code, err):
   # TODO: Come up with some rules for fixing syntax errors.
   return None
 
-def grade(code_obj, name, points, test_case_objs, vlevel = 0):
+def compare(l, cmpop, r):
+  # Compares values l and r using the operator specified by op.
+  # cmpop must be a valid ast cmpop.
+  if type(cmpop) == ast.Eq:
+    return l == r
+  elif type(cmpop) == ast.NotEq:
+    return l != r
+  elif type(cmpop) == ast.Lt:
+    return l < r
+  elif type(cmpop) == ast.LtE:
+    return l <= r
+  elif type(cmpop) == ast.Gt:
+    return l > r
+  elif type(cmpop) == ast.GtE:
+    return l >= r
+  elif type(cmpop) == ast.Is:
+    return l is r
+  elif type(cmpop) == ast.IsNot:
+    return l is not r
+  elif type(cmpop) == ast.In:
+    return l in r
+  elif type(cmpop) == ast.NotIn:
+    return l not in r
+  else:
+    raise ValueError('Operator of type <%s> is not a valid comparison operator' % type(cmpop).__name__);
+
+def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
   # Grades the given implementation of name, code_obj, with a maximum score
   # of points on each test_case_obj. Returns a list of deductions.
+  # test_case_objs must be a tuple of (
+  #   compiled Compare.left, should be Expression(body=Call(...)).
+  #   Compare.ops[0], should be one of cmpop.
+  #   compiled Compare.comparators[0], should be Expression(body=...).
+  # )
   deductions = []  # Reasons we took off points.
   points_per_case = points // len(test_case_objs)
 
@@ -255,21 +286,46 @@ def grade(code_obj, name, points, test_case_objs, vlevel = 0):
     dock_points(deductions, points, 'unable to execute function')
     return deductions
 
-  for i, test_case_obj in enumerate(test_case_objs):
+  for i, (test_case, (left_obj, cmpop, right_obj)) in enumerate(zip(test_cases, test_case_objs)):
     try:
       with capture_io:
-        result = eval(test_case_obj, instr_globals, instr_locals)
+        # Evaluate each side of the comparison separately,
+        # then determine if they compare correctly.
+        left_val = eval(left_obj, instr_globals, instr_locals)
+        right_val = eval(right_obj, instr_globals, instr_locals)
+        result = compare(left_val, cmpop, right_val)
+
       if not result:
-        dock_points(deductions, points_per_case, 'failed test case %d' % i)
-        # TODO: Consider checking if the function evaluated to None, in which
-        #       case, checking capture_io.get_output() may reveal a student
-        #       incorrectly printed the result instead of returning it, in which
-        #       case they may be given partial credit.
+        # Before docking points, test to see if student made the mistake of
+        # printing the result instead of returning it.
+        if left_val is None:
+          # If a student is directing output to stdout, they are doing it
+          # intentionally, so we look only at stdin here.
+          stdin, stdout = capture_io.get_output()
+
+          if len(stdin) > 0:
+            # If our processing here fails, we don't want to tell the
+            # student that their code threw an exception!
+            try:
+              # Try to coerce the string in stdin to the expected type.
+              stdin_val = type(right_val)(stdin)
+              # Redo the comparison with this new value (try it stripped too).
+              if compare(stdin_val, cmpop, right_val) or compare(stdin_val.strip(), cmpop, right_val):
+                dock_points(deductions, 1, 'correct result was printed instead of returned '
+                    'in test case {!s}: `{}{}`'.format(i, name, test_case))
+                continue
+            except BaseException as e:
+              # We failed in the above correction, assume what was printed
+              # to stdout was unrelated, so just dock_points as usual.
+              pass
+
+        dock_points(deductions, points_per_case,
+            'failed test case {!s}: expected `{}{}`; got `{!r}`'.format(i, name, test_case, left_val))
     except BaseException as e:
       if vlevel >= 1: print(repr(e), file=sys.stderr)
       # We'll consider any exception while executing a test case to be wrong.
       dock_points(deductions, points_per_case,
-                  'exception during test case %d' % i)
+          'exception during test case {!s}: `{}{}`'.format(i, name, test_case))
 
   return deductions
 
@@ -340,6 +396,7 @@ def main():
         # We have a valid comparison between exactly two exprs.
         left = comp.left
         right = comp.comparators[0]
+        cmpop = comp.ops[0]
 
         # Validate left side of comparison.
         left_valid = False
@@ -361,15 +418,17 @@ def main():
 
     # Finally, we just have to try compiling the test case.
     try:
-      obj = compile(expr, '<unknown>', 'eval')
+      left_obj = compile(ast.Expression(body=left), '<unknown>', 'eval')
+      right_obj = compile(ast.Expression(body=right), '<unknown>', 'eval')
     except BaseException as e:
       if vlevel >= 1: print(repr(e), file=sys.stderr)
-      obj = None
+      left_obj = None;
+      right_obj = None;
 
-    if not obj:
+    if not left_obj or not right_obj:
       raise ValueError('Cannot compile test case %d' % i)
 
-    test_case_objs.append(obj)
+    test_case_objs.append((left_obj, cmpop, right_obj));
 
   # Handle student code.
   code = args.code
@@ -377,6 +436,8 @@ def main():
     # We're just supposed to test the validity of the test cases when code is None.
     # TODO: Consider trying to evaluate the test cases to ensure that in addition to
     #       compiling, they actually evaluate without throwing exceptions.
+    #       Definitely evaluate right and make sure that evaluates okay,
+    #       BUT also consider evaluating the arguments being passed to the Call in left.
     return
 
   # Bookkeeping for score.
@@ -438,7 +499,7 @@ def main():
     return
 
   # Actually grade the students submission!
-  deductions += grade(code_obj, name, args.points, test_case_objs, vlevel)
+  deductions += grade(code_obj, name, args.points, args.test_case, test_case_objs, vlevel)
   output_json(args.points, deductions)
 
 if __name__ == '__main__':
