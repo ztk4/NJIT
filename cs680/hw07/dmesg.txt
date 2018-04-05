@@ -1,0 +1,640 @@
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 1 created by [swapper/0]
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Thread 2 created by [swapper/0]
+[    0.004000] Zachary Kaplan: About to context switch from 0[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] TSC deadline timer enabled
+[    0.004000] smpboot: CPU0: Intel Core Processor (Haswell, no TSX) (family: 0x6, model: 0x3c, stepping: 0x1)
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 3 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 3[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 3[kworker/0:0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 3[kworker/0:0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 4 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 4[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 4[kworker/0:0H] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 4[kworker/0:0H] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 5 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 5[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 5[kworker/u12:0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 5[kworker/u12:0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 3[kworker/0:0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 3[kworker/0:0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 6 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 6[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 6[mm_percpu_wq] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 6[mm_percpu_wq] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 7 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 7[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 7[ZK: hotplugd/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 7[ZK: hotplugd/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: hotplugd is up on CPU 0.
+[    0.004000] Performance Events: unsupported p6 CPU model 60 no PMU driver, software events only.
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 8 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 8[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 8[ksoftirqd/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 8[ksoftirqd/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Hierarchical SRCU implementation.
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 9 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 9[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 10 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 10[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 11 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 11[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 11[migration/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 11[migration/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 11[migration/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 11[migration/0] on CPU 0
+[    0.004000] NMI watchdog: Perf event create on CPU 0 failed with -2
+[    0.004000] NMI watchdog: Perf NMI watchdog permanently disabled
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 12 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 12[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 12[watchdog/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 12[watchdog/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 13 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 13[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 13[cpuhp/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 13[cpuhp/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] smp: Bringing up secondary CPUs ...
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 14 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 14[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 14[cpuhp/1] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 14[cpuhp/1] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 15 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 15[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 15[watchdog/1] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 15[watchdog/1] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 16 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 16[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 16[migration/1] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 16[migration/1] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 17 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 17[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 17[ksoftirqd/1] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 17[ksoftirqd/1] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 18 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 18[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 18[ZK: hotplugd/1] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 18[ZK: hotplugd/1] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: hotplugd is up on CPU 1.
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 19 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 19[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: About to create thread
+[    0.004000] Zachary Kaplan: Thread 20 created by [kthreadd]
+[    0.004000] Zachary Kaplan: About to context switch from 2[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 19[kworker/1:0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 19[kworker/1:0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 20[kthreadd] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] x86: Booting SMP configuration:
+[    0.004000] .... node  #0, CPUs:      #1
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: About to context switch from 1[swapper/0] on CPU 0
+[    0.004000] Zachary Kaplan: Context switched to 1[swapper/0] on CPU 0
+[    0.004000] kvm-clock: cpu 1, msr 2:3ff51041, secondary cpu clock
+[    0.004020] Zachary Kaplan: hotplugd is running on CPU 0.
+[    0.004009] Zachary Kaplan: hotplugd is running on CPU 1.
+[    0.004023] KVM setup async PF for cpu 1
+[    0.004026] kvm-stealtime: cpu 1, msr 23fc56180
+[    0.004029] Zachary Kaplan: About to create thread
+[    0.004029] Zachary Kaplan: Thread 21 created by [kthreadd]
+[    0.004029] Zachary Kaplan: About to create thread
+[    0.004029] Zachary Kaplan: Thread 22 created by [kthreadd]
+[    0.004029] Zachary Kaplan: About to create thread
+[    0.004029] Zachary Kaplan: Thread 23 created by [kthreadd]
+[    0.004029] Zachary Kaplan: About to create thread
+[    0.004031] Zachary Kaplan: Thread 24 created by [kthreadd]
+[    0.004034] Zachary Kaplan: About to create thread
+[    0.004038] Zachary Kaplan: Thread 25 created by [kthreadd]
+[    0.004040] Zachary Kaplan: hotplugd is up on CPU 2.
+[    0.004042] Zachary Kaplan: About to create thread
+[    0.004046] Zachary Kaplan: Thread 26 created by [kthreadd]
+[    0.004049] Zachary Kaplan: About to create thread
+[    0.004052] Zachary Kaplan: Thread 27 created by [kthreadd]
+[    0.004068]  #2
+[    0.004000] kvm-clock: cpu 2, msr 2:3ff51081, secondary cpu clock
+[    0.008016] KVM setup async PF for cpu 2
+[    0.008019] kvm-stealtime: cpu 2, msr 23fc96180
+[    0.008030] Zachary Kaplan: hotplugd is running on CPU 2.
+[    0.008022] Zachary Kaplan: About to create thread
+[    0.008022] Zachary Kaplan: Thread 28 created by [kthreadd]
+[    0.008022] Zachary Kaplan: About to create thread
+[    0.008022] Zachary Kaplan: Thread 29 created by [kthreadd]
+[    0.008022] Zachary Kaplan: About to create thread
+[    0.008022] Zachary Kaplan: Thread 30 created by [kthreadd]
+[    0.008024] Zachary Kaplan: About to create thread
+[    0.008027] Zachary Kaplan: Thread 31 created by [kthreadd]
+[    0.008029] Zachary Kaplan: About to create thread
+[    0.008032] Zachary Kaplan: Thread 32 created by [kthreadd]
+[    0.008043] Zachary Kaplan: hotplugd is up on CPU 3.
+[    0.008046] Zachary Kaplan: About to create thread
+[    0.008049] Zachary Kaplan: Thread 33 created by [kthreadd]
+[    0.008052] Zachary Kaplan: About to create thread
+[    0.008054] Zachary Kaplan: Thread 34 created by [kthreadd]
+[    0.008068]  #3
+[    0.004000] kvm-clock: cpu 3, msr 2:3ff510c1, secondary cpu clock
+[    0.012014] KVM setup async PF for cpu 3
+[    0.012017] kvm-stealtime: cpu 3, msr 23fcd6180
+[    0.012028] Zachary Kaplan: hotplugd is running on CPU 3.
+[    0.012020] Zachary Kaplan: About to create thread
+[    0.012020] Zachary Kaplan: Thread 35 created by [kthreadd]
+[    0.012020] Zachary Kaplan: About to create thread
+[    0.012020] Zachary Kaplan: Thread 36 created by [kthreadd]
+[    0.012020] Zachary Kaplan: About to create thread
+[    0.012020] Zachary Kaplan: Thread 37 created by [kthreadd]
+[    0.012024] Zachary Kaplan: About to create thread
+[    0.012028] Zachary Kaplan: Thread 38 created by [kthreadd]
+[    0.012030] Zachary Kaplan: About to create thread
+[    0.012033] Zachary Kaplan: Thread 39 created by [kthreadd]
+[    0.012044] Zachary Kaplan: hotplugd is up on CPU 4.
+[    0.012046] Zachary Kaplan: About to create thread
+[    0.012048] Zachary Kaplan: Thread 40 created by [kthreadd]
+[    0.012051] Zachary Kaplan: About to create thread
+[    0.012054] Zachary Kaplan: Thread 41 created by [kthreadd]
+[    0.012067]  #4
+[    0.004000] kvm-clock: cpu 4, msr 2:3ff51101, secondary cpu clock
+[    0.016015] KVM setup async PF for cpu 4
+[    0.016018] kvm-stealtime: cpu 4, msr 23fd16180
+[    0.016021] Zachary Kaplan: About to create thread
+[    0.016027] Zachary Kaplan: hotplugd is running on CPU 4.
+[    0.016021] Zachary Kaplan: Thread 42 created by [kthreadd]
+[    0.016021] Zachary Kaplan: About to create thread
+[    0.016021] Zachary Kaplan: Thread 43 created by [kthreadd]
+[    0.016021] Zachary Kaplan: About to create thread
+[    0.016023] Zachary Kaplan: Thread 44 created by [kthreadd]
+[    0.016026] Zachary Kaplan: About to create thread
+[    0.016029] Zachary Kaplan: Thread 45 created by [kthreadd]
+[    0.016032] Zachary Kaplan: About to create thread
+[    0.016037] Zachary Kaplan: Thread 46 created by [kthreadd]
+[    0.016039] Zachary Kaplan: hotplugd is up on CPU 5.
+[    0.016041] Zachary Kaplan: About to create thread
+[    0.016044] Zachary Kaplan: Thread 47 created by [kthreadd]
+[    0.016047] Zachary Kaplan: About to create thread
+[    0.016050] Zachary Kaplan: Thread 48 created by [kthreadd]
+[    0.016064]  #5
+[    0.004000] kvm-clock: cpu 5, msr 2:3ff51141, secondary cpu clock
+[    0.020013] KVM setup async PF for cpu 5
+[    0.020016] kvm-stealtime: cpu 5, msr 23fd56180
+[    0.020019] smp: Brought up 1 node, 6 CPUs
+[    0.020019] smpboot: Max logical packages: 6
+[    0.020019] smpboot: Total of 6 processors activated (31127.90 BogoMIPS)
+[    0.020025] Zachary Kaplan: hotplugd is running on CPU 5.
+[    0.020391] Zachary Kaplan: About to create thread
+[    0.020402] Zachary Kaplan: Thread 49 created by [kthreadd]
+[    0.020403] devtmpfs: initialized
+[    0.020403] x86/mm: Memory block size: 128MB
+[    0.020409] evm: security.selinux
+[    0.020410] evm: security.SMACK64
+[    0.020410] evm: security.SMACK64EXEC
+[    0.020410] evm: security.SMACK64TRANSMUTE
+[    0.020411] evm: security.SMACK64MMAP
+[    0.020411] evm: security.apparmor
+[    0.020411] evm: security.ima
+[    0.020411] evm: security.capability
+[    0.020420] Zachary Kaplan: About to create thread
+[    0.020429] Zachary Kaplan: Thread 50 created by [kthreadd]
+[    0.020430] Zachary Kaplan: About to create thread
+[    0.020430] Zachary Kaplan: Thread 51 created by [kthreadd]
+[    0.020430] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.020430] futex hash table entries: 2048 (order: 5, 131072 bytes)
+[    0.020430] pinctrl core: initialized pinctrl subsystem
+[    0.020430] RTC time:  2:18:54, date: 04/05/18
+[    0.020430] NET: Registered protocol family 16
+[    0.020430] audit: initializing netlink subsys (disabled)
+[    0.020430] Zachary Kaplan: About to create thread
+[    0.020430] Zachary Kaplan: Thread 52 created by [kthreadd]
+[    0.020430] audit: type=2000 audit(1522894733.019:1): state=initialized audit_enabled=0 res=1
+[    0.020430] Zachary Kaplan: About to create thread
+[    0.020430] Zachary Kaplan: Thread 53 created by [kthreadd]
+[    0.020430] cpuidle: using governor ladder
+[    0.020430] cpuidle: using governor menu
+[    0.020430] ACPI: bus type PCI registered
+[    0.020430] acpiphp: ACPI Hot Plug PCI Controller Driver version: 0.5
+[    0.020430] PCI: Using configuration type 1 for base access
+[    0.020758] Zachary Kaplan: About to create thread
+[    0.020768] Zachary Kaplan: Thread 54 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 55 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 56 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 57 created by [kthreadd]
+[    0.020769] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 58 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 59 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 60 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 61 created by [kthreadd]
+[    0.020769] Zachary Kaplan: About to create thread
+[    0.020769] Zachary Kaplan: Thread 62 created by [kthreadd]
+[    0.020769] ACPI: Added _OSI(Module Device)
+[    0.020769] ACPI: Added _OSI(Processor Device)
+[    0.020769] ACPI: Added _OSI(3.0 _SCP Extensions)
+[    0.020769] ACPI: Added _OSI(Processor Aggregator Device)
+[    0.020781] ACPI: Interpreter enabled
+[    0.020787] ACPI: (supports S0 S5)
+[    0.020787] ACPI: Using IOAPIC for interrupt routing
+[    0.020794] PCI: Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+[    0.021078] ACPI: Enabled 16 GPEs in block 00 to 0F
+[    0.025553] ACPI: PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+[    0.025556] acpi PNP0A03:00: _OSC: OS supports [ASPM ClockPM Segments MSI]
+[    0.025558] acpi PNP0A03:00: _OSC failed (AE_NOT_FOUND); disabling ASPM
+[    0.025562] acpi PNP0A03:00: fail to add MMCONFIG information, can't access extended PCI configuration space under this bridge.
+[    0.025721] acpiphp: Slot [3] registered
+[    0.025733] acpiphp: Slot [4] registered
+[    0.025744] acpiphp: Slot [5] registered
+[    0.025762] acpiphp: Slot [7] registered
+[    0.025773] acpiphp: Slot [8] registered
+[    0.025785] acpiphp: Slot [9] registered
+[    0.025797] acpiphp: Slot [10] registered
+[    0.025808] acpiphp: Slot [11] registered
+[    0.025819] acpiphp: Slot [12] registered
+[    0.025830] acpiphp: Slot [13] registered
+[    0.025840] acpiphp: Slot [14] registered
+[    0.025851] acpiphp: Slot [15] registered
+[    0.025862] acpiphp: Slot [16] registered
+[    0.025873] acpiphp: Slot [17] registered
+[    0.025884] acpiphp: Slot [18] registered
+[    0.025895] acpiphp: Slot [19] registered
+[    0.025906] acpiphp: Slot [20] registered
+[    0.025916] acpiphp: Slot [21] registered
+[    0.025928] acpiphp: Slot [22] registered
+[    0.025939] acpiphp: Slot [23] registered
+[    0.025950] acpiphp: Slot [24] registered
+[    0.025961] acpiphp: Slot [25] registered
+[    0.025973] acpiphp: Slot [26] registered
+[    0.025984] acpiphp: Slot [27] registered
+[    0.025996] acpiphp: Slot [28] registered
+[    0.026007] acpiphp: Slot [29] registered
+[    0.026017] acpiphp: Slot [30] registered
+[    0.026028] acpiphp: Slot [31] registered
+[    0.026036] PCI host bridge to bus 0000:00
+[    0.026037] pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+[    0.026038] pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+[    0.026039] pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
+[    0.026040] pci_bus 0000:00: root bus resource [mem 0xc0000000-0xfebfffff window]
+[    0.026040] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    0.026065] pci 0000:00:00.0: [8086:1237] type 00 class 0x060000
+[    0.026342] pci 0000:00:01.0: [8086:7000] type 00 class 0x060100
+[    0.026708] pci 0000:00:01.1: [8086:7010] type 00 class 0x010180
+[    0.030474] pci 0000:00:01.1: reg 0x20: [io  0xc120-0xc12f]
+[    0.031894] pci 0000:00:01.1: legacy IDE quirk: reg 0x10: [io  0x01f0-0x01f7]
+[    0.031895] pci 0000:00:01.1: legacy IDE quirk: reg 0x14: [io  0x03f6]
+[    0.031895] pci 0000:00:01.1: legacy IDE quirk: reg 0x18: [io  0x0170-0x0177]
+[    0.031896] pci 0000:00:01.1: legacy IDE quirk: reg 0x1c: [io  0x0376]
+[    0.032065] pci 0000:00:01.3: [8086:7113] type 00 class 0x068000
+[    0.032344] pci 0000:00:01.3: quirk: [io  0x0600-0x063f] claimed by PIIX4 ACPI
+[    0.032350] pci 0000:00:01.3: quirk: [io  0x0700-0x070f] claimed by PIIX4 SMB
+[    0.032494] pci 0000:00:02.0: [1b36:0100] type 00 class 0x030000
+[    0.036005] pci 0000:00:02.0: reg 0x10: [mem 0xf4000000-0xf7ffffff]
+[    0.040007] pci 0000:00:02.0: reg 0x14: [mem 0xf8000000-0xfbffffff]
+[    0.043337] pci 0000:00:02.0: reg 0x18: [mem 0xfc054000-0xfc055fff]
+[    0.046005] pci 0000:00:02.0: reg 0x1c: [io  0xc040-0xc05f]
+[    0.055394] pci 0000:00:02.0: reg 0x30: [mem 0xfc040000-0xfc04ffff pref]
+[    0.055574] pci 0000:00:03.0: [1af4:1000] type 00 class 0x020000
+[    0.056675] pci 0000:00:03.0: reg 0x10: [io  0xc060-0xc07f]
+[    0.060007] pci 0000:00:03.0: reg 0x14: [mem 0xfc056000-0xfc056fff]
+[    0.066656] pci 0000:00:03.0: reg 0x30: [mem 0xfc000000-0xfc03ffff pref]
+[    0.066901] pci 0000:00:04.0: [8086:2668] type 00 class 0x040300
+[    0.067682] pci 0000:00:04.0: reg 0x10: [mem 0xfc050000-0xfc053fff]
+[    0.074365] pci 0000:00:05.0: [1af4:1003] type 00 class 0x078000
+[    0.075733] pci 0000:00:05.0: reg 0x10: [io  0xc080-0xc09f]
+[    0.076667] pci 0000:00:05.0: reg 0x14: [mem 0xfc057000-0xfc057fff]
+[    0.084909] pci 0000:00:06.0: [8086:2934] type 00 class 0x0c0300
+[    0.088371] pci 0000:00:06.0: reg 0x20: [io  0xc0a0-0xc0bf]
+[    0.089934] pci 0000:00:06.1: [8086:2935] type 00 class 0x0c0300
+[    0.095241] pci 0000:00:06.1: reg 0x20: [io  0xc0c0-0xc0df]
+[    0.096875] pci 0000:00:06.2: [8086:2936] type 00 class 0x0c0300
+[    0.100361] pci 0000:00:06.2: reg 0x20: [io  0xc0e0-0xc0ff]
+[    0.101951] pci 0000:00:06.7: [8086:293a] type 00 class 0x0c0320
+[    0.102712] pci 0000:00:06.7: reg 0x10: [mem 0xfc058000-0xfc058fff]
+[    0.108842] pci 0000:00:07.0: [1af4:1002] type 00 class 0x00ff00
+[    0.109604] pci 0000:00:07.0: reg 0x10: [io  0xc100-0xc11f]
+[    0.113976] pci 0000:00:08.0: [1af4:1001] type 00 class 0x010000
+[    0.115316] pci 0000:00:08.0: reg 0x10: [io  0xc000-0xc03f]
+[    0.116775] pci 0000:00:08.0: reg 0x14: [mem 0xfc059000-0xfc059fff]
+[    0.125850] ACPI: PCI Interrupt Link [LNKA] (IRQs 5 *10 11)
+[    0.125917] ACPI: PCI Interrupt Link [LNKB] (IRQs 5 *10 11)
+[    0.125971] ACPI: PCI Interrupt Link [LNKC] (IRQs 5 10 *11)
+[    0.126025] ACPI: PCI Interrupt Link [LNKD] (IRQs 5 10 *11)
+[    0.126055] ACPI: PCI Interrupt Link [LNKS] (IRQs *9)
+[    0.126349] pci 0000:00:02.0: vgaarb: setting as boot VGA device
+[    0.126349] pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+[    0.126349] pci 0000:00:02.0: vgaarb: bridge control possible
+[    0.126349] vgaarb: loaded
+[    0.126349] SCSI subsystem initialized
+[    0.126349] Zachary Kaplan: About to create thread
+[    0.126349] Zachary Kaplan: Thread 63 created by [kthreadd]
+[    0.126349] libata version 3.00 loaded.
+[    0.126349] ACPI: bus type USB registered
+[    0.126349] usbcore: registered new interface driver usbfs
+[    0.126349] usbcore: registered new interface driver hub
+[    0.126349] usbcore: registered new device driver usb
+[    0.126349] Zachary Kaplan: About to create thread
+[    0.126349] Zachary Kaplan: Thread 64 created by [kthreadd]
+[    0.126349] EDAC MC: Ver: 3.0.0
+[    0.126349] Zachary Kaplan: About to create thread
+[    0.126349] Zachary Kaplan: Thread 65 created by [kthreadd]
+[    0.126349] Zachary Kaplan: About to create thread
+[    0.126349] Zachary Kaplan: Thread 66 created by [kthreadd]
+[    0.126349] PCI: Using ACPI for IRQ routing
+[    0.126349] PCI: pci_cache_line_size set to 64 bytes
+[    0.126349] e820: reserve RAM buffer [mem 0x0009fc00-0x0009ffff]
+[    0.126349] e820: reserve RAM buffer [mem 0xbffdf000-0xbfffffff]
+[    0.126349] NetLabel: Initializing
+[    0.126349] NetLabel:  domain hash size = 128
+[    0.126349] NetLabel:  protocols = UNLABELED CIPSOv4 CALIPSO
+[    0.126349] NetLabel:  unlabeled traffic allowed by default
+[    0.126349] Zachary Kaplan: About to create thread
+[    0.126349] Zachary Kaplan: Thread 67 created by [kthreadd]
+[    0.126349] clocksource: Switched to clocksource kvm-clock
+[    0.130898] VFS: Disk quotas dquot_6.6.0
+[    0.130934] VFS: Dquot-cache hash table entries: 512 (order 0, 4096 bytes)
+[    0.130997] AppArmor: AppArmor Filesystem Enabled
+[    0.131013] pnp: PnP ACPI init
+[    0.131056] pnp 00:00: Plug and Play ACPI device, IDs PNP0b00 (active)
+[    0.131077] pnp 00:01: Plug and Play ACPI device, IDs PNP0303 (active)
+[    0.131089] pnp 00:02: Plug and Play ACPI device, IDs PNP0f13 (active)
+[    0.131105] pnp 00:03: [dma 2]
+[    0.131112] pnp 00:03: Plug and Play ACPI device, IDs PNP0700 (active)
+[    0.131168] pnp 00:04: Plug and Play ACPI device, IDs PNP0501 (active)
+[    0.131293] pnp: PnP ACPI: found 5 devices
+[    0.136912] clocksource: acpi_pm: mask: 0xffffff max_cycles: 0xffffff, max_idle_ns: 2085701024 ns
+[    0.136922] pci_bus 0000:00: resource 4 [io  0x0000-0x0cf7 window]
+[    0.136922] pci_bus 0000:00: resource 5 [io  0x0d00-0xffff window]
+[    0.136923] pci_bus 0000:00: resource 6 [mem 0x000a0000-0x000bffff window]
+[    0.136924] pci_bus 0000:00: resource 7 [mem 0xc0000000-0xfebfffff window]
+[    0.136955] NET: Registered protocol family 2
+[    0.137040] Zachary Kaplan: About to create thread
+[    0.137066] Zachary Kaplan: Thread 68 created by [kthreadd]
+[    0.137090] TCP established hash table entries: 65536 (order: 7, 524288 bytes)
+[    0.137164] TCP bind hash table entries: 65536 (order: 8, 1048576 bytes)
+[    0.137260] TCP: Hash tables configured (established 65536 bind 65536)
+[    0.137280] UDP hash table entries: 4096 (order: 5, 131072 bytes)
+[    0.137296] UDP-Lite hash table entries: 4096 (order: 5, 131072 bytes)
+[    0.137331] NET: Registered protocol family 1
+[    0.137336] pci 0000:00:00.0: Limiting direct PCI/PCI transfers
+[    0.137348] pci 0000:00:01.0: PIIX3: Enabling Passive Release
+[    0.137360] pci 0000:00:01.0: Activating ISA DMA hang workarounds
+[    0.137395] pci 0000:00:02.0: Video device with shadowed ROM at [mem 0x000c0000-0x000dffff]
+[    0.149867] ACPI: PCI Interrupt Link [LNKB] enabled at IRQ 10
+[    0.175236] ACPI: PCI Interrupt Link [LNKC] enabled at IRQ 11
+[    0.200887] ACPI: PCI Interrupt Link [LNKD] enabled at IRQ 11
+[    0.226124] ACPI: PCI Interrupt Link [LNKA] enabled at IRQ 10
+[    0.238766] PCI: CLS 0 bytes, default 64
+[    0.238791] Unpacking initramfs...
+[    0.828183] Zachary Kaplan: About to create thread
+[    0.828216] Zachary Kaplan: Thread 69 created by [kthreadd]
+[    0.828217] Zachary Kaplan: About to create thread
+[    0.828224] Zachary Kaplan: Thread 70 created by [kthreadd]
+[    0.828224] Zachary Kaplan: About to create thread
+[    0.828230] Zachary Kaplan: Thread 71 created by [kthreadd]
+[    0.828230] Zachary Kaplan: About to create thread
+[    0.828239] Zachary Kaplan: Thread 72 created by [kthreadd]
+[    0.828240] Zachary Kaplan: About to create thread
+[    0.828244] Zachary Kaplan: Thread 73 created by [kthreadd]
+[    4.513002] Freeing initrd memory: 419020K
+[    4.513060] PCI-DMA: Using software bounce buffering for IO (SWIOTLB)
+[    4.513062] software IO TLB [mem 0xbbfdf000-0xbffdf000] (64MB) mapped at [000000007a3130e5-00000000eeab6390]
+[    4.513188] Scanning for low memory corruption every 60 seconds
+[    4.513275] Zachary Kaplan: About to create thread
+[    4.513314] Zachary Kaplan: Thread 74 created by [kthreadd]
+[    4.513807] Initialise system trusted keyrings
+[    4.513814] Key type blacklist registered
+[    4.513845] Zachary Kaplan: About to create thread
+[    4.513860] Zachary Kaplan: Thread 75 created by [kthreadd]
+[    4.513917] workingset: timestamp_bits=36 max_order=21 bucket_order=0
+[    4.514591] zbud: loaded
+[    4.514852] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    4.514924] Zachary Kaplan: About to create thread
+[    4.514936] Zachary Kaplan: Thread 76 created by [kthreadd]
+[    4.515096] fuse init (API version 7.26)
+[    4.515233] Zachary Kaplan: About to create thread
+[    4.515244] Zachary Kaplan: Thread 77 created by [kthreadd]
+[    4.515274] Zachary Kaplan: About to create thread
+[    4.515281] Zachary Kaplan: Thread 78 created by [kthreadd]
+[    4.515292] Zachary Kaplan: About to create thread
+[    4.515306] Zachary Kaplan: Thread 79 created by [kthreadd]
+[    4.515344] Zachary Kaplan: About to create thread
+[    4.515359] Zachary Kaplan: Thread 80 created by [kthreadd]
+[    4.515375] Zachary Kaplan: About to create thread
+[    4.515379] Zachary Kaplan: Thread 81 created by [kthreadd]
+[    4.515394] Zachary Kaplan: About to create thread
+[    4.515397] Zachary Kaplan: Thread 82 created by [kthreadd]
+[    4.515407] Zachary Kaplan: About to create thread
+[    4.515417] Zachary Kaplan: Thread 83 created by [kthreadd]
+[    4.515445] Zachary Kaplan: About to create thread
+[    4.515451] Zachary Kaplan: Thread 84 created by [kthreadd]
+[    4.515503] Zachary Kaplan: About to create thread
+[    4.515509] Zachary Kaplan: Thread 85 created by [kthreadd]
+[    4.515535] Zachary Kaplan: About to create thread
+[    4.515548] Zachary Kaplan: Thread 86 created by [kthreadd]
+[    4.515575] Zachary Kaplan: About to create thread
+[    4.515579] Zachary Kaplan: Thread 87 created by [kthreadd]
+[    4.515593] Zachary Kaplan: About to create thread
+[    4.515596] Zachary Kaplan: Thread 88 created by [kthreadd]
+[    4.515608] Zachary Kaplan: About to create thread
+[    4.515610] Zachary Kaplan: Thread 89 created by [kthreadd]
+[    4.515621] Zachary Kaplan: About to create thread
+[    4.515624] Zachary Kaplan: Thread 90 created by [kthreadd]
+[    4.515643] Zachary Kaplan: About to create thread
+[    4.515658] Zachary Kaplan: Thread 91 created by [kthreadd]
+[    4.515676] Zachary Kaplan: About to create thread
+[    4.515692] Zachary Kaplan: Thread 92 created by [kthreadd]
+[    4.515701] Zachary Kaplan: About to create thread
+[    4.515708] Zachary Kaplan: Thread 93 created by [kthreadd]
+[    4.515719] Zachary Kaplan: About to create thread
+[    4.515726] Zachary Kaplan: Thread 94 created by [kthreadd]
+[    4.515734] Zachary Kaplan: About to create thread
+[    4.515741] Zachary Kaplan: Thread 95 created by [kthreadd]
+[    4.515749] Zachary Kaplan: About to create thread
+[    4.515757] Zachary Kaplan: Thread 96 created by [kthreadd]
+[    4.515766] Zachary Kaplan: About to create thread
+[    4.515773] Zachary Kaplan: Thread 97 created by [kthreadd]
+[    4.515781] Zachary Kaplan: About to create thread
+[    4.515788] Zachary Kaplan: Thread 98 created by [kthreadd]
+[    4.515796] Zachary Kaplan: About to create thread
+[    4.515803] Zachary Kaplan: Thread 99 created by [kthreadd]
+[    4.515812] Zachary Kaplan: About to create thread
+[    4.515820] Zachary Kaplan: Thread 100 created by [kthreadd]

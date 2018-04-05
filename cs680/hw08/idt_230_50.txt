@@ -1,0 +1,51 @@
+/home/zach/kernel/cs680/arch/x86/kernel/idt.c[230:279]
+   230	static void set_intr_gate(unsigned int n, const void *addr)
+   231	{
+   232		struct idt_data data;
+   233	
+   234		BUG_ON(n > 0xFF);
+   235	
+   236		memset(&data, 0, sizeof(data));
+   237		data.vector	= n;
+   238		data.addr	= addr;
+   239		data.segment	= __KERNEL_CS;
+   240		data.bits.type	= GATE_INTERRUPT;
+   241		data.bits.p	= 1;
+   242	
+   243		idt_setup_from_table(idt_table, &data, 1, false);
+   244	}
+   245	
+   246	/*
+   247	 * CUSTOM EDIT FOR CS680
+   248	 * Only do this stuff if we are x86_64 (I didn't implement for 32 because I have
+   249	 * no way of testing it).
+   250	 */
+   251	#ifdef CONFIG_X86_64
+   252	/* 
+   253	 * CUSTOM EDIT FOR CS680
+   254	 * C handler for divide error.
+   255	 */
+   256	__visible asmlinkage void handle_divide_error(void) {
+   257	  printk(KERN_INFO "Zachary Kaplan: custom C handler for divide error called\n");
+   258	}
+   259	EXPORT_SYMBOL(handle_divide_error); /* Export for assembly code */
+   260	
+   261	/*
+   262	 * CUSTOM EDIT FOR CS680
+   263	 * Extern for the custom assembly handler in the symbol table.
+   264	 */
+   265	extern void custom_divide_error(void);
+   266	
+   267	/*
+   268	 * CUSTOM EDIT FOR CS680
+   269	 * Replace IDT entry for divide error with custom assembly handler.
+   270	 */
+   271	void write_custom_de_to_idt(void) {
+   272	  set_intr_gate(X86_TRAP_DE, &custom_divide_error);
+   273	}
+   274	EXPORT_SYMBOL(write_custom_de_to_idt); /* Export for common kernel code */
+   275	#endif /* CONFIG X86_64 */
+   276	
+   277	/**
+   278	 * idt_setup_early_traps - Initialize the idt table with early traps
+   279	 *

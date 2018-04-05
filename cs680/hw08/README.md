@@ -1,7 +1,7 @@
-# Homework 7
+# Homework 8
 
 ### dmesg.txt
-The section of dmesg with context switch and thread creation messages.
+The dmesg lines following an application level program dividing by zero.
 
 ### FILENAME\_dddd\_DDDD.txt
 These files are regions of the kernel source files I edited for this assignment.

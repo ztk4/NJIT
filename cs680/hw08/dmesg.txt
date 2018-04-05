@@ -1,0 +1,2 @@
+[   74.855164] Zachary Kaplan: custom C handler for divide error called
+[   74.855168] traps: test[2265] trap divide error ip:33 sp:2b error:0 in test[400000+1000]

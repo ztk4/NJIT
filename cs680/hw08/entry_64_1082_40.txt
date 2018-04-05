@@ -1,0 +1,41 @@
+/home/zach/kernel/cs680/arch/x86/entry/entry_64.S[1082:1121]
+  1082	idtentry divide_error			do_divide_error			has_error_code=0
+  1083	idtentry overflow			do_overflow			has_error_code=0
+  1084	idtentry bounds				do_bounds			has_error_code=0
+  1085	idtentry invalid_op			do_invalid_op			has_error_code=0
+  1086	idtentry device_not_available		do_device_not_available		has_error_code=0
+  1087	idtentry double_fault			do_double_fault			has_error_code=1 paranoid=2
+  1088	idtentry coprocessor_segment_overrun	do_coprocessor_segment_overrun	has_error_code=0
+  1089	idtentry invalid_TSS			do_invalid_TSS			has_error_code=1
+  1090	idtentry segment_not_present		do_segment_not_present		has_error_code=1
+  1091	idtentry spurious_interrupt_bug		do_spurious_interrupt_bug	has_error_code=0
+  1092	idtentry coprocessor_error		do_coprocessor_error		has_error_code=0
+  1093	idtentry alignment_check		do_alignment_check		has_error_code=1
+  1094	idtentry simd_coprocessor_error		do_simd_coprocessor_error	has_error_code=0
+  1095	
+  1096	  /*
+  1097	   * CUSTOM EDIT FOR CS680
+  1098	   * custom assembly handler for divide error.
+  1099	   * pieces pulled from above idtentry macro.
+  1100	   */
+  1101	.extern handle_divide_error
+  1102	ENTRY(custom_divide_error)
+  1103	  UNWIND_HINT_IRET_REGS offset=0
+  1104	  ASM_CLAC
+  1105	  ALLOC_PT_GPREGS_ON_STACK
+  1106	
+  1107	  /* Handles context switch and ensuring we're in the kernel, etc. */
+  1108	  call error_entry
+  1109	  UNWIND_HINT_REGS
+  1110	
+  1111	  call handle_divide_error  /* Call custom handler */
+  1112	
+  1113	  /* Prepare args and defer to normal handler */
+  1114	  movq %rsp, %rdi   /* pt_regs */
+  1115	  xorl %esi, %esi   /* no error code */
+  1116	  call do_divide_error
+  1117	
+  1118	  jmp error_exit
+  1119	END(custom_divide_error)
+  1120	
+  1121		/*

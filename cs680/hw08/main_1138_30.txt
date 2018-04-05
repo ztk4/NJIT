@@ -1,0 +1,31 @@
+/home/zach/kernel/cs680/init/main.c[1138:1167]
+  1138	/* 
+  1139	 * CUSTOM EDIT FOR CS680
+  1140	 * Extern of symbol defined in arch/x86.
+  1141	 */
+  1142	#ifdef CONFIG_X86_64
+  1143	extern void write_custom_de_to_idt(void);
+  1144	#endif
+  1145	
+  1146	static int __ref kernel_init(void *unused)
+  1147	{
+  1148		int ret;
+  1149	
+  1150		kernel_init_freeable();
+  1151		/* need to finish all async __init code before freeing the memory */
+  1152		async_synchronize_full();
+  1153		ftrace_free_init_mem();
+  1154		free_initmem();
+  1155		mark_readonly();
+  1156		system_state = SYSTEM_RUNNING;
+  1157		numa_default_policy();
+  1158	
+  1159		rcu_end_inkernel_boot();
+  1160	
+  1161	  /*
+  1162	   * CUSTOM EDIT FOR CS680
+  1163	   * Insert custom assembly handler for divide error into the IDT.
+  1164	   */
+  1165	#ifdef CONFIG_X86_64
+  1166	  write_custom_de_to_idt();
+  1167	#endif
