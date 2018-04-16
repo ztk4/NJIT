@@ -21,7 +21,7 @@ static int pkt_cntr_open(struct inode *inode, struct file *file) {
 
 static int pkt_cntr_release(struct inode *inode, struct file *file) {
   module_put(THIS_MODULE);
-  return seq_release(inode, file);
+  return single_release(inode, file);
 }
 
 /* Struct for entry in proc fs */
