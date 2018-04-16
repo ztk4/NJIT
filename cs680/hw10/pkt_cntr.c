@@ -1,6 +1,7 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/proc_fs.h>
+#include <linux/seq_file.h>
 
 /* Documentation Macros */
 MODULE_LICENSE("GPL");
@@ -8,26 +9,29 @@ MODULE_AUTHOR("Zachary Kaplan");
 MODULE_DESCRIPTION("Prints some INET packet stats aggregated over 1 minute "
                    "periods.");
 
-/* Supported file operations for this module */
-static int pkt_cntr_fopen(struct inode *inode, struct file *file) {
-  return !try_module_get(THIS_MODULE);
+/* For showing information in the proc entry */
+static int pkt_cntr_show(struct seq_file *file, void *data) {
+  return 0;  /* TODO: This. */
 }
-static int pkt_cntr_fclose(struct inode *inode, struct file *file) {
+
+static int pkt_cntr_open(struct inode *inode, struct file *file) {
+  try_module_get(THIS_MODULE);
+  return single_open(file, pkt_cntr_show, NULL);
+}
+
+static int pkt_cntr_release(struct inode *inode, struct file *file) {
   module_put(THIS_MODULE);
-  return 0;
-}
-static ssize_t
-pkt_cntr_fread(struct file *file, char __user *buf, size_t len, loff_t *loff) {
-  return 0;  /* TODO: This */
+  return seq_release(inode, file);
 }
 
 /* Struct for entry in proc fs */
 static struct proc_dir_entry *pkt_cntr_fentry;
-/* Struct for file ops on our proc entry */
 static const struct file_operations pkt_cntr_fops = {
-  .read     = pkt_cntr_fread,
-  .open     = pkt_cntr_fopen,
-  .release  = pkt_cntr_fclose,
+  .owner    = THIS_MODULE,
+  .open     = pkt_cntr_open,
+  .read     = seq_read,
+  .llseek   = seq_lseek,
+  .release  = pkt_cntr_release,
 };
 /* Entry name in the /proc dir. */
 static const char *const kEntryName = "pkt_cntr";
