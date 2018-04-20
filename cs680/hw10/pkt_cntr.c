@@ -13,16 +13,14 @@ MODULE_DESCRIPTION("Prints some INET packet stats aggregated over 1 minute "
                    "periods.");
 
 static const unsigned kPeriodMs = 60 * 1000;  /* 1 minute period for stats */
-static const unsigned kPollUs = 10;           /* 10 us period for polling */
 
 /* Aggregate statistics. */
-static u64 nr_pkt_out     = 0;
-static u64 nr_pkt_in      = 0;
-static u64 nr_pkt_merges  = 0;
-static u64 nr_enqueue     = 0;
-static u64 nr_dequeue     = 0;
-static u64 nr_requeue     = 0;
-static struct mutex aggregate_mutex;  /* Guards above aggregates */
+extern atomic64_t pkt_cntr_nr_out;
+extern atomic64_t pkt_cntr_nr_in;
+extern atomic64_t pkt_cntr_nr_merges;
+extern atomic64_t pkt_cntr_nr_enqueue;
+extern atomic64_t pkt_cntr_nr_dequeue;
+extern atomic64_t pkt_cntr_nr_requeue;
 
 /* Buffer for output string. */
 #define PKT_CNTR_BUFF_SIZE (1 << 10)
@@ -57,24 +55,26 @@ static void pkt_cntr_flush_aggregates(struct timer_list *timer) {
   /* Tell timer to call us again in one period. */
   mod_timer(timer, jiffies + msecs_to_jiffies(kPeriodMs));
 
-  /* Do periodic work (holding lock on mutex for aggregates). */
-  mutex_lock(&aggregate_mutex); /* LOCK */
+  /* Do periodic work */
   n = snprintf(buff, PKT_CNTR_BUFF_SIZE,
       "INET Packet Statistics (aggregated over 1 minute):\n"
-      "Number of outgoing packets   : %llu\n"
-      "Number of incoming packets   : %llu\n"
-      "Number of queue merges       : %llu\n"
-      "Number of enqueue operations : %llu\n"
-      "Number of dequeue operations : %llu\n"
-      "Number of requeue operations : %llu\n",
-      nr_pkt_out, nr_pkt_in, nr_pkt_merges, nr_enqueue, nr_dequeue, nr_requeue);
-  nr_pkt_out    = 0;
-  nr_pkt_in     = 0;
-  nr_pkt_merges = 0;
-  nr_enqueue    = 0;
-  nr_dequeue    = 0;
-  nr_requeue    = 0;
-  mutex_unlock(&aggregate_mutex); /* UNLOCK */
+      "Number of outgoing packets   : %ld\n"
+      "Number of incoming packets   : %ld\n"
+      "Number of queue merges       : %ld\n"
+      "Number of enqueue operations : %ld\n"
+      "Number of dequeue operations : %ld\n"
+      "Number of requeue operations : %ld\n",
+      atomic64_read(&pkt_cntr_nr_out), atomic64_read(&pkt_cntr_nr_in),
+      atomic64_read(&pkt_cntr_nr_merges), atomic64_read(&pkt_cntr_nr_enqueue),
+      atomic64_read(&pkt_cntr_nr_dequeue), atomic64_read(&pkt_cntr_nr_requeue));
+
+  /* Reset all counters */
+  atomic64_set(&pkt_cntr_nr_out, 0);
+  atomic64_set(&pkt_cntr_nr_in, 0);
+  atomic64_set(&pkt_cntr_nr_merges, 0);
+  atomic64_set(&pkt_cntr_nr_enqueue, 0);
+  atomic64_set(&pkt_cntr_nr_dequeue, 0);
+  atomic64_set(&pkt_cntr_nr_requeue, 0);
 
   if (n < 0) {
     printk(KERN_WARNING "Zachary Kaplan: Failed to update %s\n", kEntryName);
@@ -112,9 +112,6 @@ static int __init pkt_cntr_init(void) {
 
   printk(KERN_INFO "Zachary Kaplan: /proc/%s entry created\n", kEntryName);
 
-  /* Initialize mutex */
-  mutex_init(&aggregate_mutex);
-
   /* Initialize periodic timer for publishing aggregates */
   timer_setup(&pkt_cntr_aggregate_timer, pkt_cntr_flush_aggregates, 0);
   /* Start timer loop by calling timer routine */
@@ -124,9 +121,8 @@ static int __init pkt_cntr_init(void) {
 }
 
 static void __exit pkt_cntr_exit(void) {
-  /* Destroy timer and mutex */
+  /* Destroy timer */
   del_timer(&pkt_cntr_aggregate_timer); 
-  mutex_destroy(&aggregate_mutex);
 
   /* Then remove proc fs entry. */
   proc_remove(pkt_cntr_fentry);
