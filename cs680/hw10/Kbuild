@@ -1,0 +1,4 @@
+# Kbuild for building external modules in this directory.
+
+# Each object this rule depends on is added as a module.
+obj-m := pkt_cntr.o
