@@ -25,6 +25,7 @@
 //               "type": "array",
 //               "items": { "type": "string" }
 //             }
+//             "constraint": { "type": "string" }
 //           }
 //         }
 //
@@ -50,7 +51,8 @@ try {
         'difficulty' => $question->Difficulty,
         'topic' => $question->Topic,
         'fname' => $question->FName,
-        'testcases' => explode("\n", $question->testcases)
+        'testcases' => explode("\n", $question->testcases),
+        'constraint' => $question->Constraints
       ));
     }
   }

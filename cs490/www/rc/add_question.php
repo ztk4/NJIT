@@ -34,6 +34,7 @@ try {
   $prompt = util\expect_post_entry('question');
   $fname = util\expect_post_entry('fname');
   $testcases = util\expect_post_entry('cases');
+  $constraint = util\expect_post_entry('constraint');
 
   // Validate info.
   $eval_data = array('fname' => $fname, 'testcases' => $testcases);
@@ -46,7 +47,8 @@ try {
     'topic' => $topic,
     'question' => $prompt,
     'fname' => $fname,
-    'testcases' => $testcases
+    'testcases' => $testcases,
+    'constraint' => $constraint
   );
   $resp = util\make_db_request('add_questions', $post_data);
 
