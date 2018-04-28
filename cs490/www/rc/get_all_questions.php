@@ -24,7 +24,7 @@
 //             "testcases": {
 //               "type": "array",
 //               "items": { "type": "string" }
-//             }
+//             },
 //             "constraint": { "type": "string" }
 //           }
 //         }

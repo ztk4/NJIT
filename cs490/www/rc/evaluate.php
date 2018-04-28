@@ -43,6 +43,7 @@ try {
   // Optional info.
   $code = util\maybe_post_entry('code');
   $points = util\maybe_post_entry('points');
+  $constraint = util\maybe_post_entry('constraint');
 
   // Attempt to build a command and execute it.
   $cmd = util\kEvalCmd . ' --name=' . escapeshellarg($fname);
@@ -50,6 +51,7 @@ try {
     $cmd .= ' --test_case=' . escapeshellarg($testcase);
   }
   if (!is_null($code)) {
+    // TODO: Arguments specifying contraint.
     $cmd .= ' --code=' . escapeshellarg($code) .
             ' --points=' . escapeshellarg($points);
   }

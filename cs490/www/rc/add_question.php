@@ -10,6 +10,7 @@
 // testcases: array(
 //   string representing a test case (see evaluate.py for format)
 // )
+// constraint: string constraint
 // token: secret in plaintext
 //
 // This JSON response will take the following format:
