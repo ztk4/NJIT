@@ -43,7 +43,8 @@ try {
       'points' => $question->Points,
       'fname' => $question->FName,
       'code' => $answer['code'],
-      'testcases' => explode("\n", $question->testcases)
+      'testcases' => explode("\n", $question->testcases),
+      'constraint' => $question->Constraints
     ));
 
     array_push($graded_answers, array(
