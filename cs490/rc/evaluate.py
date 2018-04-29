@@ -220,6 +220,21 @@ class NodeCounter(ast.NodeVisitor):
   def get_count(self):
     return self.count
 
+class RenameNodes(ast.NodeTransformer):
+  # This is a transformer that renames node from old_name to new_name.
+  def __init__(self, old_name, new_name):
+    self.old_name = old_name
+    self.new_name = new_name
+
+  def visit_Name(self, node):
+    self.generic_visit(node)    # Recurse before anything.
+
+    if node.id == self.old_name:
+      # Replace with new Name node with a modified identifier.
+      return ast.copy_location(ast.Name(id=self.new_name, ctx=node.ctx), node)
+    else:
+      return node
+
 ## OUTPUT FORMAT
 # The output of this script will be written to stdout, and will take the form:
 # {
@@ -501,6 +516,10 @@ def main():
     fdef = tree.body[0]
     if type(fdef) in [ast.FunctionDef, ast.AsyncFunctionDef]:
       if fdef.name != name:
+        # Rename all Name nodes in the body of the function that reference the incorrect name.
+        renamer = RenameNodes(fdef.name, name)
+        fdef.body = [renamer.visit(node) for node in fdef.body]
+        # Rename the function definition.
         fdef.name = name
         dock_points(deductions, 3, 'misnamed function')
       # TODO: Consider checking number of arguments and stuff.
