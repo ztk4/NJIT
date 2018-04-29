@@ -3,7 +3,7 @@
 // Each function preforms a specific transaction, and returns relevant info
 // to the calling client (usually a php script rendering a client response).
 
-require 'util.inc'
+require_once 'util.inc';
 
 // We need php session for much of the logic below.
 session_start();

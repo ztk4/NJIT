@@ -4,8 +4,8 @@
 // endpoint for requesting this action without rendering a graphical response.
 // Fit for asynchronous dispatch from javascript for example.
 
-require 'util.inc'
-require 'db.inc'
+require_once 'util.inc';
+require_once 'db.inc';
 
 try {
   // Expect to recieve a product id and a quantity.
