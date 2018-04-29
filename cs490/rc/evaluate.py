@@ -201,6 +201,25 @@ class RedirectIO(object):
     # Returns the contents of both mocked output streams.
     return (self.stdout_mock.getvalue(), self.stderr_mock.getvalue())
 
+# Helper classes for walking ASTs and enforcing certain constraints.
+class NodeCounter(ast.NodeVisitor):
+  # This is a visitor that counts the number of certain type of node in all
+  # children of the target node that satisfy the given predicate.
+  # The predicate defaults to always true (simple count).
+  def __init__(self, node_type, predicate = lambda _: True):
+    self.__dict__['visit_' + node_type.__name__] = self.process
+    self.count = 0
+    self.predicate = predicate
+
+  def process(self, node):
+    if (self.predicate(node)):
+      self.count += 1           # Found an instance.
+
+    self.generic_visit(node);   # Continue parsing.
+
+  def get_count(self):
+    return self.count
+
 ## OUTPUT FORMAT
 # The output of this script will be written to stdout, and will take the form:
 # {
@@ -267,8 +286,10 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
   #       descriptor. i.e. os.write(1, 'haha, gotcha!');
   capture_io = RedirectIO();
 
-  # Instrument globals and locals. This is not leak-proof by anymeans, but
+  # Instrument globals only. This is not leak-proof by anymeans, but
   # helps to limit the attack surface.
+  # NOTE: locals will default to be the same as globals when not specified.
+  #       This then behaves as if all the code executed below is at top-level
   instr_globals = {
     k: globals()[k]
     for k in global_whitelist
@@ -280,12 +301,11 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
     for k in builtins_whitelist
     if k in __builtins__.__dict__
   }
-  instr_locals = {}
 
   # Run the function declaration from the student.
   try:
     with capture_io:
-      exec(code_obj, instr_globals, instr_locals)
+      exec(code_obj, instr_globals)
   except BaseException as e:
     if vlevel >= 1: print(repr(e), file=sys.stderr)
     # We'll consider any exception while defining the function to be a 0.
@@ -298,8 +318,8 @@ def grade(code_obj, name, points, test_cases, test_case_objs, vlevel = 0):
         capture_io.reset_output();
         # Evaluate each side of the comparison separately,
         # then determine if they compare correctly.
-        left_val = eval(left_obj, instr_globals, instr_locals)
-        right_val = eval(right_obj, instr_globals, instr_locals)
+        left_val = eval(left_obj, instr_globals)
+        right_val = eval(right_obj, instr_globals)
         result = compare(left_val, cmpop, right_val)
 
       if not result:
@@ -356,6 +376,10 @@ def main():
                "must take the form of of a function call without the function "
                "name followed by a comparison to a return value. For example "
                "``(1, 2) == 3'' or ``(1, 2, (3, 4), *[5, 6], last=8) == None''")
+  parser.add_argument('-r', '--restriction', default='',
+          help="Restrictions to apply when grading. This only needs to be "
+               "passed in when grading (not needed for test case validation. "
+               "Valid options are 'for-loop', 'if-statement', and 'recursion.")
   parser.add_argument('-v', '--verbose',  action='count', default=0,
           help="Specifies verbositiy level. Each time this flag is specified, "
                "the count goes up by one. Level 1 or greater outputs additional "
@@ -478,8 +502,7 @@ def main():
     if type(fdef) in [ast.FunctionDef, ast.AsyncFunctionDef]:
       if fdef.name != name:
         fdef.name = name
-        # TODO: Solidify point values.
-        dock_points(deductions, 1, 'misnamed function')
+        dock_points(deductions, 3, 'misnamed function')
       # TODO: Consider checking number of arguments and stuff.
       valid = True
 
@@ -487,6 +510,25 @@ def main():
     dock_points(deductions, args.points, 'not just a single function definition')
     output_json(args.points, deductions)
     return
+
+  # Now check if the solution meets any restrictions imposed.
+  if len(args.restriction):
+    if args.restriction == 'for-loop':
+      visitor = NodeCounter(ast.For)
+    elif args.restriction == 'if-statement':
+      visitor = NodeCounter(ast.If)
+    elif args.restriction == 'recursion':
+      # This is more complicated than the above, we need to count function calls with the same name
+      # as the defined function (recursion). This is technically naiive because there are other ways
+      # of implementing recursion, but this is good enough for now.
+      visitor = NodeCounter(ast.Call,
+          lambda node: type(node.func) == ast.Name and node.func.id == name)
+
+    # Expect that we see at least one instance meeting the restriction.
+    visitor.visit(tree)
+    if not visitor.get_count():
+      dock_points(deductions, 3, 'Did not meet the requirement of using ' + args.restriction)
+
 
   # TODO: Consider doing more work on the AST to help catch common errors.
   # TODO: Consider multiple alterations to tree to fix common errors.
