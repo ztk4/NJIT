@@ -51,9 +51,12 @@ try {
     $cmd .= ' --test_case=' . escapeshellarg($testcase);
   }
   if (!is_null($code)) {
-    // TODO: Arguments specifying contraint.
     $cmd .= ' --code=' . escapeshellarg($code) .
             ' --points=' . escapeshellarg($points);
+  }
+  if ($constraint === 'for-loop' || $constraint === 'if-statement' ||
+      $constraint === 'recursion') {
+    $cmd .= ' --restriction=' . escapeshellarg($constraint);
   }
 
   // Execute Command.
