@@ -220,6 +220,26 @@ class NodeCounter(ast.NodeVisitor):
   def get_count(self):
     return self.count
 
+class AllNodes(ast.NodeVisitor):
+  # This is a visitor that checks whether or not ALL nodes passed through visit
+  # satisfy a predicate.
+  def __init__(self, predicate):
+    self.predicate = predicate
+    self.result = True  # Haven't seen any nodes yet, so true.
+
+  def visit(self, node):
+    # If visit enters where result is False, we are just starting a parse.
+    # Set to true to assume true.
+    if not self.result or not self.predicate(node):
+      # Failed the predicate, mark this and short circuit.
+      self.result = False
+      return
+
+    self.generic_visit(node)
+
+  def get_status(self):
+    return self.result
+
 class RenameNodes(ast.NodeTransformer):
   # This is a transformer that renames node from old_name to new_name.
   def __init__(self, old_name, new_name):
@@ -431,10 +451,6 @@ def main():
     # One comparison expression:
     #   where left is a single function call.
     #   and there is only one comparator
-    #     which must be a simple literal:
-    #       Dict, Set, Num, Str, Bytes, NameConstant, List, Tuple.
-    #     or simple operators applied to the above:
-    #       BinOp, UnaryOp.
     valid = False
     if type(expr) == ast.Expression:
       comp = expr.body
@@ -448,16 +464,15 @@ def main():
         left_valid = False
         if type(left) == ast.Call:
           if type(left.func) == ast.Name and left.func.id == name:
-            # We appear to be calling the right function, TODO: walk args.
+            # We appear to be calling the right function.
             left_valid = True
 
         # Validate right side of comparison (only if left side was okay).
         if left_valid:
-          # TODO: walk nested exprs as needed.
-          if type(right) in [ast.Num, ast.Str, ast.Bytes, ast.NameConstant,
-                             ast.Dict, ast.Set, ast.List, ast.Tuple,
-                             ast.BinOp, ast.UnaryOp]:
-            valid = True
+          # Check that the right side does not also call the function.
+          all_okay = AllNodes(lambda node: type(node) != ast.Call or node.func.id != name)
+          all_okay.visit(right)
+          valid = all_okay.get_status()
 
     if not valid:
       raise ValueError('Invalid formatting for test case %d' % i)
