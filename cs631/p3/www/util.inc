@@ -60,6 +60,19 @@ function make_db_connection() {
   return $conn;
 }
 
+// Returns a prepared statement using the passed mysqli connection.
+// The caller MUST call -> close() on the returned object.
+// Throws a RuntimeException on failure.
+function prepare_statement($conn, $sql) {
+  $stmt = $conn->prepare($sql);
+
+  if (!$stmt)
+    throw new \RuntimeException('Error creating prepared statement ``' . $sql .
+                                "''");
+
+  return $stmt;
+}
+
 // Returns the value of the session entry for $key.
 // Throws OutOfBoundsException when $key is not present.
 function expect_session_entry($key) {
