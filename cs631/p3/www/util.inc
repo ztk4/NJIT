@@ -49,7 +49,7 @@ function expect_post_entry($key) {
 // The caller MUST call ->close() on the returned object.
 // Throws a RuntimeException on connection failure.
 function make_db_connection() {
-  $conn = new mysqli(kDbUri, kDbUser, trim(cat_file('.db.pass')), kDbName);
+  $conn = new \mysqli(kDbUri, kDbUser, trim(cat_file('.db.pass')), kDbName);
 
   if ($conn->connect_error) {
     throw new \RuntimeException('Error(' . $conn->connect_errno . '): ' .
