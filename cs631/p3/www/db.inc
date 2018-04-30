@@ -8,43 +8,18 @@ require_once 'util.inc';
 // We need php session for much of the logic below.
 session_start();
 
-function make_user($fname, $lname, $email, $address, $phone, $addr_name,
+function make_customer($fname, $lname, $email, $address, $phone, $addr_name,
   $recpt_name, $street, $snumber, $city, $zip, $state, $country) {
   $conn = util\make_db_connection();
   
-  // Create User.
+  // Call register procedude.
   $stmt = util\prepare_statement($conn,
-    "INSERT INTO Customer (LName, FName, Email, Address, Phone, Status)" .
-    "  VALUES (?, ?, ?, ?, ?, ?);");
-  $stmt->bind_param('ssssss', $fname, $lname, $email, $address, $phone,
-    'Regular');
+    "CALL register(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+  $stmt->bind_param('sssssssssssss', $fname, $lname, $email, $address, $phone,
+    $addr_name, $recpt_name, $street, $snumber, $city, $zip, $state, $country);
   if (!$stmt->execute()) return false;
   $stmt->close();
-
-  // Fetch CID.
-  $stmt = util\prepare_statement($conn,
-    "SELECT CID FROM Customer WHERE Email = ?;");
-  $stmt->bind_param('s', $email);
-  $stmt->bind_result($cid);
-  if (!$stmt->execute() || !$stmt->fetch()) return false;
-  $stmt->close();
-
-  // Insert Shipping Address.
-  $stmt = util\prepare_statement($conn,
-    "INSERT INTO Shipping_Address" .
-    "  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-  $stmt->bind_param('issssssss', $cid, $addr_name, $recpt_name, $street,
-    $snumber, $city, $zip, $state, $country);
-  if (!$stmt->execute()) return false;
-  $stmt->close();
-
-  // Insert Empty Cart.
-  $stmt = util\prepare_statement($conn,
-    "INSERT INTO Cart (c, SAName, TStatus) VALUES (?, ?, ?);");
-  $stmt->bind_param('iss', $cid, $addr_name, 'Active');
-  if (!$stmt->execute()) return false;
-  $stmt->close();
-
+  
   $conn->close();
   return true;
 }
@@ -56,8 +31,9 @@ function login($email) {
   $stmt = util\prepare_statement($conn,
     "SELECT CID FROM Customer WHERE Email = ?;");
   $stmt->bind_param('s', $email);
+  if (!$stmt->execute()) return false;
   $stmt->bind_result($cid);
-  if (!$stmt->execute() || !$stmt->fetch()) return false;
+  if (!$stmt->fetch()) return false;
   $stmt->close();
   
   $_SESSION['cid'] = $cid;
@@ -73,6 +49,10 @@ function logout() {
   return true;
 }
 
+function is_logged_in() {
+  return isset($_SESSION['cid']);
+}
+
 function get_user_info() {
   $conn = util\make_db_connection();
   try {
@@ -85,8 +65,9 @@ function get_user_info() {
     "SELECT FName, LName, Email, Address, Phone, Status" . 
     "  FROM Customer WHERE CID = ?;");
   $stmt->bind_param("i", $cid);
+  if (!$stmt->execute()) return false;
   $stmt->bind_result($fname, $lname, $email, $address, $phone, $status);
-  if (!$stmt->execute() || !$stmt->fetch()) return false;
+  if (!$stmt->fetch()) return false;
   $stmt->close();
 
   $conn->close();
@@ -100,6 +81,26 @@ function get_user_info() {
   );
 }
 
+function edit_user_info($fname, $lname, $email, $address, $phone) {
+  $conn = util\make_db_connection();
+  try {
+    $cid = util\expect_session_entry('cid');
+  } catch (Exception $e) {
+    return false;
+  }
+
+  $stmt = util\prepare_statement($conn,
+    "UPDATE Customer" .
+    "  SET FName = ?, LName = ?, Email = ?, Address = ?, Phone = ?" .
+    "  WHERE CID = ?;");
+  $stmt->bind_param('sssssi', $fname, $lname, $email, $address, $phone, $cid);
+  if (!$stmt->execute()) return false;
+  $stmt->close();
+
+  $conn->close();
+  return true;
+}
+
 function get_all_products() {
   $conn = util\make_db_connection();
   try {
@@ -110,12 +111,31 @@ function get_all_products() {
 
   $stmt = util\prepare_statement($conn, "CALL getProdInfo(?);");
   $stmt->bind_param('i', $cid);
-  // TODO: Bind results...
-  if (!$stmt->execute() || !$stmt->fetch()) return false;
-  $stmt->close();
+  if (!$stmt->execute()) return false;
   
+  $stmt->bind_result($pid, $ptype, $pname, $pprice, $descr, $pqty, $cputype,
+    $btype, $weight, $printertype, $res);
+
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'pid' => $pid,
+      'ptype' => $ptype,
+      'pname' => $pname,
+      'pprice' => $pprice,
+      'descr' => $descr,
+      'pqty' => $pqty,
+      'cputype' => $cputype,
+      'btype' => $btype,
+      'weight' => $weight,
+      'printertype' => $printertype,
+      'res' => $res,
+    ));
+  }
+  $stmt->close();
+
   $conn->close();
-  return array();  // TODO: populate
+  return $result;
 }
 
 function upsert_product($pid, $qty) {
@@ -126,7 +146,11 @@ function upsert_product($pid, $qty) {
     return false;
   }
 
-  // TODO: need the SQL for this one still.
+  $stmt = util\prepare_statement($conn,
+    "CALL upsertProd(?, ?, ?);");
+  $stmt->bind_param('iii', $cid, $pid, $qty);
+  if (!$stmt->execute()) return false;
+  $stmt->close();
 
   $conn->close();
   return true;
@@ -142,12 +166,12 @@ function view_cart() {
 
   $stmt = util\prepare_statement($conn,
     "SELECT PID, PType, PName, PriceSold, Qty, PQty" .
-    "  FROM Cart NATURAL JOIN Appears_In NATURAL JOIN Product" . 
+    "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" . 
     "  WHERE CID = ? AND TStatus = 'Active';");
   $stmt->bind_param('i', $cid);
-  $stmt->bind_result($pid, $ptype, $pname, $pprice, $qty, $pqty);
   if (!$stmt->execute()) return false;
 
+  $stmt->bind_result($pid, $ptype, $pname, $pprice, $qty, $pqty);
   $result = array();
   while ($stmt->fetch()) {
     array_push($result, array(
@@ -176,9 +200,9 @@ function view_addresses() {
   $stmt = util\prepare_statement($conn,
     "SELECT SAName FROM Shipping_Address WHERE CID = ?;");
   $stmt->bind_param('i', $cid);
-  $stmt->bind_result($addr_name);
   if (!$stmt->execute()) return false;
 
+  $stmt->bind_result($addr_name);
   $result = array();
   while ($stmt->fetch()) {
     array_push($result, $addr_name);
@@ -200,9 +224,9 @@ function view_ccnums() {
   $stmt = util\prepare_statement($conn,
     "SELECT CCNumber FROM Stored_Card WHERE CID = ?;");
   $stmt->bind_param('i', $cid);
-  $stmt->bind_result($ccnum);
   if (!$stmt->execute()) return false;
 
+  $stmt->bind_result($ccnum);
   $result = array();
   while ($stmt->fetch()) {
     array_push($result, $ccnum);
@@ -221,12 +245,19 @@ function place_order($address_name, $ccnum) {
     return false;
   }
 
-  // TODO: SQL
-
-  return true;
+  $stmt = util\prepare_statement($conn,
+    "CALL placeOrder(?, ?, ?);");
+  $stmt->bind_param('iss', $cid, $address_name, $ccnum);
+  if (!$stmt->execute()) return false;
+  $stmt->bind_result($result);
+  if (!$stmt->fetch()) return false;
+  $stmt->close();
+  
+  $conn->close();
+  return $result === "WORKED";
 }
 
-function view_transactions($tstatus, $tdate) {
+function view_transactions($tstatus, $saname) {
   $conn = util\make_db_connection();
   try {
     $cid = util\expect_session_entry('cid');
@@ -234,9 +265,33 @@ function view_transactions($tstatus, $tdate) {
     return false;
   }
 
-  // TODO: SQL
+  $tstatus_pat = "%{$tstatus}%";
+  $saname_pat = "%{$saname}%";
 
-  return array();
+  $stmt = util\prepare_statement($conn,
+    "SELECT CartID, SAName, CCNumber, TStatus, TDate" .
+    "  FROM Cart" .
+    "  WHERE CID = ? AND TStatus != 'Active'" .
+    "    AND SAName LIKE ? AND TStatus LIKE ?" .
+    "  ORDER BY TDate DESC;");
+  $stmt->bind_param('iss', $cid, $saname_pat, $tstatus_pat); 
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($cartid, $saname, $ccnum, $tstatus, $tdate);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'cartid' => $cartid,
+      'saname' => $saname,
+      'ccnum' => $ccnum,
+      'tstatus' => $tstatus,
+      'tdate' => $tdate,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result;
 }
 
 function get_stats($sdate, $edate) {

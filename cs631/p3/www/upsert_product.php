@@ -9,8 +9,8 @@ require_once 'db.inc';
 
 try {
   // Expect to recieve a product id and a quantity.
-  $pid = util\expect_post_entry('pid');
-  $qty = util\expect_post_entry('qty');
+  $pid = util\expect_post_entry('PID');
+  $qty = util\expect_post_entry('QTY');
 
   // Call the endpoint from db.
   if (!upsert_product($pid, $qty))
