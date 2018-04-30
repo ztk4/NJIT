@@ -8,7 +8,7 @@ namespace util;
 // All paths are relative to here.
 const kBaseDir  = '/afs/cad/u/z/t/ztk4/njit/cs631/p3/';
 // Hostname of db service.
-const kDbUri    = 'sql3.njit.edu';
+const kDbUri    = 'sql1.njit.edu';
 // mysql username
 const kDbUser   = 'ejd29';
 // Databse name on mysql instance.
