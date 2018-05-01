@@ -297,7 +297,6 @@ function view_transactions($tstatus, $saname) {
 function get_freq_prods($sdate, $edate) {
   $conn = util\make_db_connection();
 
-  // TODO: Ask about applying limit syntax to these...
   $stmt = util\prepare_statement($conn,
     "SELECT PID, PName, SUM(Qty)" .
     "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" .
@@ -305,7 +304,6 @@ function get_freq_prods($sdate, $edate) {
     "  GROUP BY PID" .
     "  HAVING SUM(Qty) >= ALL(SELECT Sum(Qty)" .
     "                           FROM Cart NATURAL JOIN Appears_in" .
-    "                             NATURAL JOIN Product" .
     "                           WHERE TStatus != 'Active'" .
     "                             AND TDate BETWEEN ? AND ?" .
     "                           GROUP BY PID);");
@@ -331,13 +329,12 @@ function get_pop_prods($sdate, $edate) {
   $conn = util\make_db_connection();
 
   $stmt = util\prepare_statement($conn,
-    "SELECT PID, PName, SUM(DISTINCT CID)" .
+    "SELECT PID, PName, COUNT(DISTINCT CID)" .
     "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" .
     "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
     "  GROUP BY PID" .
-    "  HAVING SUM(DISTINCT CID) >= ALL (SELECT SUM(DISTINCT CID)" .
+    "  HAVING COUNT(DISTINCT CID) >= ALL (SELECT COUNT(DISTINCT CID)" .
     "                                     FROM Cart NATURAL JOIN Appears_in" .
-    "                                       NATURAL JOIN Product" .
     "                                     WHERE TStatus != 'Active'" .
     "                                       AND TDate BETWEEN ? AND ?" .
     "                                     GROUP BY PID);");
@@ -367,7 +364,7 @@ function get_best_customers($sdate, $edate) {
     "SELECT FName, LName, Email, SUM(PriceSold)" .
     "  FROM Customer NATURAL JOIN Cart NATURAL JOIN Appears_in" .
     "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
-    "  GROUP BY PID" .
+    "  GROUP BY CID" .
     "  ORDER BY SUM(PriceSold) DESC" .
     "  LIMIT 10;");
   $stmt->bind_param('ss', $sdate, $edate);
@@ -397,7 +394,7 @@ function get_best_zipcodes($sdate, $edate) {
     "  FROM Shipping_Address NATURAL JOIN Cart NATURAL JOIN Appears_in" .
     "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
     "  GROUP BY Zip" .
-    "  ORDER BY SUM(CartID) DESC" .
+    "  ORDER BY COUNT(CartID) DESC" .
     "  LIMIT 5;");
   $stmt->bind_param('ss', $sdate, $edate);
   if (!$stmt->execute()) return false;
