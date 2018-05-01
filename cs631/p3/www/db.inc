@@ -297,8 +297,7 @@ function view_transactions($tstatus, $saname) {
 function get_freq_prods($sdate, $edate) {
   $conn = util\make_db_connection();
 
-  // TODO: Check that this is right.
-  //       I think the subquery may not need the Product JOIN.
+  // TODO: Ask about applying limit syntax to these...
   $stmt = util\prepare_statement($conn,
     "SELECT PID, PName, SUM(Qty)" .
     "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" .
@@ -310,7 +309,7 @@ function get_freq_prods($sdate, $edate) {
     "                           WHERE TStatus != 'Active'" .
     "                             AND TDate BETWEEN ? AND ?" .
     "                           GROUP BY PID);");
-  $stmt->bind_param('ss', $sdate, $edate, $sdate, $edate);
+  $stmt->bind_param('ssss', $sdate, $edate, $sdate, $edate);
   if (!$stmt->execute()) return false;
 
   $stmt->bind_result($pid, $pname, $freq);
@@ -329,19 +328,118 @@ function get_freq_prods($sdate, $edate) {
 }
 
 function get_pop_prods($sdate, $edate) {
-  return array();
+  $conn = util\make_db_connection();
+
+  $stmt = util\prepare_statement($conn,
+    "SELECT PID, PName, SUM(DISTINCT CID)" .
+    "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" .
+    "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
+    "  GROUP BY PID" .
+    "  HAVING SUM(DISTINCT CID) >= ALL (SELECT SUM(DISTINCT CID)" .
+    "                                     FROM Cart NATURAL JOIN Appears_in" .
+    "                                       NATURAL JOIN Product" .
+    "                                     WHERE TStatus != 'Active'" .
+    "                                       AND TDate BETWEEN ? AND ?" .
+    "                                     GROUP BY PID);");
+
+  $stmt->bind_param('ssss', $sdate, $edate, $sdate, $edate);
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($pid, $pname, $ccount);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'pid' => $pid,
+      'pname' => $pname,
+      'numcustomers' => $ccount,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result; 
 }
 
 function get_best_customers($sdate, $edate) {
-  return array();
+  $conn = util\make_db_connection();
+
+  $stmt = util\prepare_statement($conn,
+    "SELECT FName, LName, Email, SUM(PriceSold)" .
+    "  FROM Customer NATURAL JOIN Cart NATURAL JOIN Appears_in" .
+    "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
+    "  GROUP BY PID" .
+    "  ORDER BY SUM(PriceSold) DESC" .
+    "  LIMIT 10;");
+  $stmt->bind_param('ss', $sdate, $edate);
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($fname, $lname, $email, $total);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'fname' => $fname,
+      'lname' => $lname,
+      'email' => $email,
+      'moneyspent' => $total,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result;
 }
 
 function get_best_zipcodes($sdate, $edate) {
-  return array();
+  $conn = util\make_db_connection();
+
+  $stmt = util\prepare_statement($conn,
+    "SELECT Zip, COUNT(CartID)" .
+    "  FROM Shipping_Address NATURAL JOIN Cart NATURAL JOIN Appears_in" .
+    "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
+    "  GROUP BY Zip" .
+    "  ORDER BY SUM(CartID) DESC" .
+    "  LIMIT 5;");
+  $stmt->bind_param('ss', $sdate, $edate);
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($zip, $num);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'zip' => $zip,
+      'numshipments' => $num,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result;
 }
 
 function get_avg_pprice($sdate, $edate) {
-  return array();
+  $conn = util\make_db_connection();
+
+  $stmt = util\prepare_statement($conn,
+    "SELECT PType, AVG(PriceSold)" .
+    "  FROM Product NATURAL JOIN Cart NATURAL JOIN Appears_in" .
+    "  WHERE PType != 'Other' AND TStatus != 'Active'".
+    "    AND TDate BETWEEN ? AND ?" .
+    "  GROUP BY PType;");
+  $stmt->bind_param('ss', $sdate, $edate);
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($ptype, $pprice);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'ptype' => $ptype,
+      'pprice' => $pprice,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result;
 }
 
 ?>
