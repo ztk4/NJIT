@@ -294,11 +294,53 @@ function view_transactions($tstatus, $saname) {
   return $result;
 }
 
-function get_stats($sdate, $edate) {
+function get_freq_prods($sdate, $edate) {
   $conn = util\make_db_connection();
-  
-  // TODO: SQL
 
+  // TODO: Check that this is right.
+  //       I think the subquery may not need the Product JOIN.
+  $stmt = util\prepare_statement($conn,
+    "SELECT PID, PName, SUM(Qty)" .
+    "  FROM Cart NATURAL JOIN Appears_in NATURAL JOIN Product" .
+    "  WHERE TStatus != 'Active' AND TDate BETWEEN ? AND ?" .
+    "  GROUP BY PID" .
+    "  HAVING SUM(Qty) >= ALL(SELECT Sum(Qty)" .
+    "                           FROM Cart NATURAL JOIN Appears_in" .
+    "                             NATURAL JOIN Product" .
+    "                           WHERE TStatus != 'Active'" .
+    "                             AND TDate BETWEEN ? AND ?" .
+    "                           GROUP BY PID);");
+  $stmt->bind_param('ss', $sdate, $edate, $sdate, $edate);
+  if (!$stmt->execute()) return false;
+
+  $stmt->bind_result($pid, $pname, $freq);
+  $result = array();
+  while ($stmt->fetch()) {
+    array_push($result, array(
+      'pid' => $pid,
+      'pname' => $pname,
+      'freq' => $freq,
+    ));
+  }
+  $stmt->close();
+
+  $conn->close();
+  return $result;
+}
+
+function get_pop_prods($sdate, $edate) {
+  return array();
+}
+
+function get_best_customers($sdate, $edate) {
+  return array();
+}
+
+function get_best_zipcodes($sdate, $edate) {
+  return array();
+}
+
+function get_avg_pprice($sdate, $edate) {
   return array();
 }
 
