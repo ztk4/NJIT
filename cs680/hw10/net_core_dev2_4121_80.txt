@@ -1,0 +1,81 @@
+/home/zach/kernel/cs680/net/core/dev.c[4121:4200]
+  4121	/* CUSTOM EDIT FOR CS680 */
+  4122	atomic64_t    pkt_cntr_nr_out     = ATOMIC64_INIT(0);
+  4123	EXPORT_SYMBOL(pkt_cntr_nr_out);
+  4124	
+  4125	static long long skb_qlen(const struct sk_buff_head *list) {
+  4126	  const struct sk_buff *skb;
+  4127	  long long count;
+  4128	  if (skb_queue_empty(list)) return 0;
+  4129	
+  4130	  skb = skb_peek(list);
+  4131	  count = 1;
+  4132	  /* NOTE: If list is a regular skb_buff_head, skb_queue_is_last will always
+  4133	   *       correctly determine the end of the list. However, if list is a
+  4134	   *       Qdisc::q where q is a qdisc_skb_head, tail->next == NULL not
+  4135	   *       list, so we check that skb is not null below to handle both
+  4136	   */
+  4137	  while (skb && !skb_queue_is_last(list, skb)) {
+  4138	    ++count;
+  4139	    skb = skb_queue_next(list, skb);
+  4140	  }
+  4141	
+  4142	  return count;
+  4143	}
+  4144	
+  4145	static __latent_entropy void net_tx_action(struct softirq_action *h)
+  4146	{
+  4147		struct softnet_data *sd = this_cpu_ptr(&softnet_data);
+  4148	
+  4149		if (sd->completion_queue) {
+  4150			struct sk_buff *clist;
+  4151	
+  4152			local_irq_disable();
+  4153			clist = sd->completion_queue;
+  4154			sd->completion_queue = NULL;
+  4155			local_irq_enable();
+  4156	
+  4157			while (clist) {
+  4158				struct sk_buff *skb = clist;
+  4159	
+  4160				clist = clist->next;
+  4161	
+  4162				WARN_ON(refcount_read(&skb->users));
+  4163				if (likely(get_kfree_skb_cb(skb)->reason == SKB_REASON_CONSUMED))
+  4164					trace_consume_skb(skb);
+  4165				else
+  4166					trace_kfree_skb(skb, net_tx_action);
+  4167	
+  4168				if (skb->fclone != SKB_FCLONE_UNAVAILABLE)
+  4169					__kfree_skb(skb);
+  4170				else
+  4171					__kfree_skb_defer(skb);
+  4172			}
+  4173	
+  4174			__kfree_skb_flush();
+  4175		}
+  4176	
+  4177		if (sd->output_queue) {
+  4178			struct Qdisc *head;
+  4179	
+  4180			local_irq_disable();
+  4181			head = sd->output_queue;
+  4182			sd->output_queue = NULL;
+  4183			sd->output_queue_tailp = &sd->output_queue;
+  4184			local_irq_enable();
+  4185	
+  4186			while (head) {
+  4187				struct Qdisc *q = head;
+  4188				spinlock_t *root_lock;
+  4189	
+  4190				head = head->next_sched;
+  4191	
+  4192				root_lock = qdisc_lock(q);
+  4193				spin_lock(root_lock);
+  4194	      /* CUSTOM EDIT FOR CS680 */
+  4195	      atomic64_add(skb_qlen((struct sk_buff_head *)&q->q), &pkt_cntr_nr_out);
+  4196				/* We need to make sure head->next_sched is read
+  4197				 * before clearing __QDISC_STATE_SCHED
+  4198				 */
+  4199				smp_mb__before_atomic();
+  4200				clear_bit(__QDISC_STATE_SCHED, &q->state);

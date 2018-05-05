@@ -1,0 +1,7 @@
+INET Packet Statistics (aggregated over 1 minute):
+Number of outgoing packets   : 22
+Number of incoming packets   : 4
+Number of queue merges       : 4
+Number of enqueue operations : 4
+Number of dequeue operations : 4
+Number of requeue operations : 20

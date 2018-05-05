@@ -1,0 +1,31 @@
+/home/zach/kernel/cs680/net/core/dev.c[3838:3867]
+  3838	/* CUSTOM EDIT FOR CS680 */
+  3839	atomic64_t    pkt_cntr_nr_enqueue = ATOMIC64_INIT(0);
+  3840	EXPORT_SYMBOL(pkt_cntr_nr_enqueue);
+  3841	
+  3842	/*
+  3843	 * enqueue_to_backlog is called to queue an skb to a per CPU backlog
+  3844	 * queue (may be a remote CPU queue).
+  3845	 */
+  3846	static int enqueue_to_backlog(struct sk_buff *skb, int cpu,
+  3847				      unsigned int *qtail)
+  3848	{
+  3849		struct softnet_data *sd;
+  3850		unsigned long flags;
+  3851		unsigned int qlen;
+  3852	
+  3853		sd = &per_cpu(softnet_data, cpu);
+  3854	
+  3855		local_irq_save(flags);
+  3856	
+  3857		rps_lock(sd);
+  3858		if (!netif_running(skb->dev))
+  3859			goto drop;
+  3860		qlen = skb_queue_len(&sd->input_pkt_queue);
+  3861		if (qlen <= netdev_max_backlog && !skb_flow_limit(skb, qlen)) {
+  3862			if (qlen) {
+  3863	enqueue:
+  3864	      /* CUSTOM EDIT FOR CS680 */
+  3865	      atomic64_inc(&pkt_cntr_nr_enqueue);  /* About to enqueue */
+  3866				__skb_queue_tail(&sd->input_pkt_queue, skb);
+  3867				input_queue_tail_incr_save(sd, qtail);
