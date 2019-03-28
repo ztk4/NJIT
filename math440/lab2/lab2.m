@@ -247,6 +247,8 @@ title({'C.2.1.2.2', 'Step Size (h) vs. Time (t) - ode23'})
 
 fprintf('\nUsing ode23s:\n')
 
+% Update interval.
+T_int = [0, 1000];
 % Preallocate for X and T.
 X_by_tol = cell(size(rel_tol));
 T_by_tol = cell(size(rel_tol));
