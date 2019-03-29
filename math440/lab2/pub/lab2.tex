@@ -281,6 +281,8 @@ Next we will run the stiff ODE solver ode23s for $t \in [0, 1000]$, and do the s
 \begin{verbatim}
 fprintf('\nUsing ode23s:\n')
 
+% Update interval.
+T_int = [0, 1000];
 % Preallocate for X and T.
 X_by_tol = cell(size(rel_tol));
 T_by_tol = cell(size(rel_tol));
@@ -319,10 +321,10 @@ RelTol = 1e-05, # of steps = 869
 RelTol = 1e-06, # of steps = 869
 
 Using ode23s:
-RelTol = 1e-03, # of steps = 17
-RelTol = 1e-04, # of steps = 17
-RelTol = 1e-05, # of steps = 17
-RelTol = 1e-06, # of steps = 17
+RelTol = 1e-03, # of steps = 31
+RelTol = 1e-04, # of steps = 38
+RelTol = 1e-05, # of steps = 49
+RelTol = 1e-06, # of steps = 62
 \end{verbatim} \color{black}
     
 \includegraphics [width=4in]{lab2_02.eps}
@@ -330,8 +332,6 @@ RelTol = 1e-06, # of steps = 17
 \includegraphics [width=4in]{lab2_03.eps}
 
 \includegraphics [width=4in]{lab2_04.eps}
-
-\includegraphics [width=4in]{lab2_05.eps}
 
 
 \subsection*{C.2.1.3 Parameter Study of an ODE System}
@@ -474,11 +474,9 @@ sgtitle({'C.2.1.3.2', 'Movement of Particle over Time', ...
          'Motion is towards positive x'});
 \end{verbatim}
 
+\includegraphics [width=4in]{lab2_05.eps}
+
 \includegraphics [width=4in]{lab2_06.eps}
-
-\includegraphics [width=4in]{lab2_07.eps}
-
-\includegraphics [width=4in]{lab2_08.eps}
 
 
 \subsection*{Functions Used Above}
