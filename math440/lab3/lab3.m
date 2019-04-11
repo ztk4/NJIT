@@ -253,6 +253,9 @@ title(sprintf(['Solution where M = O(N^2)\n' ...
                'h = %f, \\Delta t = %f, \\Delta t / h^2 = %f'], ...
                h, dt, dt/h^2), 'Interpreter', 'tex');
 
+% Save some of this data to plot again later.
+plot_later = {xi, tau, U};
+           
 %%%
 % Notice in the surface plots for this section that when $M = O(N)$ we have
 % unstable behavior in the form of spurious oscillations.
@@ -270,20 +273,244 @@ title(sprintf(['Solution where M = O(N^2)\n' ...
 % between using ode23 and ode23s.
 % 
 
-N = 10;
+% Lab specified parameters.
 tau_f = 2;
-[xi, tau, U] = mol_ode23_solve(N, tau_f, false);
+Ns = pow2(10, 0:2);
+
+% Storage for table values.
+% Row index is for Ns, column index is for stiffness.
+unstiff_idx = 1;
+stiff_idx = 2;
+table_dim = [numel(Ns), 2];
+num_time_steps = zeros(table_dim);
+cpu_times = zeros(table_dim);  % in seconds.
+max_dt = zeros(table_dim);
+
+for n_idx = 1:numel(Ns)
+    % Solve with the unstiff solver.
+    t = tic;
+    [~, tau, ~] = mol_ode23_solve(Ns(n_idx), tau_f);
+    cpu_times(n_idx, unstiff_idx) = toc(t);
+    num_time_steps(n_idx, unstiff_idx) = numel(tau);
+    max_dt(n_idx, unstiff_idx) = max(diff(tau));
+
+    % Solve with stiff solver.
+    t = tic;
+    [~, tau, ~] = mol_ode23_solve(Ns(n_idx), tau_f, 'stiff');
+    cpu_times(n_idx, stiff_idx) = toc(t);
+    num_time_steps(n_idx, stiff_idx) = numel(tau);
+    max_dt(n_idx, stiff_idx) = max(diff(tau));
+end
+
+% Print the table header.
+fprintf('    | %-15s | %-15s | %-15s\n', ...
+        'Num Time Steps', 'CPU Time (s)', 'dt_max');
+fprintf('  N ');
+for i = 1:3
+    fprintf('|  ode23 | ode23s ');
+end
+fprintf('\n');
+
+% Print table rows.
+for n_idx = 1:numel(Ns)
+    % Table Separator.
+    fprintf(['----' repmat(['+' repmat('-', 1, 17)], 1, 3) '\n']);
+    % Row Contents.
+    fprintf(' %2d | %6d | %6d | %.4f | %.4f | %.4f | %.4f\n', Ns(n_idx),...
+        num_time_steps(n_idx, :), cpu_times(n_idx, :), max_dt(n_idx, :));
+end
+
+fprintf('\n');
+
+%%%
+% *NOTE*: Sorry about the table alignment, seems to be a monospace font
+% issue.
+%
+% By studying the table, it is clear that the stiff solver is very
+% beneficial for this problem, especially for larger $N$ values.
+% Notice that the number of time steps
+% required seems to grow linearly for |ode23s| , but quadratically for
+% |ode23|.
+% Similarly, while CPU time starts out higher for |ode23s|, it's growth
+% is significantly slower than the growth of |ode23|, which actually
+% rivals the CPU time of |ode23s| for $N = 40$.
+% Finally, notice that the maximum $\Delta t$ for |ode23| seems to drop by
+% a factor
+% of 5 for each doubling of $N$, while |ode23s|'s maximum $\Delta t$
+% hardly changes as $N$ doubles.
+
+%% C.4.1.5 - Jacobian Hinting
+%
+% In this section, we will give hints about the jacobian of the linear
+% system to matlab. Notice that the linear ODE system is
+%
+% $$
+%   \frac{d\bm{u}}{d\tau} = f(\tau, \bm{u}) = A\bm{u} + \bm{b}(\tau)
+% $$
+%
+% and therefore the jacobian of the system is trivially
+%
+% $$
+%   Jf = A.
+% $$
+%
+% Since $A$ is tridiagonal, the sparsity pattern of $Jf$ is
+%
+% $$ \begin{pmatrix}
+%   1 & 1 & 0 & \cdots & 0 &  0 \\
+%   1 & 1 & 1 & \cdots & 0 &  0 \\
+%   0 & \ddots & \ddots & \ddots & & \vdots \\
+%   \vdots & & \ddots & \ddots & \ddots & 0 \\
+%   0 & \cdots & 0 & 1 & 1 & 1 \\
+%   0 & \cdots & 0 & 0 & 1 & 1
+% \end{pmatrix}. $$
+%
+
+
+% Lab specified parameters.
+tau_f = 2;
+Ns = pow2(10, 0:2);
+
+% Configuration Names.
+conf_names = {'No Hint', 'JPattern', 'Jacobian'};
+% Options for each configuration.
+conf_opts = {{'stiff'}, {'stiff', 'jpat'}, {'stiff', 'jacob'}};
+
+% Storage for table values.
+% Row index is for Ns, column index is for type of hint.
+table_dim = [numel(Ns), numel(conf_names)];
+num_time_steps = zeros(table_dim);
+cpu_times = zeros(table_dim);  % in seconds.
+max_dt = zeros(table_dim);
+
+for n_idx = 1:numel(Ns)
+    for c_idx = 1:numel(conf_names)
+        % Solve using the proper options.
+        t = tic;
+        [~, tau, ~] = mol_ode23_solve(Ns(n_idx), tau_f, ...
+                                      conf_opts{c_idx}{:});
+        cpu_times(n_idx, c_idx) = toc(t);
+        num_time_steps(n_idx, c_idx) = numel(tau);
+        max_dt(n_idx, c_idx) = max(diff(tau));
+    end
+end
+
+% Print the table header.
+fprintf('    | %-30s | %-30s | %-30s\n', ...
+        'Num Time Steps', 'CPU Time (s)', 'dt_max');
+fprintf('  N ');
+for i = 1:3
+    fprintf('| %8s | %8s | %8s ', conf_names{:});
+end
+fprintf('\n');
+
+% Print table rows.
+for n_idx = 1:numel(Ns)
+    % Table Separator.
+    fprintf(['----' repmat(['+' repmat('-', 1, 32)], 1, 3) '\n']);
+    % Row Contents.
+    fprintf(' %2d ', Ns(n_idx));
+    fprintf('| %8d ', num_time_steps(n_idx, :));
+    fprintf('| %.6f ', cpu_times(n_idx, :));
+    fprintf('| %.6f ', max_dt(n_idx, :));
+    fprintf('\n');
+end
+
+fprintf('\n');
+
+%%%
+% We unsurprisingly see that the more detailed information we give the
+% solver, the more efficiently it is able to preform.
+% Ths first interesting note is that all three types of hinting have no
+% significant effect on the number of time steps.
+% Similarly there is almost no effect on the max $\Delta t$.
+% There is, however, a noticable effect on the CPU time taken.
+% With no hinting at all, |ode23s|'s runtime seems to grow quadratically,
+% while both with JPattern and the full Jacobian |ode23s|'s runtime seems
+% to grow linearly.
+% This makes sense because instead of computing an $O(N^2)$ numerical
+% jacobian each iteration, with JPattern |ode23s| has $O(N)$ numerical
+% values to compute and can evaluate the jacobian in $O(1)$ time when it is
+% supplied as a constant.
+% Of course, the jacobian must also be inverted and this is where a time
+% component of $O(N)$ is picked up even in the case where the jacobian is
+% supplied in full. Since the jacobian is clearly tridiagonal in both the
+% JPattern and full Jacobian hinting modes the inversion takes $O(N)$
+% there, while in the no htingin mode it may use gaussian elimination
+% resulting in $O(N^2)$.
+% In addition to the change in asymptotics, it seems that fully supplying
+% the jacobian is faster than JPattern just due to the additional $O(N)$
+% work that is avoided by not having to approximate the jacobian.
+%
+
+%% C.4.1.6 - Visualize & Review
+%
+% In this section, we'll first plot some of the results from section
+% C.4.1.3.
+% In particular, I'll use the solution for $N = 10, M = 500$.
+%
+
+% Fetch the values for plotting out of plot_later.
+[xi, tau, U] = deal(plot_later{:});
+% Calculate N and M.
+N = numel(xi);
+M = numel(tau);
+
+% The time slices of U that were requested.
+tau_slices = [0.5, 1, 1.5, 2];
+for tau_slice = tau_slices
+    % Find a sufficiently close tau value on the tau mesh, and plot the
+    % solution for that fixed tau.
+    [~, slice_idx] = min(abs(tau - tau_slice));
+    % Take the first minimum if non-unique.
+    slice_idx = slice_idx(1);
+    
+    figure;
+    plot(xi, U(:, slice_idx));
+    xlabel('\xi', 'Interpreter', 'tex');
+    ylabel('u');
+    title(sprintf(['Solution slice u(\\xi, \\tau \\approx %.2f)\n' ...
+                   'where N = %d, M = %d'], ...
+                  tau(slice_idx), N, M), 'Interpreter', 'tex');
+end
+
+% The 3-D plot of U.
+figure;
 surf(xi, tau, U', 'LineStyle', ':', 'FaceColor', 'interp');
 xlabel('\xi', 'Interpreter', 'tex');
 ylabel('\tau', 'Interpreter', 'tex');
 zlabel('u');
+title(sprintf('Solution u(\\xi,\\tau) \n where N = %d, M = %d', N, M), ...
+              'Interpreter', 'tex');
 
-[xi, tau, U] = mol_ode23_solve(N, tau_f, true);
-surf(xi, tau, U', 'FaceColor', 'interp');
-xlabel('\xi', 'Interpreter', 'tex');
-ylabel('\tau', 'Interpreter', 'tex');
-zlabel('u');
-
+%%% Concluding Remarks
+%
+% Based on my observations from the above, I will be answering the
+% following questions about parabolic problems.
+%
+% 1. What type of ODE method should be used, stiff or nonstiff?
+% 
+% A stiff solver should definitely be used. We saw in section C.4.1.3 that
+% for very small $N$ the computational cost of a stiff sovler may exceed
+% that of a nonstiff solver. But even by $N = 40$ this overhead was
+% completely drownded out by the preformance benefits of a stiff solver for
+% a parabolic problem.
+%
+% 2. What structure does the jacobian of the ODE have, banded or sparse in
+% another way?
+%
+% The jacobian of this parabolic ODE has a tri-banded sparse structure.
+% Specifically, it is tridiagonal.
+%
+% 3. What type of linear equation solver should be used in the implicit ODE
+% method, solver for full or sparse matrices?
+%
+% As we saw in section C.4.1.5, the two methods that were knowledgeable of
+% the sparsity of our jacobian (JPattern and full Jacobian) both ran in
+% $O(N)$ time instead of $O(N^2)$, with no noticable drawbacks.
+% As such, there is a clear advantage to solving the linear system with
+% sparse matrices as opposed to a full matrix.
+%
 
 %% Helper Functions
 % As always, helper functions are at the bottom.
@@ -352,27 +579,54 @@ for k = 1:M-1
 end
 end
 
-function [xi, tau, U] = mol_ode23_solve(N, tau_f, use_stiff)
+function [xi, tau, U] = mol_ode23_solve(N, tau_f, varargin)
 % MOL_ODE23_SOLVE solves the nondimensional PDE described above with N 
 %                 spatial grid points.
 %                 Uses Method of Lines and ode23[s].
 %                 Evolves until time tau_f.
-%                 Uses ode23 if ~use_stiff, and ode23s if use_stiff.
+%                 After tau_f, any number of options may be passed in.
+%                 Options:
+%                   'stiff': uses a stiff solver.
+%                   'jpat': passes JPattern to the solver (req. stiff).
+%                   'jacob': passed jull jacobian to solver (req. stiff).
 %                 Returns:
 %                   xi  - a vector of N xi points on [0,1],
 %                   tau - a vector of tau points on [0, tau_f].
 %                   U   - matrix were U(j, k) approximates u(xi(j),tau(k)).
 % See also lab3>mol_descretization.
 
-% Set solver to ode23 or ode23s based on use_stiff.
-if use_stiff
-    solver = @ode23s;
-else
-    solver = @ode23;
+use_stiff = false;
+jpattern = false;
+full_jacob = false;
+for opt = varargin
+    if strcmp(opt{:}, 'stiff')
+        use_stiff = true;
+    elseif strcmp(opt{:}, 'jpat')
+        jpattern = true;
+    elseif strcmp(opt{:}, 'jacob')
+        full_jacob = true;
+    end
 end
 
 % Get spatial MOL decretization parameters.
 [A, b, xi, ~] = mol_descretization(N);
+
+% Initialize solver options.
+opts = odeset();
+
+% Set solver to ode23 or ode23s based on use_stiff.
+if use_stiff
+    % If stiff, some other options may apply.
+    solver = @ode23s;
+    if full_jacob
+        opts = odeset('Jacobian', A);
+    end
+    if jpattern
+        opts = odeset('JPattern', (A ~= 0));
+    end
+else
+    solver = @ode23;
+end
 
     function dudt = mol_odefun(tau, u)
         % Computes du/dt for a given vector u and tau.
@@ -382,7 +636,8 @@ end
 % Our odefun above is only valid for {u_1, ..., u_{N-1}).
 dim = N-1;
 u0 = zeros(dim, 1);  % First column of solution.
-[tau, U] = solver(@mol_odefun, [0 tau_f], u0);
+[tau, U] = solver(@mol_odefun, [0 tau_f], u0, opts);
+
 % Since ode23[s] considers tau to be a column vector, and rows of U
 % to be for fixed tau, we need to transpose both.
 % In our write-up, cols of U are for fixed tau, and tau is a row vec.
