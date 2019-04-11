@@ -134,3 +134,261 @@
 % problem, fixing the dimensionless parameter $a = 1$.
 %
 
+%% C.4.1.2 - Spatial Discretization
+%
+% We will now discretize the spatial domain of our nondimensional PDE where
+% $\bm{\xi} = \{ \xi_0=0, \xi_1=h, \ldots, \xi_j=jh, \ldots \xi_{N-1}=1, 
+%   \xi_N=1+h \}$
+% are our $N$ grid points with one additional ghost point.
+% If we define
+% $\bm{u}(\tau) = \{u_0(t) \approx u(\xi_0, \tau), u_1(\tau) 
+%   \approx u(\xi_1, \tau), \ldots, u_{N-1}(\tau) 
+%   \approx u(\xi_{N-1}, \tau), u_N(\tau) \approx u(\xi_N, \tau) \}$,
+% then the following centered finite difference equations hold on the
+% interior of our discrete spatial domain:
+%
+% $$
+%   \frac{du_j}{d\tau} = \frac{u_{j-1} - 2u_{j} + u_{j+1}}{h^2} \quad
+%     \forall j \in \mathbb{Z}_{[1,N-1]}.
+% $$
+%
+% Our spatial boundary conditions also follow trivially as either an
+% algebraic equation or as another centered finite diference:
+%
+% $$ \begin{gathered}
+%   u_0(\tau) = u(0, \tau) = 
+%     \begin{cases} 1 & 0 \le \tau \le 1 \\ 0 & \tau > 1 \end{cases} \\
+%   \frac{u_{N} - u_{N-2}}{h} = 0
+% \end{gathered} $$
+%
+% Finally, the temportal initial condition translates as
+%
+% $$ \bm{u}(0) = \{1, 0, 0, \ldots, 0\} $$
+%
+% since $u(\xi, 0) = 1$ iff $\xi = 0$ and $u(\xi, 0) = 0$ otherwise.
+%
+% Notice that since $u_0(\tau)$ is given explicitly above, we can
+% substitute $u_0$ out in our overall matrix equation.
+% We can also solve explicitly for $u_N(\tau) = u_{N-2}(\tau)$,
+% allowing for another substitution.
+% With this in mind, we will redefine
+% $\bm{u} = \{u_1(\tau), \ldots, u_{N-1}(\tau)\}$
+% resulting in
+%
+% $$
+%   \frac{d\bm{u}}{d\tau} = A\bm{u} + \bm{b}(\tau), \quad
+%     \bm{u}(0) = \mathbf{0}
+% $$
+%
+% where
+% 
+% $$ \begin{aligned}
+%   A = \frac{1}{h^2} \begin{pmatrix}
+%     -2 &  1 &  0 & \cdots &  0 &  0 \\
+%      1 & -2 &  1 & \cdots &  0 &  0 \\
+%      0 & \ddots & \ddots & \ddots & & \vdots \\
+%      \vdots & & \ddots & \ddots & \ddots & 0 \\
+%      0 & \cdots & 0 & 1 & -2 & 1 \\
+%      0 & \cdots & 0 & 0 &  2 & -2 \end{pmatrix} 
+%      \in \mathbb{R}^{N-1 \times N-1},
+%   &&
+%   \bm{b}(\tau) = \frac{1}{h^2} \begin{pmatrix} 
+%      u_0(\tau) \\ 0 \\ \vdots \\ 0 \end{pmatrix}
+%      \in \mathbb{R}^{N-1},
+%   &&
+%   \bm{u}(0) = \mathbf{0} \in \mathbb{R}^{N-1}.
+% \end{aligned} $$
+%
+
+%% C.4.1.3 - Temporal Discretization
+%
+% Finally, we discretize $\tau$ using Explicit Euler's Method with a
+% stepsize of $\Delta t$.
+% Let our $\tau$ grid span $[0, \tau_f]$ for some $\tau_f > 0$,
+% and thus we need $M = \tau_f/\Delta t + 1$ grid points.
+% Take $\bm{\tau} = \{\tau_0 = 0, \tau_1 = \Delta t, \ldots
+%   \tau_k = k\Delta t, \ldots, \tau_M = \tau_f\}$ and define
+% $\bm{u}^k \approx \bm{u}(\tau_k)$.
+% We will also define matrix $U$ s.t. $U_{j,k} = u^{k-1}_{j-1}$.
+% Note that our $U$ is the vertical mirror of the text's $U$.
+% We then enforce
+%
+% $$ \begin{aligned}
+%  \frac{\bm{u}^{k+1} - \bm{u}^k}{\Delta t} = A\bm{u}^{k} + \bm{b}(\tau_k),
+%    \quad \forall k \in \mathbb{Z}_{0,M-1},
+%  &&
+%  \bm{u}^0 = \bm{0}
+% \end{aligned} $$
+%
+
+% Picked from later in the lab.
+tau_f = 2;
+
+% First, let's try it with N and M on the same order.
+N = 10;
+M = N;
+[xi, tau, U] = mol_ee_solve(N, M, tau_f);
+h = xi(2) - xi(1);
+dt = tau(2) - tau(1);
+figure;
+surf(xi, tau, U');
+xlabel('\xi', 'Interpreter', 'tex');
+ylabel('\tau', 'Interpreter', 'tex');
+zlabel('u');
+title(sprintf(['Solution where M = O(N)\n' ...
+               'h = %f, \\Delta t = %f, \\Delta t / h^2 = %f'], ...
+               h, dt, dt/h^2), 'Interpreter', 'tex');
+
+% Now, let's try making M on the order of N^2.
+M = 5 * N^2;
+[xi, tau, U] = mol_ee_solve(N, M, tau_f);
+h = xi(2) - xi(1);
+dt = tau(2) - tau(1);
+figure;
+surf(xi, tau, U', 'LineStyle', ':', 'FaceColor', 'interp');
+xlabel('\xi', 'Interpreter', 'tex');
+ylabel('\tau', 'Interpreter', 'tex');
+zlabel('u');
+title(sprintf(['Solution where M = O(N^2)\n' ...
+               'h = %f, \\Delta t = %f, \\Delta t / h^2 = %f'], ...
+               h, dt, dt/h^2), 'Interpreter', 'tex');
+
+%%%
+% Notice in the surface plots for this section that when $M = O(N)$ we have
+% unstable behavior in the form of spurious oscillations.
+% The solution behaves wildly near $\tau_f$.
+% Instead, when $M = O(N^2)$ we get smooth, sensible behavior.
+% Since the end with $\xi = 1$ is isolated, we see the heat from the
+% initial pulse cause the entire rod to slowly heat up over
+% $\tau \in [0,1]$.
+% Then we see the heat slowly disipate through the endpoint $\xi = 0$ where
+% the heat is fixed at 0.
+
+%% C.4.1.4 - ode23 vs. ode23s
+%
+% In this section, we do a case study to help decipher the difference
+% between using ode23 and ode23s.
+% 
+
+N = 10;
+tau_f = 2;
+[xi, tau, U] = mol_ode23_solve(N, tau_f, false);
+surf(xi, tau, U', 'LineStyle', ':', 'FaceColor', 'interp');
+xlabel('\xi', 'Interpreter', 'tex');
+ylabel('\tau', 'Interpreter', 'tex');
+zlabel('u');
+
+[xi, tau, U] = mol_ode23_solve(N, tau_f, true);
+surf(xi, tau, U', 'FaceColor', 'interp');
+xlabel('\xi', 'Interpreter', 'tex');
+ylabel('\tau', 'Interpreter', 'tex');
+zlabel('u');
+
+
+%% Helper Functions
+% As always, helper functions are at the bottom.
+
+function [A, b, xi, h] = mol_descretization(N)
+% MOL_DESCRETIZATION returns parameters corresponding to the Method of
+%                    Lines discretization of the nondimensional PDE
+%                    described above.
+%                    Returns
+%                      xi - a vector of N xi points on [0, 1]
+%                      b  - a function of tau generating a col vector of 
+%                           dim N-1 (as described above).
+%                      A  - a matrix of dim N-1 x N-1 (as described above).
+%                      h  - the grid spacing of xi.
+
+% Generate spatial support.
+xi = linspace(0, 1, N);  % NOTE: Includes xi_0 but not xi_N.
+h = xi(2) - xi(1);
+
+% Generate matrix A of dimensions N-1 x N-1.
+dim = N-1;
+diags = repmat((1/h^2) * [1 -2 1], dim, 1);   % Diagonals of A (mostly).
+A = spdiags(diags, -1:1, dim, dim);           % Form A from diagonals.
+A(end, end-1) = 2 * A(end, end-1);            % Update to account for BCs.
+
+% Declare b as a function of tau.
+b = @(tau) vertcat(1/h^2 * (tau <= 1), zeros(dim-1, 1));
+
+end
+
+function [xi, tau, U] = mol_ee_solve(N, M, tau_f)
+% MOL_EE_SOLVE solves the nondimensional PDE described above with N spatial
+%              grid points and M temporal grid points.
+%              Uses Method of Lines and Explicit Euler.
+%              Evolves until time tau_f.
+%              Returns:
+%                xi  - a vector of N xi points on [0, 1]
+%                tau - a vector of M tau points on [0, tau_f]
+%                U   - matrix were U(xi, tau) approximates u(xi, tau).
+% See also lab3>mol_descretization.
+
+% Get spatial MOL decretization parameters.
+[A, b, xi, ~] = mol_descretization(N);
+
+% Generate temporal support.
+tau = linspace(0, tau_f, M);
+
+% For convenience, store delta t.
+dt = tau(2) - tau(1);
+
+% For efficiency, we form dt*A + I just once instead of each iteration.
+dtApI = dt*A + speye(size(A, 1));
+
+% Allocate space for solution.
+U = zeros(length(xi), length(tau));
+% The above implicitly sets u^0 to zero (IC).
+% We do have to manually account for U(1, :) since we removed it from the
+% matrix system (corresponds to u^k_0 in write-up).
+U(1, tau <= 1) = 1;
+
+% Iterate over time steps.
+% NOTE: k is 1-indexed here instead of 0-indexed like in the write-up.
+for k = 1:M-1
+    % NOTE: We are indexing rpws 2:end because we removed u_0.
+    U(2:end, k+1) = dtApI * U(2:end, k) + dt * b(tau(k));
+end
+end
+
+function [xi, tau, U] = mol_ode23_solve(N, tau_f, use_stiff)
+% MOL_ODE23_SOLVE solves the nondimensional PDE described above with N 
+%                 spatial grid points.
+%                 Uses Method of Lines and ode23[s].
+%                 Evolves until time tau_f.
+%                 Uses ode23 if ~use_stiff, and ode23s if use_stiff.
+%                 Returns:
+%                   xi  - a vector of N xi points on [0,1],
+%                   tau - a vector of tau points on [0, tau_f].
+%                   U   - matrix were U(j, k) approximates u(xi(j),tau(k)).
+% See also lab3>mol_descretization.
+
+% Set solver to ode23 or ode23s based on use_stiff.
+if use_stiff
+    solver = @ode23s;
+else
+    solver = @ode23;
+end
+
+% Get spatial MOL decretization parameters.
+[A, b, xi, ~] = mol_descretization(N);
+
+    function dudt = mol_odefun(tau, u)
+        % Computes du/dt for a given vector u and tau.
+        dudt = A * u + b(tau);
+    end
+
+% Our odefun above is only valid for {u_1, ..., u_{N-1}).
+dim = N-1;
+u0 = zeros(dim, 1);  % First column of solution.
+[tau, U] = solver(@mol_odefun, [0 tau_f], u0);
+% Since ode23[s] considers tau to be a column vector, and rows of U
+% to be for fixed tau, we need to transpose both.
+% In our write-up, cols of U are for fixed tau, and tau is a row vec.
+tau = tau';
+U = U';
+
+% Prepend the row tau <= 1 to account for the eliminated u_0(tau).
+U = vertcat(tau <= 1, U);
+end
