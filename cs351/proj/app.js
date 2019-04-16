@@ -17,26 +17,12 @@ const logger = require('morgan');
 const cookie_parser = require('cookie-parser');
 // Body parsing logic (useful for extracting data from request body).
 const body_parser = require('body-parser');
-// Command line argument parsing.
-const cli_args = require('command-line-args');
-
-// Command line option definition.
-const cli_args_def = [
-  // Specify environment, oneof {prod, dev}.
-  { name: 'env', alias: 'e', type: String, defaultValue: 'prod' }
-];
-// Parse arguments.
-const args = cli_args(cli_args_def);
-if (!['prod', 'dev'].includes(args.env)) {
-  console.err(`Invalid environment '${args.env}'`);
-  process.exit(2);
-}
 
 // Create an express app.
 const app = express();
 
 // Enable logging with verbosity appropriate for env.
-app.use(logger({format: args.env}));
+app.use(logger(app.get('env') === 'development' ? 'dev' : 'combined'));
 // Enables automatic body parsing of MIME application/json.
 app.use(body_parser.json());
 // Enables automatic parsing of cookies.
@@ -47,9 +33,22 @@ app.use(cookie_parser());
 // Attach router for web serving under /web.
 // TODO: app.use('/web', web_route);
 
-// Add a redirrect from root (common landing page) to /web (desired landing page).
+// Add a redirect from root (common landing page) to /web (desired landing page).
 app.get('/', function (req, res, next) {
-  res.redirrect('/web');
+  return res.redirect('/web');
+});
+
+// Catch all unhandled requests and treat them as 404's.
+app.use(function(req, res, next) {
+  let err = new Error('Not Found');
+  err.status = 404;
+  return next(err);
+});
+
+// Catch all unhandled errors and render the error to the user.
+app.use(function(err, req, res, next) {
+  // Default to 500 if no error code available.
+  return res.status(err.status || 500).send(err.message);
 });
 
 // Export the express app from this module.

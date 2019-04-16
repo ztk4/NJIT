@@ -1,10 +1,11 @@
 // Main executable for the server.
 // Invoking this script under node starts the web server for the app.
 // Allows the web port to be specified via the environment variable PORT.
+// Allows environment to be specified via the environment variable NODE_ENV.
+//   - NODE_ENV should be either "production" or "development".
 //
 // The server will be hosted over TLSv1.2 using a self-signed certificate.
 // All routing will be handled by app.js
-
 
 // Filesystem lib.
 const fs = require('fs');
@@ -16,18 +17,18 @@ const https = require('https');
 const app = require('./app');
 
 // HTTPS server options.
-/* Removed for testing basics of the server.
 const server_opts = {
   // TLS Secure Context Options.
-  // We support only certificates signed by our app directly.
+  // We support only auth certificates signed by our app directly.
   // This is a simple and suffice protocol for this self-contained project.
-  ca: [ fs.readFileSync('TODO: CERT.pem') ],
+  ca: [ fs.readFileSync('./.certs/cert.pem') ],
   // This server's key and certificate files.
-  key: fs.readFileSync('TODO: KEY.pem'),
-  cert: fs.readFileSync('TODO: CERT.pem'),
+  key: fs.readFileSync('./.certs/key.pem'),
+  cert: fs.readFileSync('./.certs/cert.pem'),
   // TODO: Explore encryption options (DHE parameters and curves).
   // Force the use of TLSv1.2. Since we control all clients this is doable.
   secureProtocol: 'TLSv1_2_method',
+
   // TLS Server Options.
   // Request a certificate from clients.
   requestCert: true,
@@ -35,8 +36,6 @@ const server_opts = {
   // be a new user. Instead, this logic will be handled via middleware.
   rejectUnauthorized: false,
 };
-*/
-const server_opts = {};
 
 // Port to host server on, defaults to 8080.
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -70,11 +69,11 @@ function on_term() {
     server.close(function() {
       // Exit with code 0 after close finishes.
       process.exit(0);
-    }
+    });
   } else {
-    // Exit right away if server doesn't exit or close is unavailable.
+    // Exit right away if server doesn't exist or close is unavailable.
     process.exit(0);
   }
 }
-process.on('SIGTERM', on_term).on('SIGINT', on_term);
 // NOTE: we leave the default behavior for SIGHUP.
+process.on('SIGTERM', on_term).on('SIGINT', on_term);

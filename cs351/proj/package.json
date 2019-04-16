@@ -1,0 +1,35 @@
+{
+  "name": "e2ee-cs351-proj",
+  "version": "1.0.0",
+  "description": "A bare-bones end-to-end encrypted message app for my CS351 cybersecurity class.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ztk4/njit.git"
+  },
+  "keywords": [
+    "e2ee",
+    "encryption",
+    "messaging",
+    "school",
+    "project"
+  ],
+  "author": "Zachary Kaplan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ztk4/njit/issues"
+  },
+  "homepage": "https://github.com/ztk4/NJIT/tree/master/cs351/proj#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "morgan": "^1.9.1"
+  }
+}
