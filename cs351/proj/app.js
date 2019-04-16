@@ -10,13 +10,13 @@
 // App-wide middleware is mixed-in to express at this level.
 
 // Web routing and middleware framework.
-const express = require('express');
+import express from 'express';
 // Server-side logging of web requests.
-const logger = require('morgan');
+import logger from 'morgan';
 // Cookie parsing logic (may or may not be useful).
-const cookie_parser = require('cookie-parser');
+import cookie_parser from 'cookie-parser';
 // Body parsing logic (useful for extracting data from request body).
-const body_parser = require('body-parser');
+import body_parser from 'body-parser';
 
 // Create an express app.
 const app = express();
@@ -52,4 +52,4 @@ app.use(function(err, req, res, next) {
 });
 
 // Export the express app from this module.
-module.exports = app;
+export default app;

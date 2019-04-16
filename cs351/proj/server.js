@@ -8,13 +8,14 @@
 // All routing will be handled by app.js
 
 // Filesystem lib.
-const fs = require('fs');
+import fs from 'fs';
 // HTTP server over SSL/TLS.
-const https = require('https');
+import https from 'https';
 
 // Include our app from app.js (contains all server-side logic).
 // This app will handle all requests to the https server below.
-const app = require('./app');
+//import app from './app';
+import app from './app';
 
 // HTTPS server options.
 const server_opts = {
@@ -41,7 +42,7 @@ const server_opts = {
 const port = parseInt(process.env.PORT, 10) || 8080;
 
 // Create an HTTPS server over TLS as specified above.
-server = https.createServer(server_opts, app)
+let server = https.createServer(server_opts, app)
     .on('listening', function () {
       console.log(`The HTTPS server is listening on port ${port} since ${new Date().toLocaleString()} ET`);
     })
