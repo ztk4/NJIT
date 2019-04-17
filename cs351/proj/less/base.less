@@ -1,0 +1,19 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:700,600,800,400);
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
+
+@import 'includes/common';
+
+*{
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+html{
+	height: 100vh;
+}
+body{
+	&:extend(html);
+	overflow: hidden;
+	font-family: 'Open Sans', sans-serif;
+  background-image: linear-gradient(to bottom left, fadeout(white, 60%), transparent 60%, fadeout(black, 60%)), linear-gradient(to top left, lighten(@accent-color, 10%), lighten(@accent-color, 5%));
+}

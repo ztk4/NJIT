@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel *.js -d dist",
+    "build": "babel src -d dist",
     "serve": "node dist/server.js",
     "start": "npm run build && nodemon dist/server.js"
   },
@@ -32,7 +32,10 @@
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "morgan": "^1.9.1"
+    "less-middleware": "^3.1.0",
+    "morgan": "^1.9.1",
+    "path": "^0.12.7",
+    "pug": "^2.0.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",

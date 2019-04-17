@@ -11,6 +11,8 @@
 import fs from 'fs';
 // HTTP server over SSL/TLS.
 import https from 'https';
+// Library for manipulating file paths.
+import path from 'path';
 
 // Include our app from app.js (contains all server-side logic).
 // This app will handle all requests to the https server below.
@@ -22,20 +24,13 @@ const server_opts = {
   // TLS Secure Context Options.
   // We support only auth certificates signed by our app directly.
   // This is a simple and suffice protocol for this self-contained project.
-  ca: [ fs.readFileSync('./.certs/cert.pem') ],
+  ca: [ fs.readFileSync(path.join(__dirname, '../.certs/cert.pem')) ],
   // This server's key and certificate files.
-  key: fs.readFileSync('./.certs/key.pem'),
-  cert: fs.readFileSync('./.certs/cert.pem'),
+  key: fs.readFileSync(path.join(__dirname, '../.certs/key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, '../.certs/cert.pem')),
   // TODO: Explore encryption options (DHE parameters and curves).
   // Force the use of TLSv1.2. Since we control all clients this is doable.
   secureProtocol: 'TLSv1_2_method',
-
-  // TLS Server Options.
-  // Request a certificate from clients.
-  requestCert: true,
-  // We can't just immediately reject unauthorized clients because they may just
-  // be a new user. Instead, this logic will be handled via middleware.
-  rejectUnauthorized: false,
 };
 
 // Port to host server on, defaults to 8080.

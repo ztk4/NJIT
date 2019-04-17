@@ -1,0 +1,19 @@
+//- This layout is the base for all web pages on the site.
+
+doctype html
+html(lang='en')
+  head
+    //- Allow editing of header block by child.
+    block head 
+      meta(charset='UTF-8')
+      title E2EE Messaging
+      // Normalize.css helps with more consistent rendering.
+      link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css')
+      // Our base stylesheet.
+      link(rel='stylesheet', href='/web/res/styles/base.css')
+      // jQuery and a scrolling plugin.
+      script(defer, src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js')
+      script(defer, src='https://cdnjs.cloudflare.com/ajax/libs/nicescroll/3.7.6/jquery.nicescroll.min.js')
+  body
+    #content
+      block content

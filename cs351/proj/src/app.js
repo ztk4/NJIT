@@ -17,6 +17,11 @@ import logger from 'morgan';
 import cookie_parser from 'cookie-parser';
 // Body parsing logic (useful for extracting data from request body).
 import body_parser from 'body-parser';
+// Library for manipulating filepaths.
+import path from 'path';
+
+// Import our routers.
+import web_router from './routes/web'
 
 // Create an express app.
 const app = express();
@@ -27,11 +32,14 @@ app.use(logger(app.get('env') === 'development' ? 'dev' : 'combined'));
 app.use(body_parser.json());
 // Enables automatic parsing of cookies.
 app.use(cookie_parser());
+// Enables view rendering using the pug engine.
+app.set('views', path.join(__dirname, '../views'));
+app.set('view engine', 'pug');
 
 // Attach router for api under /api.
-// TODO: app.use('/api', api_route);
+// TODO: app.use('/api', api_router);
 // Attach router for web serving under /web.
-// TODO: app.use('/web', web_route);
+app.use('/web', web_router);
 
 // Add a redirect from root (common landing page) to /web (desired landing page).
 app.get('/', function (req, res, next) {
@@ -43,12 +51,6 @@ app.use(function(req, res, next) {
   let err = new Error('Not Found');
   err.status = 404;
   return next(err);
-});
-
-// Catch all unhandled errors and render the error to the user.
-app.use(function(err, req, res, next) {
-  // Default to 500 if no error code available.
-  return res.status(err.status || 500).send(err.message);
 });
 
 // Export the express app from this module.
