@@ -46,6 +46,12 @@ app.get('/', function (req, res, next) {
   return res.redirect('/web');
 });
 
+// Add a redirect from /favicon.ico to /web/res/imgs/favicon.ico.
+app.get('/favicon.ico', function (req, res, next) {
+  // Redirecting with 301 because we will always server favicon from here.
+  return res.redirect(301, '/web/res/imgs/favicon.ico');
+});
+
 // Catch all unhandled requests and treat them as 404's.
 app.use(function(req, res, next) {
   let err = new Error('Not Found');

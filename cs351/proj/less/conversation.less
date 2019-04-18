@@ -3,16 +3,78 @@
 @online-color:  #62bf6e;
 @offline-color: #fd8064;
 
+.popup {
+  z-index: 999;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: fadeout(black, 30%);
+  top:0;
+
+  .login-prompt {
+    width: fit-content;
+    padding: 25px;
+    margin: auto;
+    background-color: @light-tone;
+
+    .row {
+      display: block;
+      width: 100%;
+    }
+
+    .pane {
+      color: @dark-tone;
+      text-align: center;
+      width: fit-content;
+      padding: 40px;
+      
+      h2 {
+        margin-bottom: 10px;
+      }
+
+      label {
+        float: left;
+      }
+      input {
+        float: right;
+        margin: 5px 0;
+        clear: both;
+      }
+      input[type=submit] {
+        clear: both;
+        display: block;
+        width: 100%;
+        font-size: 15pt;
+        background: none;
+        text-transform: uppercase;
+        border: none;
+        text-align: center;
+        padding-top: 10px;
+        color: @accent-color;
+        &:hover {
+          color: lighten(@accent-color, 10%);
+        }
+      }
+    }
+    .left-pane {
+      .pane();
+    }
+    .right-pane {
+      .pane();
+      border-left: 2px solid fadeout(@neutral-tone, 30%);
+    }
+  }
+}
+
 .ui{
-	margin: 10px auto;
+  @h: 95vh;
+	margin: ~'calc((100vh - @{h})/2)' auto;
+	height: @h;
 	width: 95vw;
-	height: 95vh;
-	background-color: white;
-	border-radius: 3px;
-	box-shadow: 0 0 25px @dark-tone;
-	flex-direction: row;
-	display: flex;
-	overflow: hidden;
 
 	.search input{
 		outline: none;

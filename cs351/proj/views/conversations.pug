@@ -6,16 +6,48 @@ extends templates/layout
 //- Append scripts and styles specific to this page.
 block append head
   link(rel='stylesheet', href='/web/res/styles/conversation.css')
-  // TODO: Include modules here.
+  script(defer, type='module', src='/web/res/js/test.mjs')
   script(defer, src='/web/res/js/conversations.js')
 
 //- Provide the content for the messaging GUI.
 block content
-  .ui
+  .popup
+    .login-prompt.content-box
+      // For new users.
+      .left-pane
+        h2 New User
+        form.register(action='javascript:void(0)')
+          .row
+            label(for='uname') Username
+            input(name='uname')
+
+          .row
+            label(for='pass') Password
+            input(name='pass', type='password')
+
+          .row
+            input(type='submit', value='Register')
+
+      // For returning users.
+      .right-pane
+        h2 Returning User
+        form.login(action='javascript:void(0)')
+          .row 
+            label(for='uname') Username
+            input(name='uname')
+
+          .row 
+            label(for='pass') Password
+            input(name='pass', type='password')
+
+          .row
+            input(type='submit', value='Log In')
+
+  .ui.content-box
     .left-menu
-      form.search(action='#')
+      form.search(action='javascript:void(0)')
         input(placeholder='search...', type='search', name)
-        input(type='submit', value='')
+        input(type='submit', value='\uf002')
       menu.list-friends
         li
           img(width='50', height='50', src='https://cs625730.vk.me/v625730358/1126a/qEjM1AnybRA.jpg')
