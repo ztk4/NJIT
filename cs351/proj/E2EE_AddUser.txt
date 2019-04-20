@@ -1,0 +1,31 @@
+title Message Protocol
+
+// Alice is a new user.
+participantgroup #pink Alice
+database IDB A
+actor Browser A
+end
+
+// This is the server itself.
+participantgroup #lightgray Message Server
+participant Web API
+database Message DB
+end
+
+// New User Flow
+group New User [User-to-Server Public Key Advertisement]
+
+note over Browser A: 1. Generate Key Pairs:\n  I--A--, S--A--, O--A1--, O--A2--, ..., O--Ak--.\n2. Sign key S--A-- with key I--A--.
+
+Browser A -> Web API: Send only Public Keys\nand user metadata
+
+note over Web API: Verify signature on S
+
+Web API ->Message DB: Store public keys\nand metadata
+Web API --> Browser A: User Created
+
+note over Browser A: Encrypt key pairs with a \npassword + salt derived key
+
+Browser A ->IDB A: Store encrypted keys\nand salt
+
+end

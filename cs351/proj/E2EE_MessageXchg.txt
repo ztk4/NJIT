@@ -1,0 +1,57 @@
+title Message Protocol
+
+// Alice is a new user.
+participantgroup #pink Alice
+database IDB A
+actor Browser A
+end
+
+// This is the server itself.
+participantgroup #lightgray Message Server
+participant Web API
+database Message DB
+end
+
+// Bob is an existing user.
+participantgroup #lightblue Bob
+actor Browser B
+database IDB B
+end
+
+group Message Exchange [User-to-User Messages]
+
+Browser A <-->IDB A: Retrieve keys
+
+note over Browser A: Generate new ephemeral key pair E--A--
+
+loop Send j'th Message
+
+note over Browser A:1. Generate Message Key as:\n  M--ABj-- = HMAC(CK--AB1,j--, 0x01)\n2. Update Chain Key as:\n  CK--AB1,j+1-- = HMAC(CK--AB1,j--, 0x02)\n3. Decompose M--ABj-- as:\n  (AES--key--, HMAC--key--, AES--iv--) = M--ABj--\n4. Pepare message as:\n  Metadata: PK of E--A--, index (1,j), *etc.\n  Body: Enc(msg, AES--key--, AES--iv--)\n  Auth: HMAC(Metadata || Body, HMAC--key--)
+
+linear on
+Browser A ->Web API: Send (Metadata, Body, Auth)
+Web API->Message DB: Store until Bob online
+linear off
+
+end
+
+Browser B <-->IDB B: Retrieve keys
+
+loop Receive j'th Message
+
+Browser B->Web API: Get any messages
+Web API-->Browser B: Return messages
+
+note over Browser B:1. Generate Message Key as:\n  M--ABj-- = HMAC(CK--AB1,j--, 0x01)\n2. Update Chain Key as:\n  CK--AB1,j+1-- = HMAC(CK--AB1,j--, 0x02)\n3. Decompose M--ABj-- as:\n  (AES--key--, HMAC--key--, AES--iv--) = M--ABj--\n4. Decode message as:\n  Verify: Auth == HMAC(Metadata || Body, HMAC--key--)\n  msg: Dec(Body, AES--key--, AES--iv--)
+
+end
+
+group First DH Key Ratchet
+
+note over Browser B:1. Generate new ephemeral key pair E--B--\n2. Update Root and Chain Key as:\n  (RK--AB2--,CK--AB2,1--) = HMAC(RK--AB1--, ECDH(E--B--, E--A--))
+
+end
+
+ref over IDB A,IDB B: **++.\n.\n.++**
+
+end
