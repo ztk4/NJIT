@@ -7,7 +7,7 @@ import { openDB, deleteDB } from 'https://unpkg.com/idb/with-async-ittr?module'
 import { kMinDate, kMaxDate } from '/web/res/js/util.mjs'
 
 // Prefix for database names.
-const db_prefix = 'e2ee-';
+const kDbPrefix = 'e2ee-';
 
 // Used to initialize storage in our DB.
 function InitDb(db) {
@@ -101,7 +101,7 @@ function TxContainsStores(tx, stores) {
 export default class Storage {
   // Opens a connection to the specified user's storage.
   static async Open(uname) {
-    const db_name = db_prefix + uname;
+    const db_name = kDbPrefix + uname;
     return new Storage(db_name, await openDB(db_name, 1, {
       // Upgrade for us means no pre-existing storage, so initialize.
       upgrade(db) { InitDb(db); },
