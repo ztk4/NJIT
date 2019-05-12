@@ -10,7 +10,7 @@
 //   It is merely a learning exercise for me!
 
 // Utilities.
-import { StrToAb } from '/web/res/js/util.mjs'
+import { StrToAb, AbConcat } from '/web/res/js/util.mjs'
 
 // Convenient handle to the window Crypto object.
 const crypto = window.crypto;
@@ -43,20 +43,46 @@ const kAesParams = {
 // The AES type to use for wrapping.
 const kAesWrapType = 'AES-GCM';
 
+// The max number of ECDH bits that can be derived from P-521.
+// NOTE: Took this from an error message, but I assume it's just 521 bits padded?
+const kMaxEcdhBits = 528;
+
 // The export format to use when exporting keys.
 const kExportFormat = 'raw';
 // The export format to use when wrapping keys.
 const kWrapFormat = 'jwk';
 
+// Number of iterations to use for Pbkdf2.
+const kPbkdf2Iterations = 100000;  // Takes roughly 100ms on my laptop.
+
 // Gets the derivation parameters for a Pbkdf2 key,
-// using a salt (of at least 16 bytes) and a number if iterations.
-// TODO: Tune number of iterations.
-function Pbkdf2DeriveParams(salt, it = 1000) {
+// using a salt (of at least 16 bytes).
+function Pbkdf2DeriveParams(salt) {
   return {
     name: 'PBKDF2',
     salt: salt,
-    iterations: it,
+    iterations: kPbkdf2Iterations,
     hash: { name: 'SHA-512' },
+  };
+}
+
+// Gets the derivation parameters for an ECDH key exchange,
+// using the other parties public key.
+function EcdhDeriveParams(other_pk) {
+  return {
+    name: 'ECDH',
+    public: other_pk,
+  };
+}
+
+// Gets the derivation parameters for a HKDF key,
+// using an optional salt and optional info.
+function HkdfDeriveParams(salt = new ArrayBuffer(), info = new ArrayBuffer()) {
+  return {
+    name: 'HKDF',
+    hash: 'SHA-512',
+    salt: salt,
+    info: info,
   };
 }
 
@@ -123,6 +149,11 @@ function ImportParams(algo_name) {
 
 // This class doesn't have any state,
 // and is instead just a collection of static methods.
+// As a general rule, the Make* methods make keys/keypairs,
+// the Export* methods export key pairs in an unencrypted format (sometimes with signatures),
+// the Import* methods import key pairs from an unencrypted format (verifying any signatures),
+// the Wrap* methods export and encrypt keys using a password derived wrapping key (for local storage),
+// the Unwrap* methods unwrap keys using the same password derived wrapping key.
 export default class KeyManager {
   // Generates a random salt of the specified length in bytes.
   static GenerateSalt(byte_length) {
@@ -138,7 +169,7 @@ export default class KeyManager {
   //   auth: auth data to use for wrapping.
   static async MakeWrappingKeyAndAuth(password, salt) {
     // First, we'll create a PBKDF2 key for deriving bits.
-    const pass_key = await scrypto.importKey('raw', StrToAb(password), { name: 'PBKDF2' },
+    const pass_key = await scrypto.importKey('raw', StrToAb(password), 'PBKDF2',
                                              /*extractable=*/false, ['deriveBits']);
     // Now, we'll derive 512 bits:
     //   256 for a 256-bit AES key,
@@ -146,7 +177,7 @@ export default class KeyManager {
     const derived = await scrypto.deriveBits(Pbkdf2DeriveParams(salt), pass_key, 512);
 
     // We then use some of the above bits to create an AES key.
-    const key = await scrypto.importKey('raw', new DataView(derived, 0, 32), { name: kAesWrapType },
+    const key = await scrypto.importKey('raw', new DataView(derived, 0, 32), kAesWrapType,
                                         /*extractable=*/false, ['wrapKey', 'unwrapKey']);
     // And the rest of derived as auth data.
     const auth = derived.slice(32);
@@ -175,7 +206,7 @@ export default class KeyManager {
   //   dsa_pub: exported bytes of dsa.publicKey.
   //   dh_pub: exported bytes of dh.publicKey.
   //   dh_sig: signature of above dh_pub export, signed by dsa.privateKey.
-  static async ExportIdentityKeyPairs(id_keypairs) {
+  static async ExportIdentityKeys(id_keypairs) {
     const dsa_pub = await scrypto.exportKey(kExportFormat, id_keypairs.dsa.publicKey);
     const dh_pub = await scrypto.exportKey(kExportFormat, id_keypairs.dh.publicKey);
     // Sign dh_pub using dsa.privateKey.
@@ -218,7 +249,7 @@ export default class KeyManager {
   // Exports and signs the above key, returning:
   //   pub: exported bytes of public signing key,
   //   sig: signature of public signing key, signed by id_keypairs.dsa.privateKey.
-  static async ExportSignedKeyPair(signed_keypair, id_keypairs) {
+  static async ExportSignedKey(signed_keypair, id_keypairs) {
     const pub = await scrypto.exportKey(kExportFormat, signed_keypair.publicKey);
     // Sign pub with dsa.privateKey.
     const sig = await scrypto.sign(kEcdsaSigParams, id_keypairs.dsa.privateKey, pub);
@@ -241,18 +272,17 @@ export default class KeyManager {
     return await scrypto.generateKey(kEcdhAlgo, /*extractable=*/true, ['deriveKey', 'deriveBits']);
   }
   // Exports an ephemeral key, returning the exported public key.
-  static async ExportEphemeralKeyPair(ephemeral_keypair) {
+  static async ExportEphemeralKey(ephemeral_keypair) {
     return await scrypto.exportKey(kExportFormat, ephemeral_keypair.publicKey);
   }
-  // Wraps the ephemeral key pair, returning:
-  //   pub: { data: wrapped public key, ... },
-  //   priv: { data: wrapped private key, ... },
-  static async WrapEphemeralKeyPair(ephemeral_keypair, wrap_key, wrap_auth) {
-    return await this.WrapKeyPair(ephemeral_keypair, wrap_key, wrap_auth);
+  // Wraps the ephemeral public key, returning the wrapped key.
+  // NOTE: Only public key of ephemeral pair ever needs to be stored.
+  static async WrapEphemeralPublicKey(ephemeral_keypair, wrap_key, wrap_auth) {
+    return await this.WrapKey(ephemeral_keypair.publicKey, wrap_key, wrap_auth);
   }
-  // Unwraps keypair wrapped above, returning the key pair.
-  static async UnwrapEphemeralKeyPair(wrapped, wrap_key, wrap_auth) {
-    return await this.UnwrapKeyPair(wrapped, wrap_key, wrap_auth);
+  // Unwraps public key wrapped above, returning the key.
+  static async UnwrapEphemeralPublicKey(wrapped, wrap_key, wrap_auth) {
+    return await this.UnwrapKey(wrapped, wrap_key, wrap_auth);
   }
 
   // Creates count one-time key pairs,
@@ -287,10 +317,9 @@ export default class KeyManager {
   //     dsa: public dsa identity key.
   //     dh: public dh identity key.
   //   },
-  //   signed_pk: public signed key.
-  //   eph_pk: public ephemeral key.
+  //   signed_pk: public signed key, or null if an exported signed key was not passed.
   //   ot_pk: one-time public key, or null if an exported one-time key was not passed.
-  static async ImportPublicKeys(id_export, signed_export, ephemeral_export, one_time_export) {
+  static async ImportPublicKeys(id_export, signed_export, one_time_export) {
     // First get the dsa key for verifying signatures.
     const id_dsa = await scrypto.importKey(kExportFormat, id_export.dsa_pub, kEcdsaAlgo,
                                            /*extractable=*/false, ['verify']);
@@ -300,20 +329,22 @@ export default class KeyManager {
     if (!dh_verify) {
       throw new Error('Unable to verify signature on public ECDH identity key');
     }
-    const signed_verify = await scrypto.verify(kEcdsaSigParams, id_dsa, signed_export.sig, signed_export.pub);
-    if (!signed_verify) {
-      throw new Error('Unable to verify signature on public ECDH signed key');
+    // Only verified signed key if supplied.
+    if (signed_export) {
+      const signed_verify =
+        await scrypto.verify(kEcdsaSigParams, id_dsa, signed_export.sig, signed_export.pub);
+      if (!signed_verify) {
+        throw new Error('Unable to verify signature on public ECDH signed key');
+      }
     }
 
-    // Now that we've verified, import all other keys (except optional one-time key).
+    // Now that we've verified, import all other keys.
     // NOTE: An ECDH public key does NOT need usage permissions for key derivation.
     const id_dh = await scrypto.importKey(kExportFormat, id_export.dh_pub, kEcdhAlgo,
                                           /*extractable=*/false, []);
-    const signed_pk = await scrypto.importKey(kExportFormat, signed_export.pub, kEcdhAlgo,
-                                              /*extractable=*/false, []);
-    const eph_pk = await scrypto.importKey(kExportFormat, ephemeral_export, kEcdhAlgo,
-                                           /*extractable=*/false, []);
-    // If one_time_export is not specified, use null.
+    const signed_pk = signed_export
+      ? await scrypto.importKey(kExportFormat, signed_export.pub, kEcdhAlgo, /*extractable=*/false, [])
+      : null;
     const ot_pk = one_time_export 
       ? await scrypto.importKey(kExportFormat, one_time_export, kEcdhAlgo, /*extractable=*/false, [])
       : null;
@@ -321,10 +352,112 @@ export default class KeyManager {
     return {
       id_pks: { dsa: id_dsa, dh: id_dh },
       signed_pk,
-      eph_pk,
       ot_pk,
     };
   }
+
+  // This method imports a public ephemeral key from the export method above.
+  // Typically, this is used to import another person's ephemeral key in the initiation
+  // or ratchet steps of the protocol.
+  // NOTE: Imported key will NOT be extractable (shouldn't need to re-export them).
+  // Returns just the imported ephemeral public key.
+  static async ImportEphemeralKey(eph_export) {
+    return await scrypto.importKey(kExportFormat, eph_export, kEcdhAlgo, /*extractable=*/false, []);
+  }
+
+  // Derives the initial root and chain keys for the initiator of a new session.
+  // Takes this users's id keys and ephemeral keys,
+  // and the recipients id pks, signed pks, and one-time pks.
+  // NOTE: The one-time key argument is optional.
+  // Returns:
+  //   root_key: a root symmetric key (an array buffer of bytes),
+  //   chain_key: a chain symmetric key (an array buffer of butes).
+  static async DeriveInitiatorSessionKeys(id_keypairs, eph_keypair,
+                                          recip_id_pks, recip_signed_pk, recip_ot_pk) {
+    // Derive the parts of the master secret as needed.
+    const init_id_recip_signed_secret = await scrypto.deriveBits(EcdhDeriveParams(recip_signed_pk),
+                                                                 id_keypairs.dh.privateKey,
+                                                                 kMaxEcdhBits);
+    const init_eph_recip_id_secret = await scrypto.deriveBits(EcdhDeriveParams(recip_id_pks.dh),
+                                                              eph_keypair.privateKey,
+                                                              kMaxEcdhBits);
+    const init_eph_recip_signed_secret = await scrypto.deriveBits(EcdhDeriveParams(recip_signed_pk),
+                                                                  eph_keypair.privateKey,
+                                                                  kMaxEcdhBits);
+    // Create a master secret via concatentation,
+    // optionally including a one-time key secret if possible.
+    let master_secret;
+    if (recip_ot_pk) {
+      const init_eph_recip_ot_secret = await scrypto.deriveBits(EcdhDeriveParams(recip_ot_pk),
+                                                                eph_keypair.privateKey,
+                                                                kMaxEcdhBits);
+      master_secret = AbConcat(init_id_recip_signed_secret, init_eph_recip_id_secret,
+                               init_eph_recip_signed_secret, init_eph_recip_ot_secret);
+    } else {
+      master_secret = AbConcat(init_id_recip_signed_secret, init_eph_recip_id_secret,
+                               init_eph_recip_signed_secret);
+    }
+
+    // Make an HKDF key from the master secret.
+    const master_key = await scrypto.importKey('raw', master_secret, 'HKDF',
+                                               /*extractable=*/false, ['deriveBits']);
+    // And finally derive 64 bytes from the key, half for the root key, half for the chain key.
+    const derived = await scrypto.deriveBits(HkdfDeriveParams(), master_key, 64 * 8);
+
+    // Now split into root and chain keys, and return.
+    const root_key = derived.slice(0, 32);
+    const chain_key = derived.slice(32);
+
+    return { root_key, chain_key };
+  }
+  // Derives the initial root and chain keys for the recipient of a new session.
+  // Takes this user's id keys, signed keys, and one-time keys,
+  // and the initiator's id pks and ephemeral pk.
+  // NOTE: The one-time key argument is optional.
+  // Returns:
+  //   root_key: a root symmetric key (an array buffer of bytes),
+  //   chain_key: a chain symmetric key (an array buffer of bytes).
+  static async DeriveRecipientSessionKeys(init_id_pks, init_eph_pk,
+                                          id_keypairs, signed_keypair, ot_keypair) {
+    // Derive the parts of the master secret as needed.
+    const init_id_recip_signed_secret = await scrypto.deriveBits(EcdhDeriveParams(init_id_pks.dh),
+                                                                 signed_keypair.privateKey,
+                                                                 kMaxEcdhBits);
+    const init_eph_recip_id_secret = await scrypto.deriveBits(EcdhDeriveParams(init_eph_pk),
+                                                              id_keypairs.dh.privateKey,
+                                                              kMaxEcdhBits);
+    const init_eph_recip_signed_secret = await scrypto.deriveBits(EcdhDeriveParams(init_eph_pk),
+                                                                  signed_keypair.privateKey,
+                                                                  kMaxEcdhBits);
+
+    // Create a master secret via concatentation,
+    // optionally including a one-time key secret if possible.
+    let master_secret;
+    if (ot_keypair) {
+      const init_eph_recip_ot_secret = await scrypto.deriveBits(EcdhDeriveParams(init_eph_pk),
+                                                                ot_keypair.privateKey,
+                                                                kMaxEcdhBits);
+      master_secret = AbConcat(init_id_recip_signed_secret, init_eph_recip_id_secret,
+                               init_eph_recip_signed_secret, init_eph_recip_ot_secret);
+    } else {
+      master_secret = AbConcat(init_id_recip_signed_secret, init_eph_recip_id_secret,
+                               init_eph_recip_signed_secret);
+    }
+
+    // Make an HKDF key from the master secret.
+    const master_key = await scrypto.importKey('raw', master_secret, 'HKDF',
+                                               /*extractable=*/false, ['deriveBits']);
+    // And finally derive 64 bytes from the key, half for the root key, half for the chain key.
+    const derived = await scrypto.deriveBits(HkdfDeriveParams(), master_key, 64 * 8);
+
+    // Now split up and return.
+    const root_key = derived.slice(0, 32);
+    const chain_key = derived.slice(32);
+
+    return { root_key, chain_key };
+  }
+
+  // TODO: Message keys and ratcheting.
 
   // PRIVATE IMPL METHODS.
   
