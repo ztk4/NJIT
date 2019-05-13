@@ -125,6 +125,17 @@ export default class Storage {
     return (await tx.objectStore('keyval').count('id-key')) == 1;
   }
 
+  // Getter and Setter for salt used when wrapping/unwrapping below keys.
+  async GetWrappingSalt(tx) {
+    tx = this.ValidateOrDefault(tx, 'keyval', 'readonly');
+    return await tx.objectStore('keyval').get('wrapping-salt');
+  }
+  async SetWrappingSalt(salt, tx) {
+    tx = this.ValidateOrDefault(tx, 'keyval', 'readwrite');
+    await tx.objectStore('keyval').add(salt, 'wrapping-salt');
+    return await this.GetWrappingSalt(tx);
+  }
+
   // Public key getters/setters.
   // Setters return the records that they set.
 

@@ -6,6 +6,12 @@ async function stuff(user) {
   try {
     console.log('Exists?: ' + await storage.UserExists());
 
+    console.log('Set Salt');
+    console.log(await storage.SetWrappingSalt(crypto.getRandomValues(new Uint8Array(16))));
+    
+    console.log('Get Salt');
+    console.log(await storage.GetWrappingSalt());
+
     console.log('Get Id');
     console.log(await storage.GetIdentityPk());
 
