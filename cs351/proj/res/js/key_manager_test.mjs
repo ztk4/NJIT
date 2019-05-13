@@ -152,6 +152,46 @@ async function stuff() {
   console.log('Chain Key Cmp: ',
     CompareAb(init_sess.chain_key, recip_sess.chain_key));
 
+  // Symmetric Ratchet Tests.
+  
+  console.log('Symmetric Ratchet 1');
+  let next_symm = await KeyManager.SymmetricRatchet(init_sess.chain_key);
+  console.log(next_symm);
+
+  console.log('Symmetric Ratchet 2');
+  console.log(await KeyManager.SymmetricRatchet(next_symm.chain_key));
+
+  // DH Ratchet Test.
+  
+  // Key pair generated before responding.
+  let recip_eph_key = await KeyManager.MakeEphemeralKeyPair();
+  
+  // PK init would recieve.
+  let recip_eph_export = await KeyManager.ExportEphemeralKey(recip_eph_key);
+  let recip_eph_pk = await KeyManager.ImportEphemeralKey(recip_eph_export);
+
+  console.log('DH Ratchet');
+  let recip_next_sess = await KeyManager.DhRatchet(recip_sess.root_key, init_eph_pk, recip_eph_key);
+  let init_next_sess = await KeyManager.DhRatchet(init_sess.root_key, recip_eph_pk, ephemeral_keypair);
+
+  console.log('Root Key Cmp: ',
+    CompareAb(recip_next_sess.root_key, recip_next_sess.root_key));
+  console.log('Chain Key Cmp: ',
+    CompareAb(recip_next_sess.chain_key, recip_next_sess.chain_key));
+
+  // Encrypt and Decrypt Test.
+  
+  let init_keys = await KeyManager.SymmetricRatchet(init_sess.chain_key);
+  let recip_keys = await KeyManager.SymmetricRatchet(recip_sess.chain_key);
+
+  console.log('Encrypted Message: ');
+  let encrypted = await KeyManager.EncryptAndAuthorizeMessage('Yo! What is up my dude??', init_keys.message_key, id_export, recip_id_export);
+  console.log(encrypted);
+
+  console.log('Decrypted Message: ');
+  let decrypted = await KeyManager.VerifyAndDecryptMessage(encrypted.cipher_text, encrypted.mac, recip_keys.message_key, recip_id_export, id_export);
+  console.log(decrypted);
+
 }
 
 stuff().then(_ => console.log('Tests Complete'), err => console.error(err, err.message));

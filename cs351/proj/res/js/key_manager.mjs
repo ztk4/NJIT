@@ -10,7 +10,7 @@
 //   It is merely a learning exercise for me!
 
 // Utilities.
-import { StrToAb, AbConcat } from '/web/res/js/util.mjs'
+import { StrToAb, AbToStr, AbConcat } from '/web/res/js/util.mjs'
 
 // Convenient handle to the window Crypto object.
 const crypto = window.crypto;
@@ -29,19 +29,17 @@ const kEcdsaAlgo = {
   name: 'ECDSA',
   namedCurve: 'P-521',
 };
+// This is the HMAC algorithm decription.
+const kHmacAlgo = {
+  name: 'HMAC',
+  hash: 'SHA-256',
+  length: 32 * 8,  // Key length in bits.
+};
 // These are the signing params for ECDSA signing.
 const kEcdsaSigParams = {
   name: 'ECDSA',
   hash: 'SHA-512',
 };
-// These are the params for encrypt/decrypt with AES-GCM.
-const kAesParams = {
-  name: 'AES-GCM',
-  length: 256,  // Length in bits.
-};
-
-// The AES type to use for wrapping.
-const kAesWrapType = 'AES-GCM';
 
 // The max number of ECDH bits that can be derived from P-521.
 // NOTE: Took this from an error message, but I assume it's just 521 bits padded?
@@ -54,6 +52,13 @@ const kWrapFormat = 'jwk';
 
 // Number of iterations to use for Pbkdf2.
 const kPbkdf2Iterations = 100000;  // Takes roughly 100ms on my laptop.
+// Constant info strings to use for HKDF.
+const kHkdfInitInfo = StrToAb('e2ee-init');
+const kHkdfRatchetInfo = StrToAb('e2ee-ratchet');
+const kHkdfMessageInfo = StrToAb('e2ee-message');
+// Inputs for HMAC used for the symmetric key ratchet.
+const kMessageKeyInput = StrToAb('\x01');
+const kChainKeyInput = StrToAb('\x02');
 
 // Gets the derivation parameters for a Pbkdf2 key,
 // using a salt (of at least 16 bytes).
@@ -75,9 +80,8 @@ function EcdhDeriveParams(other_pk) {
   };
 }
 
-// Gets the derivation parameters for a HKDF key,
-// using an optional salt and optional info.
-function HkdfDeriveParams(salt = new ArrayBuffer(), info = new ArrayBuffer()) {
+// Gets the derivation parameters for a HKDF key.
+function HkdfDeriveParams(salt, info) {
   return {
     name: 'HKDF',
     hash: 'SHA-512',
@@ -106,8 +110,8 @@ function GenerateIv(aes_name) {
   return crypto.getRandomValues(new Uint8Array(iv_byte_length));
 }
 
-// Gets wrapping params for an aes key.
-function WrapParams(aes_key, iv, wrap_auth) {
+// Gets encryption params for an aes key.
+function AesParams(aes_key, iv, auth) {
   let params = {
     name: aes_key.algorithm.name,
   };
@@ -115,8 +119,8 @@ function WrapParams(aes_key, iv, wrap_auth) {
   switch (params.name) {
    case 'AES-GCM':
     // Only set GCM auth data if it is supplied.
-    if (wrap_auth) {
-      params.additionalData = wrap_auth;
+    if (auth) {
+      params.additionalData = auth;
     }
     // fallthrough
    case 'AES-CBC':
@@ -124,7 +128,7 @@ function WrapParams(aes_key, iv, wrap_auth) {
     break;
 
    default:
-    // There are other valid wrapping key types,
+    // There are other valid aes key types,
     // I just haven't supported them here.
     throw new Error('Unsupported Wrapping Key');
   }
@@ -176,8 +180,8 @@ export default class KeyManager {
     //   256 for auth data.
     const derived = await scrypto.deriveBits(Pbkdf2DeriveParams(salt), pass_key, 512);
 
-    // We then use some of the above bits to create an AES key.
-    const key = await scrypto.importKey('raw', new DataView(derived, 0, 32), kAesWrapType,
+    // We then use some of the above bits to create an AES-GCM key.
+    const key = await scrypto.importKey('raw', new DataView(derived, 0, 32), 'AES-GCM',
                                         /*extractable=*/false, ['wrapKey', 'unwrapKey']);
     // And the rest of derived as auth data.
     const auth = derived.slice(32);
@@ -402,7 +406,9 @@ export default class KeyManager {
     const master_key = await scrypto.importKey('raw', master_secret, 'HKDF',
                                                /*extractable=*/false, ['deriveBits']);
     // And finally derive 64 bytes from the key, half for the root key, half for the chain key.
-    const derived = await scrypto.deriveBits(HkdfDeriveParams(), master_key, 64 * 8);
+    // NOTE: Salt is all 0's and same length as output.
+    const derived = await scrypto.deriveBits(HkdfDeriveParams(/*salt=*/new ArrayBuffer(64), kHkdfInitInfo),
+                                             master_key, 64 * 8);
 
     // Now split into root and chain keys, and return.
     const root_key = derived.slice(0, 32);
@@ -448,7 +454,9 @@ export default class KeyManager {
     const master_key = await scrypto.importKey('raw', master_secret, 'HKDF',
                                                /*extractable=*/false, ['deriveBits']);
     // And finally derive 64 bytes from the key, half for the root key, half for the chain key.
-    const derived = await scrypto.deriveBits(HkdfDeriveParams(), master_key, 64 * 8);
+    // NOTE: Salt is all 0's and same length as output.
+    const derived = await scrypto.deriveBits(HkdfDeriveParams(/*salt=*/new ArrayBuffer(64), kHkdfInitInfo),
+                                             master_key, 64 * 8);
 
     // Now split up and return.
     const root_key = derived.slice(0, 32);
@@ -457,7 +465,115 @@ export default class KeyManager {
     return { root_key, chain_key };
   }
 
-  // TODO: Message keys and ratcheting.
+  // Takes the previous root key, and ephemeral keys of this user, and the other party,
+  // and ratchets the root key and chain key forward.
+  // Returns:
+  //   root_key: a root symmetric key (an array buffer of bytes),
+  //   chain_key: a chain symmetric key (an array buffer of bytes).
+  static async DhRatchet(prev_root_key, other_eph_pk, eph_keypair) {
+    // Derive the shared DH secret.
+    const shared_secret =
+      await scrypto.deriveBits(EcdhDeriveParams(other_eph_pk), eph_keypair.privateKey, kMaxEcdhBits);
+    // Use the above secret as IKM for an HKDF key.
+    const shared_key = await scrypto.importKey('raw', shared_secret, 'HKDF',
+                                               /*extractable=*/false, ['deriveBits']);
+    // And finally, derive 64 bytes from the key, half for new root key, half for new chain key.
+    // NOTE: This time, salt is the previous root key.
+    const derived = await scrypto.deriveBits(HkdfDeriveParams(prev_root_key, kHkdfRatchetInfo),
+                                             shared_key, 64 * 8);
+
+    // Split up and return.
+    const root_key = derived.slice(0, 32);
+    const chain_key = derived.slice(32);
+
+    return { root_key, chain_key };
+  }
+
+  // Takes the current chain key, derives a message key, and ratchets to the next chain key.
+  // Returns:
+  //   message_key: a message symmetrict key (an array buffer of bytes),
+  //   chain_key: a chain symmetric key (an array buffer of bytes).
+  static async SymmetricRatchet(prev_chain_key) {
+    // Create an HMAC key from prev_chain_key.
+    const hmac_key = await scrypto.importKey('raw', prev_chain_key, kHmacAlgo,
+                                             /*extractable=*/false, ['sign']);
+    // Although we are using HMAC for key generation,
+    // webcrypto thinks of it only as a signing algorithm.
+    // We will essentially just use the resulting MACs as keys.
+    const message_prekey = await scrypto.sign('HMAC', hmac_key, kMessageKeyInput);
+    const chain_key = await scrypto.sign('HMAC', hmac_key, kChainKeyInput);
+
+    // The above message prekey is only 32-bytes,
+    // where we'd like 80-bytes for encryptiong and authentication altogether.
+    // Hence the use of HKDF below to extract 80-bytes from the message prekey.
+    const hkdf_key = await scrypto.importKey('raw', message_prekey, 'HKDF',
+                                             /*extractable=*/false, ['deriveBits']);
+    // Using 0-filled salt of equal size to output.
+    const message_key = await scrypto.deriveBits(HkdfDeriveParams(/*salt=*/new ArrayBuffer(80), kHkdfMessageInfo),
+                                                 hkdf_key, 80 * 8);
+
+    return { message_key, chain_key };
+  }
+
+  // Takes a message text, message key, and the exported ID pks of both parties,
+  // and encrypts + authenticates the message.
+  // Returns:
+  //   cipher_text: encrypted message value
+  //   mac: a MAC created from the pks concatenated with cipher_text.
+  static async EncryptAndAuthorizeMessage(text, key, id_export, other_id_export) {
+    // First, we split the message key into it's parts.
+    const aes_key = key.slice(0, 32);
+    const auth_key = key.slice(32, 64);
+    const aes_iv = key.slice(64);
+
+    // Now we import aes_key as a key object.
+    const enc_key = await scrypto.importKey('raw', aes_key, 'AES-CBC',
+                                            /*extractable=*/false, ['encrypt']);
+    // And then encrypt the message text.
+    const cipher_text = await scrypto.encrypt(AesParams(enc_key, aes_iv), enc_key, StrToAb(text));
+
+    // Now, we want to use HMAC to sign the above cipher_text,
+    // but we will first prepend PKs for authentication.
+    const signing_data = AbConcat(id_export.dsa_pub, id_export.dh_pub,
+                                  other_id_export.dsa_pub, other_id_export.dh_pub,
+                                  cipher_text);
+    const signing_key = await scrypto.importKey('raw', auth_key, kHmacAlgo,
+                                                /*extractable=*/false, ['sign']);
+    const mac = await scrypto.sign('HMAC', signing_key, signing_data);
+
+    // NOTE: The keys prepended when generated the signature are NOT sent along with the message.
+    //       Instead, the other party must be able to reproduce these values independently.
+    return { cipher_text, mac };
+  }
+
+  // Takes a cipher text, MAC, message key, and the exported ID pks of both parties,
+  // and verifies and decrypts the message.
+  // Returns the plaintext message.
+  static async VerifyAndDecryptMessage(cipher_text, mac, key, id_export, other_id_export) {
+    // First, we split the message key into it's parts.
+    const aes_key = key.slice(0, 32);
+    const auth_key = key.slice(32, 64);
+    const aes_iv = key.slice(64);
+
+    // Now we want to verify the MAC before trying to decrypt the message.
+    // NOTE: The key order puts our keys SECOND (since the sender put their keys first).
+    const signed_data = AbConcat(other_id_export.dsa_pub, other_id_export.dh_pub,
+                                 id_export.dsa_pub, id_export.dh_pub,
+                                 cipher_text);
+    const verify_key = await scrypto.importKey('raw', auth_key, kHmacAlgo,
+                                               /*extractable=*/false, ['verify']);
+    const verified = await scrypto.verify('HMAC', verify_key, mac, signed_data);
+
+    if (!verified) {
+      throw new Error('Unable to verify message signature');
+    }
+
+    // Now that we've verified the signature, let's decrypt.
+    const dec_key = await scrypto.importKey('raw', aes_key, 'AES-CBC',
+                                            /*extractable=*/false, ['decrypt']);
+    
+    return AbToStr(await scrypto.decrypt(AesParams(dec_key, aes_iv), dec_key, cipher_text));
+  }
 
   // PRIVATE IMPL METHODS.
   
@@ -502,14 +618,14 @@ export default class KeyManager {
     const extractable = key.extractable;
     const usages = key.usages;
     // Now wrap key using wrap_key and appropriate wrapping parameters.
-    const data = await scrypto.wrapKey(kWrapFormat, key, wrap_key, WrapParams(wrap_key, iv, wrap_auth));
+    const data = await scrypto.wrapKey(kWrapFormat, key, wrap_key, AesParams(wrap_key, iv, wrap_auth));
 
     return { data, iv, import_params, extractable, usages };
   }
   // This function takes output from the above, the wrapping key, and wrapping auth,
   // and returns the key that was wrapped.
   static async UnwrapKey(wrapped, wrap_key, wrap_auth) {
-    return await scrypto.unwrapKey(kWrapFormat, wrapped.data, wrap_key, WrapParams(wrap_key, wrapped.iv, wrap_auth),
+    return await scrypto.unwrapKey(kWrapFormat, wrapped.data, wrap_key, AesParams(wrap_key, wrapped.iv, wrap_auth),
                                    wrapped.import_params, wrapped.extractable, wrapped.usages);
   }
 

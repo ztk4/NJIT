@@ -7,6 +7,9 @@ export const kMaxDate = new Date(8640000000000000);
 export const kMinDate = new Date(-8640000000000000);
 
 // Methods.
+
+// The following Ab to/from string conversions were taken from:
+// https://developers.google.com/web/updates/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 // Copies a string into a new ArrayBuffer.
 export function StrToAb(str) {
   let ab = new ArrayBuffer(str.length*2);
@@ -17,6 +20,10 @@ export function StrToAb(str) {
   }
 
   return ab;
+}
+// Copies ArrayBuffer contents to a string.
+export function AbToStr(ab) {
+  return String.fromCharCode.apply(null, new Uint16Array(ab));
 }
 
 // Concatenates multiple array buffers into one array buffer.
