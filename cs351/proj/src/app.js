@@ -22,6 +22,7 @@ import path from 'path';
 
 // Import our routers.
 import web_router from './routes/web'
+import api_router from './routes/api'
 
 // Create an express app.
 const app = express();
@@ -37,7 +38,7 @@ app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'pug');
 
 // Attach router for api under /api.
-// TODO: app.use('/api', api_router);
+app.use('/api', api_router);
 // Attach router for web serving under /web.
 app.use('/web', web_router);
 
@@ -48,7 +49,7 @@ app.get('/', function (req, res, next) {
 
 // Add a redirect from /favicon.ico to /web/res/imgs/favicon.ico.
 app.get('/favicon.ico', function (req, res, next) {
-  // Redirecting with 301 because we will always server favicon from here.
+  // Redirecting with 301 because we will always serve favicon from here.
   return res.redirect(301, '/web/res/imgs/favicon.ico');
 });
 

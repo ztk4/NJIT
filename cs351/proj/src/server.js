@@ -7,6 +7,9 @@
 // The server will be hosted over TLSv1.2 using a self-signed certificate.
 // All routing will be handled by app.js
 
+// Needed for transpilation.
+import '@babel/polyfill'
+
 // Filesystem lib.
 import fs from 'fs';
 // HTTP server over SSL/TLS.

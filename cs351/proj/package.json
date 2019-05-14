@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d dist",
     "serve": "node dist/server.js",
-    "start": "npm run build && nodemon dist/server.js"
+    "start": "npm run build && nodemon --watch dist dist/server.js"
   },
   "repository": {
     "type": "git",
@@ -27,13 +27,16 @@
   },
   "homepage": "https://github.com/ztk4/NJIT/tree/master/cs351/proj#readme",
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
+    "express-async-errors": "^3.1.1",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "less-middleware": "^3.1.0",
     "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
     "path": "^0.12.7",
     "pug": "^2.0.3"
   },
@@ -42,5 +45,11 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "nodemon": "^1.18.11"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": []
   }
 }
