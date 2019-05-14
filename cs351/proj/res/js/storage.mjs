@@ -122,7 +122,7 @@ export default class Storage {
   // an identity key pair in storage.
   async UserExists(tx) {
     tx = this.ValidateOrDefault(tx, 'keyval', 'readonly');
-    return (await tx.objectStore('keyval').count('id-key')) == 1;
+    return (await tx.objectStore('keyval').count('id-key')) === 1;
   }
 
   // Getter and Setter for salt used when wrapping/unwrapping below keys.
@@ -299,12 +299,16 @@ export default class Storage {
     return await tx.objectStore('messages').get(store_key);
   }
 
+  // Closes this connection.
+  async Close() {
+    return await this.db.close();
+  }
+
   // Deletes all of a users's stored data.
   async DeleteAll() {
     // Close connection to allow deletion of database.
-    await this.db.close();
-
-    await deleteDB(this.db_name);
+    await this.Close();
+    return await deleteDB(this.db_name);
   }
 
   // PRIVATE IMPL METHODS:

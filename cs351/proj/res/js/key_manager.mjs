@@ -575,6 +575,25 @@ export default class KeyManager {
     return AbToStr(await scrypto.decrypt(AesParams(dec_key, aes_iv), dec_key, cipher_text));
   }
 
+  // Takes any session key (root_key, chain_key, or message_key), and wraps it for safe storage.
+  // Returns:
+  //   data: the encrypted key,
+  //   iv: iv used for wrapping.
+  static async WrapSessionKey(sess_key, wrap_key, wrap_auth) {
+    // NOTE: Since these session keys are not actually key objects, we just encrypt them.
+    //       Effectively, we are just skipping the export step of the wrap methods.
+    const iv = GenerateIv(wrap_key.algorithm.name);  // Generate IV.
+    // Encrypt key.
+    const data = await scrypto.encrypt(AesParams(wrap_key, iv, wrap_auth), wrap_key, sess_key);
+
+    return { data, iv };
+  }
+
+  // Takes a wrapped session key object, and returns the unwrapped key.
+  static async UnwrapSessionKey(wrapped, wrap_key, wrap_auth) {
+    return await scrypto.decrypt(AesParams(wrap_key, wrapped.iv, wrap_auth), wrap_key, wrapped.data);
+  }
+
   // PRIVATE IMPL METHODS.
   
   // This function takes a key pair, a wrapping key, and a wrapping auth

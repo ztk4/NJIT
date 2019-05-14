@@ -26,6 +26,25 @@ export function AbToStr(ab) {
   return String.fromCharCode.apply(null, new Uint16Array(ab));
 }
 
+// The following encode/decode an ArrayBuffer as a hex string.
+export function AbToHex(ab) {
+  return (new Uint8Array(ab)).reduce(
+    (acc, b) => acc + (b < 16 ? '0' : '') + b.toString(16),
+    '');
+}
+export function HexToAb(hex) {
+  let ab = new ArrayBuffer(hex.length / 2);
+  let u8_view = new Uint8Array(ab);
+
+  for (let i = 0; i < ab.byteLength; ++i) {
+    console.log(hex.substr(2*i, 2));
+    console.log(parseInt(hex.substr(2*i, 2), 16));
+    u8_view[i] = parseInt(hex.substr(2*i, 2), 16);
+  }
+
+  return ab;
+}
+
 // Concatenates multiple array buffers into one array buffer.
 export function AbConcat(...abs) {
   // Let concat be a new array buffer,
@@ -41,4 +60,37 @@ export function AbConcat(...abs) {
   }
 
   return concat;
+}
+
+// Some helpers for making async web requests with fetch.
+
+async function JsonFromResponse(response) {
+  if (!response.ok) {
+    throw new Error('Respose has error status ' + response.status +
+                    ': ' + await response.text());
+  }
+
+  return await response.json();
+}
+
+export async function GetJson(url) {
+  let response = await fetch(url, {
+    method: 'GET',
+    cache: 'no-cache',
+  });
+
+  return await JsonFromResponse(response);
+}
+
+export async function PostJson(url, data = {}) {
+  let response = await fetch(url, {
+    method: 'POST',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  return await JsonFromResponse(response);
 }
